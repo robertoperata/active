@@ -27,7 +27,7 @@ security:
 
 #        dev:
 #            pattern: ^/(_(profiler|wdt)|css|images|js)/
-#            security: false
+#           security: false
 
     access_control:
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
