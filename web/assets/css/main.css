@@ -1,0 +1,36 @@
+body {
+  background: #ededed;
+  font-family: Raleway, Arial, Helvetica, sans-serif;
+  border-top: 5px solid #0088CC; }
+
+h1 {
+  color: #0088CC;
+  font-size: 1.8em;
+  margin-bottom: 20px; }
+
+label {
+  font-weight: normal;
+  margin-bottom: 2px;
+  color: #666;
+  font-family: Raleway, Arial, Helvetica, sans-serif; }
+
+.form-control {
+  border-radius: 2px; }
+
+.fos_user_registration_register {
+  padding: 40px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 2px; }
+
+.wrapper_fos_user {
+  margin-top: 120px;
+  margin-bottom: 50px; }
+  .wrapper_fos_user h1 {
+    text-align: center; }
+
+.btn-primary {
+  background: #0088CC;
+  font-weight: bold; }
+
+/*# sourceMappingURL=main.css.map */
