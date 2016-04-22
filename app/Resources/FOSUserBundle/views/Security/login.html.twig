@@ -10,7 +10,7 @@
         <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
 
-        <form action="{{ path("fos_user_security_check") }}" method="post" class="fos_user_registration_register clearfix">
+        <form action="{{ path("fos_user_security_check") }}" method="post" class="fos_user_registration_register fos_user_form clearfix">
 
 
 
@@ -30,7 +30,7 @@
                 <label for="remember_me">{{ 'security.login.remember_me'|trans }}</label>
             </div>
             <div>
-                <input class="btn btn-primary col-xs-12" style="margin: 20px 0" type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}" />
+                <input class="btn btn-primary col-xs-12" type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}" />
             </div>
             <div  style="text-align: center">
                 <a href="{{ path('fos_user_resetting_request') }}">Forgot password ?</a>

@@ -22,14 +22,28 @@ class SportController extends Controller
      * @Route("/", name="sport_index")
      * @Method("GET")
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
         $sports = $em->getRepository('BookManagerBundle:Sport')->findAll();
 
+        $sport = new Sport();
+        $form = $this->createForm('BookManagerBundle\Form\SportType', $sport);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($sport);
+            $em->flush();
+
+            return $this->redirectToRoute('sport_show', array('id' => $sport->getId()));
+        }
+
         return $this->render('sport/index.html.twig', array(
             'sports' => $sports,
+            'sport' => $sport,
+            'form' => $form->createView(),
         ));
     }
 

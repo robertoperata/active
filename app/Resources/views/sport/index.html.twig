@@ -1,29 +1,66 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Sport list</h1>
+    <div class="col-xs-12">
+    <h1>Sport</h1>
+        <form action="{{ path("sport_new") }}" method="post" class="form-horizontal clearfix">
+            <div class="form-group">
 
-    <table>
+                <label for="sport_name" class="required">Name</label>
+                    <input class="form-control" type="text" id="sport_name" name="sport[name]" required="required" maxlength="100">
+                </div>
+
+            </div>
+            <div class="form-group">
+                <label for="sport_priceResident" class="required">Price resident</label>
+                <input type="text" id="sport_priceResident" name="sport[priceResident]" required="required">
+             </div>
+            <div class="form-group">
+                <label for="sport_priceRedidentLightsOn" class="required">Price redident lights on</label>
+                <input type="text" id="sport_priceRedidentLightsOn" name="sport[priceRedidentLightsOn]" required="required">
+            </div>
+            <div class="form-group">
+                <label for="sport_priceNotResident" class="required">Price not resident</label>
+                <input type="text" id="sport_priceNotResident" name="sport[priceNotResident]" required="required">
+            </div>
+            <div class="form-group">
+                <label for="sport_priceNotRedidentLightsOn" class="required">Price not redident lights on</label>
+                <input type="text" id="sport_priceNotRedidentLightsOn" name="sport[priceNotRedidentLightsOn]" required="required">
+            </div>
+            <input type="hidden" id="sport__token" name="sport[_token]" value="{{ sport__token }}" >
+
+        {{ form_widget(form) }}
+        <input type="submit" value="Create" />
+        </form>
+
+        <ul>
+            <li>
+                <a href="{{ path('sport_index') }}">Back to the list</a>
+            </li>
+        </ul>
+    <table class="table table-striped table-hover">
+        <colgroup>
+                <col width="10%"/>
+                <col width="30%"/>
+                <col width="15%"/>
+                <col width="15%"/>
+                <col width="15%"/>
+                <col width="15%"/>
+        </colgroup>
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Priceresident</th>
-                <th>Priceredidentlightson</th>
-                <th>Pricenotresident</th>
-                <th>Pricenotredidentlightson</th>
+                <th>Nome</th>
+                <th>Prezzo residenti</th>
+                <th>Prezzo residenti (notturno)</th>
+                <th>Prezzo non residenti</th>
+                <th>Prezzo non residenti (notturno)</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for sport in sports %}
             <tr>
-                <td><a href="{{ path('sport_show', { 'id': sport.id }) }}">{{ sport.id }}</a></td>
-                <td>{{ sport.name }}</td>
-                <td>{{ sport.priceResident }}</td>
-                <td>{{ sport.priceRedidentLightsOn }}</td>
-                <td>{{ sport.priceNotResident }}</td>
-                <td>{{ sport.priceNotRedidentLightsOn }}</td>
+                <td style="display: none"><a href="{{ path('sport_show', { 'id': sport.id }) }}">{{ sport.id }}</a></td>
                 <td>
                     <ul>
                         <li>
@@ -34,6 +71,12 @@
                         </li>
                     </ul>
                 </td>
+                <td>{{ sport.name }}</td>
+                <td>{{ sport.priceResident }}</td>
+                <td>{{ sport.priceRedidentLightsOn }}</td>
+                <td>{{ sport.priceNotResident }}</td>
+                <td>{{ sport.priceNotRedidentLightsOn }}</td>
+
             </tr>
         {% endfor %}
         </tbody>
@@ -44,4 +87,5 @@
             <a href="{{ path('sport_new') }}">Create a new entry</a>
         </li>
     </ul>
+    </div>
 {% endblock %}
