@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <script>
+    var d = document;
+    var safari = (navigator.userAgent.toLowerCase().indexOf('safari') != -1) ? true : false;
+    var gebtn = function(parEl,child) { return parEl.getElementsByTagName(child); };
+    onload = function() {
+
+        var body = gebtn(d,'body')[0];
+        body.className = body.className && body.className != '' ? body.className + ' has-js' : 'has-js';
+
+        if (!d.getElementById || !d.createTextNode) return;
+        var ls = gebtn(d,'label');
+        for (var i = 0; i < ls.length; i++) {
+            var l = ls[i];
+            if (l.className.indexOf('label_') == -1) continue;
+            var inp = gebtn(l,'input')[0];
+            if (l.className == 'label_check') {
+                l.className = (safari && inp.checked == true || inp.checked) ? 'label_check c_on' : 'label_check c_off';
+                l.onclick = check_it;
+            };
+            if (l.className == 'label_radio') {
+                l.className = (safari && inp.checked == true || inp.checked) ? 'label_radio r_on' : 'label_radio r_off';
+                l.onclick = turn_radio;
+            };
+        };
+    };
+    var check_it = function() {
+        var inp = gebtn(this,'input')[0];
+        if (this.className == 'label_check c_off' || (!safari && inp.checked)) {
+            this.className = 'label_check c_on';
+            if (safari) inp.click();
+        } else {
+            this.className = 'label_check c_off';
+            if (safari) inp.click();
+        };
+    };
+    var turn_radio = function() {
+        var inp = gebtn(this,'input')[0];
+        if (this.className == 'label_radio r_off' || inp.checked) {
+            var ls = gebtn(this.parentNode,'label');
+            for (var i = 0; i < ls.length; i++) {
+                var l = ls[i];
+                if (l.className.indexOf('label_radio') == -1)  continue;
+                l.className = 'label_radio r_off';
+            };
+            this.className = 'label_radio r_on';
+            if (safari) inp.click();
+        } else {
+            this.className = 'label_radio r_off';
+            if (safari) inp.click();
+        };
+    };
+</script>
+
+<div class="col-xs-12">
+    <table class="table table-hover has-js" >
+        <thead>
+            <tr>
+                <th></th>
+                <th>Lunedì</th>
+                <th>Martedì</th>
+                <th>Mercoledì</th>
+                <th>Giovedì</th>
+                <th>Venerdì</th>
+                <th>Sabato</th>
+                <th>Domenica</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for sport in sports %}
+            <tr>
+                <th scope="row" style="text-transform: uppercase">{{ sport.name }}</th>
+                <td align="center"><label class="label_check"><input id="lun" type="checkbox" name="lun_{{ sport.id }}" value="check1"></label></td>
+                <td align="center"><label class="label_check"><input id="mar" type="checkbox" name="mar_{{ sport.id }}" value="check1"></label></td>
+                <td align="center"><label class="label_check"><input id="mer" type="checkbox" name="mer_{{ sport.id }}" value="check1"></label></td>
+                <td align="center"><label class="label_check"><input id="gio" type="checkbox" name="gio_{{ sport.id }}" value="check1"></label></td>
+                <td align="center"><label class="label_check"><input id="ven" type="checkbox" name="ven_{{ sport.id }}" value="check1"></label></td>
+                <td align="center"><label class="label_check"><input id="sab" type="checkbox" name="sab_{{ sport.id }}" value="check1"></label></td>
+                <td align="center"><label class="label_check"><input id="dom" type="checkbox" name="dom_{{ sport.id }}" value="check1"></label></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="pull-right" style="margin-bottom: 20px">
+        <button class="btn btn-primary disabled">Salva</button>
+    </div>
+</div>
+{% endblock %}

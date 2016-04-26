@@ -20,6 +20,14 @@ label
   color: $primary-color
   font-family: $primary-font
 
+.btn-circle
+  border-radius: 50%
+  width: 100px
+  height: 100px
+
+.add
+  background: dodgerblue
+
 .container
   background: #fff
 
@@ -43,3 +51,32 @@ label
 .btn-primary
   background: $blue-color
   font-weight: bold
+
+.has-js .label_check,
+.has-js .label_radio
+  padding-left: 34px
+
+.has-js .label_radio
+  background: url(/assets/img/radio-off.png) no-repeat
+  height: 20px
+
+.has-js .label_check
+  background: url(/assets/img/check-off.png) no-repeat
+  height: 20px
+
+.has-js label.c_on
+  background: url(/assets/img/check-on.png) no-repeat
+  height: 20px
+
+.has-js label.r_on
+  background: url(/assets/img/radio-on.png) no-repeat
+  height: 20px
+
+.has-js .label_check input,
+.has-js .label_radio input
+  position: absolute
+  left: -9999px
+
+table thead th
+  text-align: center
+
