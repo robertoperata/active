@@ -47,7 +47,14 @@ class Sport{
      */
     private $priceNotRedidentLightsOn;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Schedule", mappedBy="days")
+     */
+    private $playing_days;
 
+    public function __construct() {
+        $this->playing_days = new ArrayCollection();
+    }
     /**
      * Get id
      *
@@ -176,5 +183,39 @@ class Sport{
     public function getPriceNotRedidentLightsOn()
     {
         return $this->priceNotRedidentLightsOn;
+    }
+
+    /**
+     * Add playingDay
+     *
+     * @param \BookManagerBundle\Entity\Schedule $playingDay
+     *
+     * @return Sport
+     */
+    public function addPlayingDay(\BookManagerBundle\Entity\Schedule $playingDay)
+    {
+        $this->playing_days[] = $playingDay;
+
+        return $this;
+    }
+
+    /**
+     * Remove playingDay
+     *
+     * @param \BookManagerBundle\Entity\Schedule $playingDay
+     */
+    public function removePlayingDay(\BookManagerBundle\Entity\Schedule $playingDay)
+    {
+        $this->playing_days->removeElement($playingDay);
+    }
+
+    /**
+     * Get playingDays
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPlayingDays()
+    {
+        return $this->playing_days;
     }
 }
