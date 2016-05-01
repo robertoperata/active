@@ -9,11 +9,17 @@
 namespace BookManagerBundle\Controller;
 
 
+use BookManagerBundle\Entity\Schedule;
+use BookManagerBundle\Entity\Sport;
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Collections\Criteria;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+
+
 
 
 /**
@@ -48,6 +54,43 @@ class TabelloneController extends Controller{
      */
     public function saveAction(Request $request){
         $data = json_decode($request->getContent());
+
+
+/*
+  $criteria = Criteria::create();
+ $expr = Criteria::expr();
+        $criteria = Criteria::create();
+        $criteria->where(
+            $expr->andX(
+                $expr->eq('sport_id', '1'),
+                $expr->eq('days','LUN')
+            )
+        );
+        $sport1 = $this->getDoctrine()->getRepository('BookManagerBundle:Schedule')->matching($criteria);
+ */
+
+        $sport1 = $this->getDoctrine()->getRepository('BookManagerBundle:Schedule')->findBy(array('days'=>'LUN'));
+
+/*
+        $sport = $this->getDoctrine()->getRepository('BookManagerBundle:Schedule')
+                    ->findBy(array('sport_id'=>'1'), array('days'=>'ASC'));
+*/
+
+        $sport = $this->getDoctrine()
+            ->getRepository('BookManagerBundle:Sport')
+            ->find($data->sport);
+
+        $date = new \DateTime();
+        $date->format('Y-m-d');
+        $schedule = new Schedule();
+        $schedule->setSport($sport);
+        $schedule->setValidFrom($date);
+        $schedule->setDays($data->day);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($schedule);
+        $em->flush();
+
+
 
 
         $response = new Response(json_encode($data));
