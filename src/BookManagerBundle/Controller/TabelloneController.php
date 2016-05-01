@@ -11,15 +11,12 @@ namespace BookManagerBundle\Controller;
 
 use BookManagerBundle\Entity\Schedule;
 use BookManagerBundle\Entity\Sport;
-use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\Common\Collections\Criteria;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-
-
+use Symfony\Component\VarDumper\VarDumper;
 
 
 /**
@@ -56,29 +53,21 @@ class TabelloneController extends Controller{
         $data = json_decode($request->getContent());
 
 
-/*
-  $criteria = Criteria::create();
- $expr = Criteria::expr();
-        $criteria = Criteria::create();
-        $criteria->where(
-            $expr->andX(
-                $expr->eq('sport_id', '1'),
-                $expr->eq('days','LUN')
-            )
-        );
-        $sport1 = $this->getDoctrine()->getRepository('BookManagerBundle:Schedule')->matching($criteria);
- */
 
-        $sport1 = $this->getDoctrine()->getRepository('BookManagerBundle:Schedule')->findBy(array('days'=>'LUN'));
+        $qb = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder();
+        $savedSchedule =$qb->select('s')
+            ->from('BookManagerBundle:Schedule', 's')
+            ->where('s.sport = ?1')
+            ->andWhere('s.days = ?2')
+            ->setParameter(1,$data->sport)
+            ->setParameter(2,$data->day)
+            ->getQuery()
+            ->getResult();
 
-/*
-        $sport = $this->getDoctrine()->getRepository('BookManagerBundle:Schedule')
-                    ->findBy(array('sport_id'=>'1'), array('days'=>'ASC'));
-*/
+        VarDumper::dump($savedSchedule);
+        $sport = $savedSchedule->getSport();
 
-        $sport = $this->getDoctrine()
-            ->getRepository('BookManagerBundle:Sport')
-            ->find($data->sport);
+        //TODO: add your logic here
 
         $date = new \DateTime();
         $date->format('Y-m-d');
@@ -102,4 +91,26 @@ class TabelloneController extends Controller{
        // return $this->render('tab/save.html.twig', $data);
     }
 
+    /**
+     * @Route("/test/{id}/{day}", name="tab_test")
+     * @Method("GET")
+     *
+     * Doctrine sa da solo come idratare lo sport in base all'{id}
+     */
+    public function testQueryAction(Sport $sport, $day)
+    {
+
+        $qb = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder();
+        $savedSchedule =$qb->select('s')
+            ->from('BookManagerBundle:Schedule', 's')
+            ->where('s.sport = ?1')
+            ->andWhere('s.days = ?2')
+            ->setParameter(1,$sport) //Puoi usare indifferentemente l'oggetto o il suo ->getId()
+            ->setParameter(2,$day)
+            ->getQuery()
+            ->getResult();
+
+        VarDumper::dump($savedSchedule);
+        die();
+    }
 }

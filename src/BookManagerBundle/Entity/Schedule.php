@@ -9,6 +9,7 @@
 namespace BookManagerBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Rhumsaa\Uuid\Uuid;
 
 /**
  * @ORM\Entity
@@ -17,11 +18,12 @@ use Doctrine\ORM\Mapping as ORM;
 class Schedule{
 
     /**
-     * @ORM\Column(type="integer")
+     * @var string
+     *
+     * @ORM\Column(type="string", length=36)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="Sport", inversedBy="playing_days")
@@ -41,6 +43,13 @@ class Schedule{
      * @ORM\Column(name="valid_from", type="date")
      */
     private $valid_from;
+
+    public function __construct()
+    {
+        if (empty($this->id)) {
+            $this->id = Uuid::uuid4();
+        }
+    }
 
 
     /**
