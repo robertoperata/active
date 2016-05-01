@@ -63,7 +63,7 @@
                 var day = day_sport[0];
                 var sport = day_sport[1];
 
-                var obj = {'sport': sport, 'day': day, 'checked': $(item).is(":checked")};
+                    var obj = {'sport': sport, 'day': day, 'checked': $(item).is(":checked")};
                 var jsonArray = JSON.stringify(obj);
                 $.ajax({
                     type: "POST",
@@ -111,16 +111,26 @@
             {% for sport in sports %}
             <tr>
                 <th scope="row" data-sport="{{sport.id }}" style="text-transform: uppercase">{{ sport.name }}</th>
-                <td align="center"><label class="label_check"><input onchange="javascript:savePlan(this)" id="lun" type="checkbox" name="lun_{{ sport.id }}" value="check1"></label></td>
-                <td align="center"><label class="label_check"><input id="mar" type="checkbox" name="mar_{{ sport.id }}" value="check1"></label></td>
-                <td align="center"><label class="label_check"><input id="mer" type="checkbox" name="mer_{{ sport.id }}" value="check1"></label></td>
-                <td align="center"><label class="label_check"><input id="gio" type="checkbox" name="gio_{{ sport.id }}" value="check1"></label></td>
-                <td align="center"><label class="label_check"><input id="ven" type="checkbox" name="ven_{{ sport.id }}" value="check1"></label></td>
-                <td align="center"><label class="label_check"><input id="sab" type="checkbox" name="sab_{{ sport.id }}" value="check1"></label></td>
-                <td align="center"><label class="label_check"><input id="dom" type="checkbox" name="dom_{{ sport.id }}" value="check1"></label></td>
+
+                <td align="center"><label class="label_check"><input onchange="javascript:savePlan(this)" id="LUN" type="checkbox" name="LUN_{{ sport.id }}" value="check1"></label></td>
+
+                <td align="center"><label class="label_check"><input id="MAR" type="checkbox" name="MAR_{{ sport.id }}" value="check1"></label></td>
+                <td align="center"><label class="label_check"><input id="MER" type="checkbox" name="MER_{{ sport.id }}" value="check1"></label></td>
+                <td align="center"><label class="label_check"><input id="GIO" type="checkbox" name="GIO_{{ sport.id }}" value="check1"></label></td>
+                <td align="center"><label class="label_check"><input id="VEN" type="checkbox" name="VEN_{{ sport.id }}" value="check1"></label></td>
+                <td align="center"><label class="label_check"><input id="SAB" type="checkbox" name="SAB_{{ sport.id }}" value="check1"></label></td>
+                <td align="center"><label class="label_check"><input id="DOM" type="checkbox" name="DOM_{{ sport.id }}" value="check1"></label></td>
             </tr>
             {% endfor %}
+
         </tbody>
     </table>
  </div>
+
+    <script>
+        {% for item in schedules %}
+        $("input[name='{{ item.days|upper }}_{{ item.sport.id }}']").attr('checked', 'checked');
+
+        {% endfor %}
+    </script>
 {% endblock %}

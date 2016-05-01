@@ -10,6 +10,7 @@ namespace BookManagerBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+
 /**
  * @ORM\Entity
  * @ORM\Table(name="schedule")
@@ -21,17 +22,17 @@ class Schedule{
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Sport", inversedBy="playing_days")
+     * @ORM\ManyToOne(targetEntity="Sport", inversedBy="schedules")
      * @ORM\JoinColumn(name="sport_id", referencedColumnName="id")
      */
     private $sport;
 
     /**
      *
-     * @ORM\Column(type="string", length=3, columnDefinition="enum('LUN', 'MAR', 'MER', 'GIO', 'VEN', 'SAB', 'DOM')")
+     * @ORM\Column(type="string", length=3)
      */
     private $days;
 
@@ -124,4 +125,6 @@ class Schedule{
     {
         return $this->id;
     }
+
+
 }

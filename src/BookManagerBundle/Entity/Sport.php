@@ -9,7 +9,6 @@
 namespace BookManagerBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
 /**
  * @ORM\Entity
  * @ORM\Table(name="sport")
@@ -48,12 +47,13 @@ class Sport{
     private $priceNotRedidentLightsOn;
 
     /**
-     * @ORM\OneToMany(targetEntity="Schedule", mappedBy="days")
+     * @ORM\OneToMany(targetEntity="Schedule", mappedBy="sport")
      */
     private $playing_days;
 
     public function __construct() {
-        $this->playing_days = new ArrayCollection();
+        $this->schedules = new ArrayCollection();
+
     }
     /**
      * Get id
