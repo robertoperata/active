@@ -10,6 +10,7 @@ namespace BookManagerBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Rhumsaa\Uuid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
@@ -26,16 +27,18 @@ class Schedule{
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Sport", inversedBy="playing_days")
+     * @ORM\ManyToOne(targetEntity="Sport", inversedBy="schedules")
      * @ORM\JoinColumn(name="sport_id", referencedColumnName="id")
      */
     private $sport;
 
     /**
      *
-     * @ORM\Column(type="string", length=3, columnDefinition="enum('LUN', 'MAR', 'MER', 'GIO', 'VEN', 'SAB', 'DOM')")
+     * @ORM\Column(type="string")
+     *
+     * @Assert\Choice(choices = {"LUN", "MAR", "MER", "GIO", "VEN", "SAB", "DOM"}, message = "Choose a valid day.")
      */
-    private $days;
+    private $day;
 
     /**
      *
@@ -55,13 +58,13 @@ class Schedule{
     /**
      * Set days
      *
-     * @param string $days
+     * @param string $day
      *
      * @return Schedule
      */
-    public function setDays($days)
+    public function setDay($day)
     {
-        $this->days = $days;
+        $this->day = $day;
 
         return $this;
     }
@@ -71,9 +74,9 @@ class Schedule{
      *
      * @return string
      */
-    public function getDays()
+    public function getDay()
     {
-        return $this->days;
+        return $this->day;
     }
 
     /**

@@ -17,12 +17,6 @@ use Rhumsaa\Uuid\Uuid;
  * @ORM\Table(name="sport")
  */
 class Sport{
-//    /**
-//     * @ORM\Column(type="integer")
-//     * @ORM\Id
-//     * @ORM\GeneratedValue(strategy="UUID")
-//     */
-//    private $id;
 
     /**
      * @var string
@@ -59,12 +53,12 @@ class Sport{
     private $priceNotRedidentLightsOn;
 
     /**
-     * @ORM\OneToMany(targetEntity="Schedule", mappedBy="days")
+     * @ORM\OneToMany(targetEntity="Schedule", mappedBy="sport")
      */
-    private $playing_days;
+    private $schedules;
 
     public function __construct() {
-        $this->playing_days = new ArrayCollection();
+        $this->schedules = new ArrayCollection();
 
         if (empty($this->id)) {
             $this->id = Uuid::uuid4();
@@ -210,7 +204,7 @@ class Sport{
     public function addPlayingDay(Schedule $playingDay)
     {
         //playing days è una arraycollection, non trattarla come array
-        $this->playing_days->add($playingDay);
+        $this->schedules->add($playingDay);
 
         return $this;
     }
@@ -222,7 +216,7 @@ class Sport{
      */
     public function removePlayingDay(Schedule $playingDay)
     {
-        $this->playing_days->removeElement($playingDay);
+        $this->schedules->removeElement($playingDay);
     }
 
     /**
@@ -230,8 +224,8 @@ class Sport{
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getPlayingDays()
+    public function getSchedules()
     {
-        return $this->playing_days;
+        return $this->schedules;
     }
 }

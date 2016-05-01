@@ -58,7 +58,7 @@ class TabelloneController extends Controller{
         $savedSchedule =$qb->select('s')
             ->from('BookManagerBundle:Schedule', 's')
             ->where('s.sport = ?1')
-            ->andWhere('s.days = ?2')
+            ->andWhere('s.day = ?2')
             ->setParameter(1,$data->sport)
             ->setParameter(2,$data->day)
             ->getQuery()
@@ -74,7 +74,7 @@ class TabelloneController extends Controller{
         $schedule = new Schedule();
         $schedule->setSport($sport);
         $schedule->setValidFrom($date);
-        $schedule->setDays($data->day);
+        $schedule->setDay($data->day);
         $em = $this->getDoctrine()->getManager();
         $em->persist($schedule);
         $em->flush();
@@ -94,17 +94,17 @@ class TabelloneController extends Controller{
     /**
      * @Route("/test/{id}/{day}", name="tab_test")
      * @Method("GET")
-     *
      * Doctrine sa da solo come idratare lo sport in base all'{id}
+     * @param Sport $sport
+     * @param $day
      */
     public function testQueryAction(Sport $sport, $day)
     {
-
         $qb = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder();
         $savedSchedule =$qb->select('s')
             ->from('BookManagerBundle:Schedule', 's')
             ->where('s.sport = ?1')
-            ->andWhere('s.days = ?2')
+            ->andWhere('s.day = ?2')
             ->setParameter(1,$sport) //Puoi usare indifferentemente l'oggetto o il suo ->getId()
             ->setParameter(2,$day)
             ->getQuery()
