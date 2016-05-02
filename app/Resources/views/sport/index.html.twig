@@ -20,9 +20,9 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="sport_priceRedidentLightsOn" class="required col-xs-3 control-label">Prezzo residenti (notturno)</label>
+                <label for="sport_priceResidentLightsOn" class="required col-xs-3 control-label">Prezzo residenti (notturno)</label>
                 <div class="col-xs-9">
-                    <input type="text" id="sport_priceRedidentLightsOn"  class="form-control" name="sport[priceRedidentLightsOn]" required="required">
+                    <input type="text" id="sport_priceResidentLightsOn"  class="form-control" name="sport[priceResidentLightsOn]" required="required">
                 </div>
             </div>
             <div class="form-group">
@@ -32,9 +32,9 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="sport_priceNotRedidentLightsOn" class="required col-xs-3 control-label">Prezzo non residenti (notturno)</label>
+                <label for="sport_priceNotResidentLightsOn" class="required col-xs-3 control-label">Prezzo non residenti (notturno)</label>
                 <div class="col-xs-9">
-                    <input type="text" id="sport_priceNotRedidentLightsOn"  class="form-control" name="sport[priceNotRedidentLightsOn]" required="required">
+                    <input type="text" id="sport_priceNotResidentLightsOn"  class="form-control" name="sport[priceNotResidentLightsOn]" required="required">
                 </div>
             </div>
             {{ form_widget(form._token) }}
@@ -85,9 +85,9 @@
                 </td>
                 <td>{{ sport.name }}</td>
                 <td>{{ sport.priceResident }}</td>
-                <td>{{ sport.priceRedidentLightsOn }}</td>
+                <td>{{ sport.priceResidentLightsOn }}</td>
                 <td>{{ sport.priceNotResident }}</td>
-                <td>{{ sport.priceNotRedidentLightsOn }}</td>
+                <td>{{ sport.priceNotResidentLightsOn }}</td>
 
             </tr>
         {% endfor %}

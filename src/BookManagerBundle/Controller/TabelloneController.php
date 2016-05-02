@@ -37,11 +37,13 @@ class TabelloneController extends Controller{
      */
     public function indexAction(Request $request){
 
-        $em = $this->getDoctrine()->getManager();
+      //  $em = $this->getDoctrine()->getManager();
 
-        $schedules = $em->getRepository('BookManagerBundle:Schedule')->findAll();
+        $dbManager =    $this->get('app.dbmanager');
 
-        $sports = $em->getRepository('BookManagerBundle:Sport')->findAll();
+        $schedules = $dbManager->getAllSchedules();
+
+        $sports = $dbManager->getAllSports();
 
         return $this->render('tab/index.html.twig', array(
             'sports' => $sports,
@@ -56,8 +58,9 @@ class TabelloneController extends Controller{
      */
     public function saveAction(Request $request){
         $data = json_decode($request->getContent());
-
+/*
         $qb = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder();
+
         $savedSchedule =$qb->select('s')
             ->from('BookManagerBundle:Schedule', 's')
             ->where('s.sport = ?1')
@@ -66,11 +69,16 @@ class TabelloneController extends Controller{
             ->setParameter(2,$data->day)
             ->setMaxResults(1)
             ->getQuery()->execute();
+*/
+        $dbManager =    $this->get('app.dbmanager');
 
+        $savedScheduled = $dbManager->getSportScheduledForDay($data->sport, $data->day);
 
         if($data->checked){
-            if(sizeof($savedSchedule) == 0){
+            if(sizeof($savedScheduled) == 0){
+                $dbManager->saveSchedule($data->sport, $data->day);
 
+                /*
                 $sport = $this->getDoctrine()
                     ->getRepository('BookManagerBundle:Sport')
                     ->find($data->sport);
@@ -84,8 +92,12 @@ class TabelloneController extends Controller{
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($schedule);
                 $em->flush();
+                */
             }
         }else{
+
+            $dbManager->deleteSchedule($savedScheduled);
+            /*
             $em = $this->getDoctrine()->getManager();
 
             $query = $em->createQuery(
@@ -94,7 +106,7 @@ class TabelloneController extends Controller{
                 ->setParameter("scheduledId", $savedSchedule[0]->getId());
 
             $query->execute();
-
+*/
 
         }
 

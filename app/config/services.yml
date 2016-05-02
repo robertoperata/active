@@ -4,6 +4,9 @@ parameters:
 #    parameter_name: value
 
 services:
+   app.dbmanager:
+        class: BookManagerBundle\Service\DBManager
+        arguments: ['@doctrine.orm.entity_manager']
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]

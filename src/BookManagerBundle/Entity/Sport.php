@@ -9,6 +9,7 @@
 namespace BookManagerBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 /**
  * @ORM\Entity
  * @ORM\Table(name="sport")
@@ -34,7 +35,7 @@ class Sport{
     /**
      * @ORM\Column(type="decimal", scale=2)
      */
-    private $priceRedidentLightsOn;
+    private $priceResidentLightsOn;
 
     /**
      * @ORM\Column(type="decimal", scale=2)
@@ -44,17 +45,21 @@ class Sport{
     /**
      * @ORM\Column(type="decimal", scale=2)
      */
-    private $priceNotRedidentLightsOn;
+    private $priceNotResidentLightsOn;
 
     /**
      * @ORM\OneToMany(targetEntity="Schedule", mappedBy="sport")
      */
-    private $playing_days;
+    private $schedules;
 
     public function __construct() {
         $this->schedules = new ArrayCollection();
 
     }
+    
+
+  
+
     /**
      * Get id
      *
@@ -114,27 +119,27 @@ class Sport{
     }
 
     /**
-     * Set priceRedidentLightsOn
+     * Set priceResidentLightsOn
      *
-     * @param string $priceRedidentLightsOn
+     * @param string $priceResidentLightsOn
      *
      * @return Sport
      */
-    public function setPriceRedidentLightsOn($priceRedidentLightsOn)
+    public function setPriceResidentLightsOn($priceResidentLightsOn)
     {
-        $this->priceRedidentLightsOn = $priceRedidentLightsOn;
+        $this->priceResidentLightsOn = $priceResidentLightsOn;
 
         return $this;
     }
 
     /**
-     * Get priceRedidentLightsOn
+     * Get priceResidentLightsOn
      *
      * @return string
      */
-    public function getPriceRedidentLightsOn()
+    public function getPriceResidentLightsOn()
     {
-        return $this->priceRedidentLightsOn;
+        return $this->priceResidentLightsOn;
     }
 
     /**
@@ -162,60 +167,60 @@ class Sport{
     }
 
     /**
-     * Set priceNotRedidentLightsOn
+     * Set priceNotResidentLightsOn
      *
-     * @param string $priceNotRedidentLightsOn
+     * @param string $priceNotResidentLightsOn
      *
      * @return Sport
      */
-    public function setPriceNotRedidentLightsOn($priceNotRedidentLightsOn)
+    public function setPriceNotResidentLightsOn($priceNotResidentLightsOn)
     {
-        $this->priceNotRedidentLightsOn = $priceNotRedidentLightsOn;
+        $this->priceNotResidentLightsOn = $priceNotResidentLightsOn;
 
         return $this;
     }
 
     /**
-     * Get priceNotRedidentLightsOn
+     * Get priceNotResidentLightsOn
      *
      * @return string
      */
-    public function getPriceNotRedidentLightsOn()
+    public function getPriceNotResidentLightsOn()
     {
-        return $this->priceNotRedidentLightsOn;
+        return $this->priceNotResidentLightsOn;
     }
 
     /**
-     * Add playingDay
+     * Add schedule
      *
-     * @param \BookManagerBundle\Entity\Schedule $playingDay
+     * @param \BookManagerBundle\Entity\Schedule $schedule
      *
      * @return Sport
      */
-    public function addPlayingDay(\BookManagerBundle\Entity\Schedule $playingDay)
+    public function addSchedule(\BookManagerBundle\Entity\Schedule $schedule)
     {
-        $this->playing_days[] = $playingDay;
+        $this->schedules[] = $schedule;
 
         return $this;
     }
 
     /**
-     * Remove playingDay
+     * Remove schedule
      *
-     * @param \BookManagerBundle\Entity\Schedule $playingDay
+     * @param \BookManagerBundle\Entity\Schedule $schedule
      */
-    public function removePlayingDay(\BookManagerBundle\Entity\Schedule $playingDay)
+    public function removeSchedule(\BookManagerBundle\Entity\Schedule $schedule)
     {
-        $this->playing_days->removeElement($playingDay);
+        $this->schedules->removeElement($schedule);
     }
 
     /**
-     * Get playingDays
+     * Get schedules
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getPlayingDays()
+    public function getSchedules()
     {
-        return $this->playing_days;
+        return $this->schedules;
     }
 }

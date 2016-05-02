@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use BookManagerBundle\Entity\Sport;
 use BookManagerBundle\Form\SportType;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Sport controller.

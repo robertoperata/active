@@ -17,9 +17,9 @@ class SportType extends AbstractType
         $builder
             ->add('name')
             ->add('priceResident')
-            ->add('priceRedidentLightsOn')
+            ->add('priceResidentLightsOn')
             ->add('priceNotResident')
-            ->add('priceNotRedidentLightsOn')
+            ->add('priceNotResidentLightsOn')
         ;
     }
     
