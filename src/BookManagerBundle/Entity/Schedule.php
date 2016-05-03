@@ -8,6 +8,7 @@
 
 namespace BookManagerBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Rhumsaa\Uuid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -18,6 +19,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="schedule")
  */
 class Schedule{
+
+    const SCHEDULE_DAY_MON = 'LUN';
+    const SCHEDULE_DAY_TUE = 'MAR';
+    const SCHEDULE_DAY_WED = 'MER';
+    const SCHEDULE_DAY_THU = 'GIO';
+    const SCHEDULE_DAY_FRY = 'VEN';
+    const SCHEDULE_DAY_SAT = 'SAB';
+    const SCHEDULE_DAY_SUN = 'DOM';
 
     /**
      * @var string
@@ -34,18 +43,21 @@ class Schedule{
     private $sport;
 
     /**
-     *
      * @ORM\Column(type="string", length=3)
      * @Assert\Choice(choices = {"LUN", "MAR", "MER", "GIO", "VEN", "SAB", "DOM"}, message = "Choose a valid day.")
      */
     private $day;
 
     /**
-     *
-     *
      * @ORM\Column(name="valid_from", type="date")
      */
     private $valid_from;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="BookManagerBundle\Entity\Order",inversedBy="schedules")
+     * @var ArrayCollection
+     */
+    protected $orders;
 
     public function __construct()
     {

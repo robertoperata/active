@@ -2,6 +2,9 @@
     "name": "roberto/active",
     "license": "proprietary",
     "type": "project",
+    "config": {
+        "bin-dir": "bin"
+    },
     "autoload": {
         "psr-4": {
             "": "src/"

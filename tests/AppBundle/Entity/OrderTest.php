@@ -1,6 +1,7 @@
 <?php
 
 
+use BookManagerBundle\Entity\Order;
 use BookManagerBundle\Entity\Schedule;
 use BookManagerBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
