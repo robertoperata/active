@@ -11,8 +11,8 @@ namespace BookManagerBundle\Controller;
 
 use BookManagerBundle\Entity\Schedule;
 use BookManagerBundle\Entity\Sport;
-use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\Common\Collections\Criteria;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -109,8 +109,6 @@ class TabelloneController extends Controller{
 */
 
         }
-
-
         $response = new Response(json_encode($data));
         $response->headers->set('Content-Type', 'application/json');
 
@@ -120,4 +118,26 @@ class TabelloneController extends Controller{
         // return $this->render('tab/save.html.twig', $data);
     }
 
+    /**
+     * @Route("/test/{id}/{day}", name="tab_test")
+     * @Method("GET")
+     * Doctrine sa da solo come idratare lo sport in base all'{id}
+     * @param Sport $sport
+     * @param $day
+     */
+    public function testQueryAction(Sport $sport, $day)
+    {
+        $qb = $this->get('doctrine.orm.default_entity_manager')->createQueryBuilder();
+        $savedSchedule =$qb->select('s')
+            ->from('BookManagerBundle:Schedule', 's')
+            ->where('s.sport = ?1')
+            ->andWhere('s.day = ?2')
+            ->setParameter(1,$sport) //Puoi usare indifferentemente l'oggetto o il suo ->getId()
+            ->setParameter(2,$day)
+            ->getQuery()
+            ->getResult();
+
+        VarDumper::dump($savedSchedule);
+        die();
+    }
 }

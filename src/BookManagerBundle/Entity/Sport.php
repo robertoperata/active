@@ -8,19 +8,24 @@
 
 namespace BookManagerBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+use Rhumsaa\Uuid\Uuid;
+
 /**
  * @ORM\Entity
  * @ORM\Table(name="sport")
  */
 class Sport{
+
     /**
-     * @ORM\Column(type="integer")
+     * @var string
+     *
+     * @ORM\Column(type="string", length=36)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
+
 
     /**
      * @ORM\Column(type="string", length=100)
@@ -55,10 +60,10 @@ class Sport{
     public function __construct() {
         $this->schedules = new ArrayCollection();
 
+        if (empty($this->id)) {
+            $this->id = Uuid::uuid4();
+        }
     }
-    
-
-  
 
     /**
      * Get id
@@ -197,9 +202,10 @@ class Sport{
      *
      * @return Sport
      */
-    public function addSchedule(\BookManagerBundle\Entity\Schedule $schedule)
+    public function addPlayingDay(Schedule $playingDay)
     {
-        $this->schedules[] = $schedule;
+        //playing days è una arraycollection, non trattarla come array
+        $this->schedules->add($playingDay);
 
         return $this;
     }
@@ -207,11 +213,11 @@ class Sport{
     /**
      * Remove schedule
      *
-     * @param \BookManagerBundle\Entity\Schedule $schedule
+     * @param Schedule $playingDay
      */
-    public function removeSchedule(\BookManagerBundle\Entity\Schedule $schedule)
+    public function removePlayingDay(Schedule $playingDay)
     {
-        $this->schedules->removeElement($schedule);
+        $this->schedules->removeElement($playingDay);
     }
 
     /**
