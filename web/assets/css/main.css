@@ -22,7 +22,7 @@ label {
 .add {
   background: dodgerblue; }
 
-.container {
+.container.main {
   background: #fff; }
 
 .form-control {
