@@ -68,4 +68,31 @@ class DBManager
                WHERE s.id = :scheduledId')
             ->setParameter("scheduledId", $schedule[0]->getId())->execute();
     }
+
+
+    /**
+     * Calendario
+     */
+
+    public function addClosingDay($date){
+        $this->em->getRepository('BookManagerBundle:CloseDate')->persist($date)->flush();
+    }
+
+    public function  deleteClosedDay($date){
+        $this->em->getRepository('BookManagerBundle:CloseDate')->remove($date)->flush();
+    }
+
+    public function getClosingDays($today){
+        $qb = $this->em->createQueryBuilder();
+
+        $closingDays =$qb->select('c')
+            ->from('BookManagerBundle:ClosingDays', 'c')
+            ->where('c.date > ?1')
+            ->setParameter(1,$today)
+            ->getQuery()->execute();
+
+        return $closingDays;
+    }
+
+
 }

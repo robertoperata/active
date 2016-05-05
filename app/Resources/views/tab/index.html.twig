@@ -63,7 +63,7 @@
                 var day = day_sport[0];
                 var sport = day_sport[1];
 
-                    var obj = {'sport': sport, 'day': day, 'checked': $(item).is(":checked")};
+                var obj = {'sport': sport, 'day': day, 'checked': $(item).is(":checked")};
                 var jsonArray = JSON.stringify(obj);
                 $.ajax({
                     type: "POST",
