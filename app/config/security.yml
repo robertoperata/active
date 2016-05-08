@@ -16,6 +16,7 @@ security:
     firewalls:
         main:
             pattern: ^/
+            http_basic: ~
             form_login:
                 provider: fos_userbundle
                 csrf_token_generator: security.csrf.token_manager
@@ -33,4 +34,5 @@ security:
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/payment, role: ROLE_USER }
         - { path: ^/admin, role: ROLE_ADMIN }

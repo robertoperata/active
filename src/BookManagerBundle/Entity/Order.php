@@ -36,6 +36,16 @@ class Order
      */
     protected $schedules;
 
+    /**
+     * @var string
+     */
+    protected $paypalTransactionId;
+
+    /**
+     * Order constructor.
+     * @param User            $user
+     * @param ArrayCollection $schedules
+     */
     public function __construct(User $user, ArrayCollection $schedules)
     {
         if (empty($this->id)) {
@@ -64,10 +74,12 @@ class Order
 
     /**
      * @param User $customer
+     * @return $this
      */
-    public function setCustomer($customer)
+    public function setCustomer(User $customer)
     {
         $this->customer = $customer;
+
         return $this;
     }
 
@@ -80,12 +92,33 @@ class Order
     }
 
     /**
-     * @param ArrayCollection $schedules
+     * @param Schedule $schedules
+     * @return $this
      */
-    public function setSchedules($schedules)
+    public function setSchedules(Schedule $schedules)
     {
         $this->schedules = $schedules;
+
         return $this;
+    }
+
+    /**
+     * @param string $paypalTransactionId
+     * @return Order
+     */
+    public function setPayPalTransactionId($paypalTransactionId)
+    {
+        $this->paypalTransactionId = $paypalTransactionId;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPayPalTransactionId()
+    {
+        return $this->paypalTransactionId;
     }
 
 
