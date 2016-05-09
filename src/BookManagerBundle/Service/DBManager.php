@@ -9,6 +9,7 @@
 namespace BookManagerBundle\Service;
 
 
+use BookManagerBundle\Entity\ClosingDays;
 use BookManagerBundle\Entity\Schedule;
 use Doctrine\ORM\EntityManager;
 
@@ -75,17 +76,35 @@ class DBManager
      */
 
     public function addClosingDay($date){
-        $this->em->getRepository('BookManagerBundle:CloseDate')->persist($date)->flush();
+        $closingDate = new ClosingDays();
+
+        $closingDate->setDate($date);
+
+        $this->em->persist($closingDate);
+        $this->em->flush();
     }
 
+
+
     public function  deleteClosedDay($date){
-        $this->em->getRepository('BookManagerBundle:CloseDate')->remove($date)->flush();
+
+        $closingDay = $this->em->getRepository('BookManagerBundle:ClosingDays')->findBy(
+            array('date' => $date),
+            array('date' => 'ASC'),
+            1
+        );
+
+        $this->em->remove($closingDay[0]);
+        $this->em->flush();
+
+
     }
 
     public function getClosingDays($today){
+        $fields = array('c.date');
         $qb = $this->em->createQueryBuilder();
 
-        $closingDays =$qb->select('c')
+        $closingDays =$qb->select($fields)
             ->from('BookManagerBundle:ClosingDays', 'c')
             ->where('c.date > ?1')
             ->setParameter(1,$today)

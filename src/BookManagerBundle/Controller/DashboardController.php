@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Sport controller.
@@ -36,7 +37,7 @@ class DashboardController extends Controller{
         $closingDays = $dbManager->getClosingDays($today);
 
         if(sizeof($closingDays)){
-            $defaultHolidays = $calendarManager->createClosingCalendar($defaultHolidays, $closingDays);
+                $defaultHolidays = $calendarManager->createClosingCalendar($defaultHolidays, $closingDays);
         }
 
         return $this->render('dashboard/index.html.twig', array(
@@ -55,12 +56,17 @@ class DashboardController extends Controller{
         $data = json_decode($request->getContent());
         $dbManager =    $this->get('app.dbmanager');
         if($data->checked){
-            $dbManager->addClosingDay($data->sport, $data->day);
+            $dbManager->addClosingDay($data->day);
 
         }else{
-            $dbManager->saveSchedule($data->sport, $data->day);
+            $dbManager->deleteClosedDay($data->day);
 
         }
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
     }
 
 

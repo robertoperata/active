@@ -26,15 +26,25 @@ class ClosingDays{
     private $id;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="integer")
      */
     private $date;
 
 
     /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
      * Set date
      *
-     * @param \DateTime $date
+     * @param integer $date
      *
      * @return ClosingDays
      */
@@ -48,20 +58,10 @@ class ClosingDays{
     /**
      * Get date
      *
-     * @return \DateTime
+     * @return integer
      */
     public function getDate()
     {
         return $this->date;
-    }
-
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 }

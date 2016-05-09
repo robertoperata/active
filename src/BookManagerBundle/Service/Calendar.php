@@ -68,8 +68,10 @@ class Calendar{
     }
 
     public function createClosingCalendar($defaultHolidays, $savedSchedule){
-        $a = array_fill_keys($savedSchedule, true);
-        $closingDays = array_merge($a, $defaultHolidays);
+        $oneDimensionalArray = array_map('current', $savedSchedule);
+        $a = array_fill_keys($oneDimensionalArray, true);
+        $closingDays = $a + $defaultHolidays;
+        ksort($closingDays);
         return $closingDays;
     }
 
