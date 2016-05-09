@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div id="calendarioChiusure" class="col-xs-4">
+        <h3>Chiusure</h3>
+    {% for key, value in defaultHolidays %}
+        <div><input type="checkbox" name="{{ key }}"{% if value %} checked="checked " {% endif %} onchange="javascript:toggleCalendar(this)"> {{ key|date('d/m/Y') }}</div>
+
+    {% endfor %}
+    </div>
+    <script>
+        $(document).ready(function(){
+            $("#calendarioChiusure div").each(function(){
+                if(!$(this).find('input').is(':checked')){
+                    $(this).css('display','none');
+                }else{
+                    $(this).find('input').css('visibility','hidden ');
+                }
+            })
+        });
+
+        function toggleCalendar(input){
+            var url = "{{ path('cal_save') }}";
+            var day = $(input).attr('name');
+
+            var obj = {'day': day, 'checked': $(input).is(":checked")};
+            var jsonArray = JSON.stringify(obj);
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: jsonArray,
+                success: function(data){
+                    alert(data.day);
+                },
+                dataType: 'json'
+            });
+        }
+    </script>
+{% endblock %}
