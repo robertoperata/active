@@ -3,22 +3,51 @@ $primary-color: #666
 $primary-font: Raleway, Arial, Helvetica, sans-serif
 $border-radious: 2px
 $blue-color: #0088CC
+$dark-blue-color: #153776
+$font-size:16px
+$calcetto:#08761B
+$beach:#C5AC3C
+
 
 body
   background: $primary-bkground-color
   font-family: $primary-font
   border-top: 5px solid $blue-color
+  font-size: $font-size
 
 h1
-  color: $blue-color
+  color: $primary-color
   font-size: 1.8em
   margin-bottom: 20px
+
+h2
+  font-size: 1.4em
+  color: $blue-color
+
+h3
+  font-size: 1.3em
+  color: $dark-blue-color
+  margin-bottom: 0
+
+h4
+  font-size: 1.2em
+  color: $dark-blue-color
 
 label
   font-weight: normal
   margin-bottom: 2px
   color: $primary-color
   font-family: $primary-font
+
+.row
+  display: -webkit-box
+  display: -webkit-flex
+  display: -ms-flexbox
+  display:         flex
+
+.row > [class*='col-']
+  display: flex
+  flex-direction: column
 
 .btn-circle
   border-radius: 50%
@@ -55,3 +84,19 @@ label
 table thead th
   text-align: center
 
+.prenotazioni_ora h4
+  margin: 0
+
+.singola_prenotazione
+  margin-left: 2px
+  border-bottom: 1px solid #f4f4f4
+  > div.calcetto
+    border-left: 5px solid $calcetto
+    font-size: 2em
+    color: $calcetto
+    font-weight: bold
+  > div.beach
+    border-left: 5px solid $beach
+    font-size: 2em
+    color: $beach
+    font-weight: bold

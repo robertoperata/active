@@ -1,18 +1,42 @@
 body {
   background: #ededed;
   font-family: Raleway, Arial, Helvetica, sans-serif;
-  border-top: 5px solid #0088CC; }
+  border-top: 5px solid #0088CC;
+  font-size: 16px; }
 
 h1 {
-  color: #0088CC;
+  color: #666;
   font-size: 1.8em;
   margin-bottom: 20px; }
+
+h2 {
+  font-size: 1.4em;
+  color: #0088CC; }
+
+h3 {
+  font-size: 1.3em;
+  color: #153776;
+  margin-bottom: 0; }
+
+h4 {
+  font-size: 1.2em;
+  color: #153776; }
 
 label {
   font-weight: normal;
   margin-bottom: 2px;
   color: #666;
   font-family: Raleway, Arial, Helvetica, sans-serif; }
+
+.row {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex; }
+
+.row > [class*='col-'] {
+  display: flex;
+  flex-direction: column; }
 
 .btn-circle {
   border-radius: 50%;
@@ -48,5 +72,22 @@ label {
 
 table thead th {
   text-align: center; }
+
+.prenotazioni_ora h4 {
+  margin: 0; }
+
+.singola_prenotazione {
+  margin-left: 2px;
+  border-bottom: 1px solid #f4f4f4; }
+  .singola_prenotazione > div.calcetto {
+    border-left: 5px solid #08761B;
+    font-size: 2em;
+    color: #08761B;
+    font-weight: bold; }
+  .singola_prenotazione > div.beach {
+    border-left: 5px solid #C5AC3C;
+    font-size: 2em;
+    color: #C5AC3C;
+    font-weight: bold; }
 
 /*# sourceMappingURL=main.css.map */
