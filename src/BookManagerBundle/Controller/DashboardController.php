@@ -7,6 +7,7 @@
  */
 
 namespace BookManagerBundle\Controller;
+use BookManagerBundle\Entity\OrariPreferenze;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -16,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Sport controller.
  *
- * @Route("/dashboard")
+ * @Route("/admin/dashboard")
  */
 class DashboardController extends Controller{
 
@@ -40,8 +41,11 @@ class DashboardController extends Controller{
                 $defaultHolidays = $calendarManager->createClosingCalendar($defaultHolidays, $closingDays);
         }
 
+        $timePreferencies = $dbManager->getTimePreferencies($today);
+
         return $this->render('dashboard/index.html.twig', array(
             'defaultHolidays' => $defaultHolidays,
+            'timePreferencies' => $timePreferencies
         ));
 
     }
@@ -62,6 +66,52 @@ class DashboardController extends Controller{
             $dbManager->deleteClosedDay($data->day);
 
         }
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    /**
+     * List planning entities.
+     *
+     * @Route("/delPref", name="pref_delete")
+     * @Method("POST")
+     */
+    public function deletePreferenze(Request $request){
+        $data = json_decode($request->getContent());
+        $dbManager =    $this->get('app.dbmanager');
+
+        $dbManager->deletePreference($data->id);
+
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+
+
+    /**
+     * List planning entities.
+     *
+     * @Route("/savePref", name="pref_save")
+     * @Method("POST")
+     */
+    public function savePreferenze(Request $request){
+        $data = json_decode($request->getContent());
+        $dbManager =    $this->get('app.dbmanager');
+        $preferenza = new OrariPreferenze();
+        $day = new \DateTime(implode("-", array_reverse(explode("/", $data->date))));
+        $day->format('Y-m-d');
+        $preferenza->setDate($day);
+        $preferenza->setApertura($data->aper);
+        $preferenza->setChiusura($data->chiu);
+        $preferenza->setNotturno($data->nott);
+        $dbManager->savePreferenza($preferenza);
+
 
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');

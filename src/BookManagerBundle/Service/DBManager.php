@@ -11,6 +11,7 @@ namespace BookManagerBundle\Service;
 
 use BookManagerBundle\Entity\ClosingDays;
 use BookManagerBundle\Entity\Schedule;
+use BookManagerBundle\Entity\OrariPreferenze;
 use Doctrine\ORM\EntityManager;
 
 class DBManager
@@ -111,6 +112,37 @@ class DBManager
             ->getQuery()->execute();
 
         return $closingDays;
+    }
+
+    public function getTimePreferencies($today){
+
+        $qb = $this->em->createQueryBuilder();
+        $timePreferenciesBefore = $qb->select('o')
+            ->from('BookManagerBundle:OrariPreferenze', 'o')
+            ->where('o.date <= ?1')
+            ->setMaxResults(1)
+            ->orderBy('o.date', 'DESC')
+            ->setParameter(1, $today)
+            ->getQuery()->execute();
+        $timePreferenciesAfter = $qb->select('o')
+            ->from('BookManagerBundle:OrariPreferenze', 'p')
+            ->where('p.date > ?1')
+            ->setParameter(1, $today)
+            ->getQuery()->execute();
+
+        return array_merge($timePreferenciesBefore ,$timePreferenciesAfter) ;
+    }
+
+    public function deletePreference($id){
+         $this->em->createQuery(
+            'DELETE BookManagerBundle:OrariPreferenze s
+           WHERE s.id = :preferenceId')
+            ->setParameter("preferenceId", $id)->execute();
+    }
+
+    public function savePreferenza(OrariPreferenze $preferenza){
+        $this->em->persist($preferenza);
+        $this->em->flush();
     }
 
 

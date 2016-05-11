@@ -13,7 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Sport controller.
  *
- * @Route("/sport")
+ * @Route("/admin/sport")
  */
 class SportController extends Controller
 {

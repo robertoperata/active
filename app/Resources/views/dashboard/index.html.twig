@@ -70,7 +70,7 @@
         </div>
         </div>
         <div class="col-md-4">
-            <div class="box box-warning">
+            <div class="box box-default table-condensed">
                 <div class="box-header with-border">
                     <h3 class="box-title">Chiusure</h3>
 
@@ -90,6 +90,50 @@
                 <!-- /.box-body -->
             </div>
             <!-- /.box -->
+            <div class="box box-default table-condensed">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Orari Preferenze</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button"  class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus" onclick="javascript:orariPreferenze(this)"></i>
+                        </button>
+                    </div>
+                    <!-- /.box-tools -->
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body" id="timePreferences">
+                    <table class="table table-stripped">
+                        <thead>
+                            <tr>
+                                <th>Dal</th>
+                                <th>Apertura</th>
+                                <th>Chiusura</th>
+                                <th>Notturno</th>
+                            </tr>
+                        </thead>
+                    {% for  value in timePreferencies %}
+                        <tr>
+                            <td><i class="fa fa-trash" date-preferenze="{{ value.id }}" onclick="javascript:deletePreference(this)"></i>&nbsp;{{ value.date|date('d/m/Y') }}</td>
+                            <td class="text-right">{{ value.apertura }}:00</td>
+                            <td class="text-right">{{ value.chiusura }}:00</td>
+                            <td class="text-right">{{ value.notturno }}:00</td>
+                        </tr>
+
+                    {% endfor %}
+                        <tr id="savePref">
+
+                            <td><input  type="text" name="data_preferenza" maxlength="10" size="10" /></td>
+                            <td class="text-right"><input type="text" name="apertura" maxlength="2" size="2"/>:00</td>
+                            <td class="text-right"><input type="text" name="chiusura" maxlength="2" size="2"/>:00</td>
+                            <td class="text-right"><input type="text" name="notturno" maxlength="2" size="2"/>:00</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4"><button onclick="savePref()" class="btn btn-primary btn-sm" id="salva_pref">Add</button> </td>
+                        </tr>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
         </div>
 
         <script>
@@ -106,6 +150,46 @@
                     $(box).removeClass('fa-minus').addClass('fa-plus');
                     hideCheckbox();
                 }
+            }
+
+            function savePref(){
+                var pref = $('#savePref');
+                var date = $(pref).find('input[name="data_preferenza"]').val();
+                var aper = $(pref).find('input[name="apertura"]').val();
+                var chiu = $(pref).find('input[name="chiusura"]').val();
+                var nott = $(pref).find('input[name="notturno"]').val();
+
+                var url = "{{ path('pref_save') }}";
+
+
+                var obj = {'date': date, 'aper':aper, 'chiu':chiu, 'nott':nott};
+                var jsonArray = JSON.stringify(obj);
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: jsonArray,
+                    success: function(data){
+                        alert(data.day);
+                    },
+                    dataType: 'json'
+                });
+            }
+
+            function deletePreference(item){
+                var url = "{{ path('pref_delete') }}";
+                var id = $(item).attr('data-preferenze');
+
+                var obj = {'id': id};
+                var jsonArray = JSON.stringify(obj);
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: jsonArray,
+                    success: function(data){
+                        alert(data.day);
+                    },
+                    dataType: 'json'
+                });
             }
 
             function hideCheckbox(){

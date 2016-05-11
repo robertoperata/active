@@ -90,4 +90,7 @@ table thead th {
     color: #C5AC3C;
     font-weight: bold; }
 
+#timePreferences .fa-trash {
+  cursor: pointer; }
+
 /*# sourceMappingURL=main.css.map */

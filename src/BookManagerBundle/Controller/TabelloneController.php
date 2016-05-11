@@ -24,7 +24,7 @@ use Symfony\Component\VarDumper\VarDumper;
 /**
  * Tabellone controller.
  *
- * @Route("/tab")
+ * @Route("/admin/tab")
  */
 class TabelloneController extends Controller{
 
