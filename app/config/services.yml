@@ -11,6 +11,10 @@ services:
    app.calendar:
         class: BookManagerBundle\Service\Calendar
 
+   fos_user.listener.authentication:
+        class: PrizUserBundle\EventListener\LoginSuccessListener
+
+
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]

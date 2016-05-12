@@ -1,6 +1,7 @@
 $primary-bkground-color: #ededed
 $primary-color: #666
 $primary-font: Raleway, Arial, Helvetica, sans-serif
+$primary-font-color: #333
 $border-radious: 2px
 $blue-color: #0088CC
 $dark-blue-color: #153776
@@ -14,6 +15,7 @@ body
   font-family: $primary-font
   border-top: 5px solid $blue-color
   font-size: $font-size
+  color: $primary-font-color
 
 h1
   color: $primary-color
@@ -38,6 +40,14 @@ label
   margin-bottom: 2px
   color: $primary-color
   font-family: $primary-font
+
+a
+  color: $primary-font-color
+  text-decoration: none
+
+a:hover
+  color: $primary-font-color
+  text-decoration: underline
 
 .row
   display: -webkit-box

@@ -23,8 +23,8 @@ class Reservation{
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="reservations")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Sport", inversedBy="reservations")
+     * @ORM\JoinColumn(name="sport_id", referencedColumnName="id")
      */
     private $sport_id;
 

@@ -1,3 +1,8 @@
+priz_user:
+    resource: "@PrizUserBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 book_manager:
     resource: "@BookManagerBundle/Controller/"
     type:     annotation

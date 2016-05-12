@@ -12,6 +12,7 @@ namespace BookManagerBundle\Service;
 use BookManagerBundle\Entity\ClosingDays;
 use BookManagerBundle\Entity\Schedule;
 use BookManagerBundle\Entity\OrariPreferenze;
+use BookManagerBundle\Entity\Sport;
 use Doctrine\ORM\EntityManager;
 
 class DBManager
@@ -34,7 +35,7 @@ class DBManager
 
         $qb = $this->em->createQueryBuilder();
 
-        $savedSchedule =$qb->select('s')
+        $result =$qb->select('s')
             ->from('BookManagerBundle:Schedule', 's')
             ->where('s.sport = ?1')
             ->andWhere('s.days = ?2')
@@ -43,7 +44,20 @@ class DBManager
             ->setMaxResults(1)
             ->getQuery()->execute();
 
-        return $savedSchedule;
+        return $result;
+    }
+
+    public function getDaysPerSport($sport){
+
+        $qb = $this->em->createQueryBuilder();
+
+        $result =$qb->select('s')
+            ->from('BookManagerBundle:Schedule', 's')
+            ->where('s.sport = ?1')
+            ->setParameter(1,$sport)
+            ->getQuery()->execute();
+
+         return $result;
     }
 
     public function getSport($sport){
@@ -105,13 +119,13 @@ class DBManager
         $fields = array('c.date');
         $qb = $this->em->createQueryBuilder();
 
-        $closingDays =$qb->select($fields)
+        $result =$qb->select($fields)
             ->from('BookManagerBundle:ClosingDays', 'c')
             ->where('c.date > ?1')
             ->setParameter(1,$today)
             ->getQuery()->execute();
 
-        return $closingDays;
+        return $result;
     }
 
     public function getTimePreferencies($today){
@@ -143,6 +157,17 @@ class DBManager
     public function savePreferenza(OrariPreferenze $preferenza){
         $this->em->persist($preferenza);
         $this->em->flush();
+    }
+
+    public function getPrenotazioniPerSport(Sport $sport){
+        $qb = $this->em->createQueryBuilder();
+        $result = $this->em->createQuery(
+            'SELECT BookManagerBundle:preferences p
+           WHERE p.sport_id = :sportID
+           AND
+           '
+           )
+            ->setParameter("preferenceId", $id)->execute();
     }
 
 
