@@ -8,9 +8,12 @@
 
 namespace BookManagerBundle\Controller;
 
-
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use BookManagerBundle\Entity\Sport;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 
 /**
@@ -31,17 +34,21 @@ class PrenotazioniController extends Controller{
         $sports = $dbManager->getAllSports();
 
 
-        return $this->render('dashboard/index.html.twig', array(
+        return $this->render('reservations/index.html.twig', array(
             'sports' => $sports
         ));
     }
 
+    /**
+     * @Route("/loadRservations", name="load_reservation")
+     * @Method("POST")
+     */
     public function getDaysPerScheduledSport(Request $request){
         $data = json_decode($request->getContent());
         $dbManager =    $this->get('app.dbmanager');
 
-        $sport = new Sport();
-        $sportEntity = $dbManager->getSport($sport);
+
+        $sportEntity = $dbManager->getSport($data->id_sport);
         $daysPerSport = $dbManager->getDaysPerSport($sportEntity);
         $prenotazioni = $dbManager->getPrenotazioniPerSport($sportEntity);
 

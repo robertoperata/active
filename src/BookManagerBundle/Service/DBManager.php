@@ -164,10 +164,10 @@ class DBManager
         $result = $this->em->createQuery(
             'SELECT BookManagerBundle:preferences p
            WHERE p.sport_id = :sportID
-           AND
+
            '
-           )
-            ->setParameter("preferenceId", $id)->execute();
+           )->setParameter("preferenceId", $sport->getId())->execute();
+        return $result;
     }
 
 

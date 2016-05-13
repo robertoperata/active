@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="content-wrapper" style="min-height: 916px;">
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Prenotazioni</li>
+        </ol>
+        <div class="col-xs-8 ">
+            <div class="prenotazioni box clearfix" style="min-height: 400px">
+                <section class="content-header">
+                <h1>
+                    Prenotazioni
+
+                </h1>
+
+                </section>
+
+                <div class="form-group clarfix">
+                    <label class="col-xs-2">Sport:</label>
+                    <div class="col-xs-8">
+                        <select id="sport_combo" class=" form-control" onchange="javascript:loadReservations(this)">
+                            <option>Scegli uno sport</option>
+                            {% for item in sports %}
+                                <option data-sport-id="{{ item.id }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function loadReservations(select){
+            console.log(select);
+            var url = "{{ path('load_reservation') }}";
+            var sport_id =  $(select).find("option:selected").attr("data-sport-id");
+
+            var obj = {'id_sport': sport_id};
+            var jsonArray = JSON.stringify(obj);
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: jsonArray,
+                success: function(data){
+                    alert(data.day);
+                },
+                dataType: 'json'
+            });
+        }
+    </script>
+{% endblock %}
