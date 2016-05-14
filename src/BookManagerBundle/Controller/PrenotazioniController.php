@@ -49,11 +49,44 @@ class PrenotazioniController extends Controller{
 
 
         $sportEntity = $dbManager->getSport($data->id_sport);
+
+        // ottengo in quali giorni è programmato questo sport
         $daysPerSport = $dbManager->getDaysPerSport($sportEntity);
+
+        // ottengo le prenotazioni esistenti
         $prenotazioni = $dbManager->getPrenotazioniPerSport($sportEntity);
 
-        //creare json con chiave giorno e dentro prenotazioni
-        return  null;
+       // $json = buildTabelloneDisponibile($sportEntity, $daysPerSport, $prenotazioni);
+        $json = '{
+	"giorni": [{
+		"day": "lun,mer"
+	}],
+	"book": [{
+		"giorno": "2016-05-16",
+		"h": "2",
+		"nome": "xxx"
+	}],
+	"book": [{
+		"giorno": "2016-05-16",
+		"h": "4",
+		"nome": "hhhh"
+	}]
+}';
+
+
+
+        $response = new Response($json);
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    private function buildTabelloneDisponibile($sportEntity, $daysPerSport, $prenotazioni){
+
+        $orariApertura = 8;
+        $json = "{'giorni':['day': 'lun,mer'],'book':['date':'2016-05-16','h':'2', 'nome':'xxx'],'book':['date':'2016-05-16','h':'4', 'nome':'hhhh']}";
+        return $json;
     }
 
 

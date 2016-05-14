@@ -37,6 +37,11 @@ class Schedule{
     private $days;
 
     /**
+     *  @ORM\Column(type="integer")
+     */
+    private $days_number;
+
+    /**
      *
      *
      * @ORM\Column(name="valid_from", type="date")
@@ -127,4 +132,28 @@ class Schedule{
     }
 
 
+
+    /**
+     * Set daysNumber
+     *
+     * @param integer $daysNumber
+     *
+     * @return Schedule
+     */
+    public function setDaysNumber($daysNumber)
+    {
+        $this->days_number = $daysNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get daysNumber
+     *
+     * @return integer
+     */
+    public function getDaysNumber()
+    {
+        return $this->days_number;
+    }
 }

@@ -16,7 +16,8 @@
 
                 </section>
 
-                <div class="form-group clarfix">
+                <div class="form-group clarfix row">
+
                     <label class="col-xs-2">Sport:</label>
                     <div class="col-xs-8">
                         <select id="sport_combo" class=" form-control" onchange="javascript:loadReservations(this)">
@@ -25,7 +26,30 @@
                                 <option data-sport-id="{{ item.id }}">{{ item.name }}</option>
                             {% endfor %}
                         </select>
+
                     </div>
+                </div>
+                <div class="form-group clarfix col-xs-12">
+                    <table id="calendario" class="table table-stripped table-bordered">
+                        <thead>
+                            <tr>
+                                {%  for i in 0..5 %}
+                                    <th></th>
+                                {%  endfor %}
+                            </tr>
+                        </thead>
+                        {%  for i in 0..16 %}
+                            <tr>
+                                {%  for n in 0..5 %}
+                                    {% if loop.index0 == 0 %}
+                                        <th data-hour-number="{{loop.index0 }}"></th>
+                                    {%  else %}
+                                     <td></td>
+                                    {%  endif %}
+                                {%  endfor %}
+                            </tr>
+                        {%  endfor %}
+                    </table>
                 </div>
             </div>
         </div>
@@ -43,10 +67,24 @@
                 url: url,
                 data: jsonArray,
                 success: function(data){
-                    alert(data.day);
+                    console.log(data.giorni[0].day);
+                    console.log(data.book[0].giorno);
+                    console.log(data.book[0].h);
+                    console.log(data.book[0].nome);
+                    console.log(data.book[1].giorno);
+                    console.log(data.book[1].h);
+                    console.log(data.book[1].nome);
+
+
                 },
                 dataType: 'json'
             });
         }
+
+        function createCalendarioPrenotazioni(){
+            $date = new Date();
+
+        }
+        var giorniSettimana = ['lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato', 'domenica']
     </script>
 {% endblock %}

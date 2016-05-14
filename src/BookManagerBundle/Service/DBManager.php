@@ -14,6 +14,7 @@ use BookManagerBundle\Entity\Schedule;
 use BookManagerBundle\Entity\OrariPreferenze;
 use BookManagerBundle\Entity\Sport;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 class DBManager
 {
@@ -65,14 +66,19 @@ class DBManager
     }
 
     public function saveSchedule($sport, $day){
+        $elencoGiogni = [1=>"LUN", 2=>"MAR", 3=>"MER", 4=>"GIO", 5=>"VEN", 6=>"SAB", 7=>"DOM"];
+
         $sport = $this->getSport($sport);
 
         $date = new \DateTime();
         $date->format('Y-m-d');
+
+        $day_number = array_search($day, $elencoGiogni);
         $schedule = new Schedule();
         $schedule->setSport($sport);
         $schedule->setValidFrom($date);
         $schedule->setDays($day);
+        $schedule->setDaysNumber($day_number);
         $this->em->persist($schedule);
         $this->em->flush();
 
@@ -161,12 +167,22 @@ class DBManager
 
     public function getPrenotazioniPerSport(Sport $sport){
         $qb = $this->em->createQueryBuilder();
+
+        $today = new \DateTime();
+        $today->format('Y-m-d');
+        $result =$qb->select('r')
+            ->from('BookManagerBundle:Reservation', 'r')
+            ->where('r.date > ?1')
+            ->setParameter(1,$today)
+            ->getQuery()->execute();
+        /*
         $result = $this->em->createQuery(
             'SELECT BookManagerBundle:preferences p
            WHERE p.sport_id = :sportID
 
            '
            )->setParameter("preferenceId", $sport->getId())->execute();
+        */
         return $result;
     }
 
