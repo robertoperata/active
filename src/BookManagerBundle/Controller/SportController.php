@@ -78,8 +78,8 @@ class SportController extends Controller
     /**
      * Finds and displays a Sport entity.
      *
-     * @Route("/{id}", name="sport_show")
-     * @Method("GET")
+     * @Route(name="sport_show")
+     * @Method("POST")
      */
     public function showAction(Sport $sport)
     {
@@ -94,11 +94,32 @@ class SportController extends Controller
     /**
      * Displays a form to edit an existing Sport entity.
      *
-     * @Route("/{id}/edit", name="sport_edit")
-     * @Method({"GET", "POST"})
+     * @Route("/editSport" ,name="sport_edit")
+     * @Method("POST")
      */
-    public function editAction(Request $request, Sport $sport)
+    public function editAction(Request $request)
     {
+        $data = json_decode($request->getContent());
+        // $dbManager =    $this->get('app.dbmanager');
+
+        $em = $this->getDoctrine()->getManager();
+
+        $sport =  $em->getRepository('BookManagerBundle:Sport')->find($data->sport_id);
+        $sport->setName($data->sport_name);
+        $sport->setPriceResident($data->priceResident);
+        $sport->setPriceResidentLightsOn($data->priceResidentLightsOn);
+        $sport->setPriceNotResident($data->priceNotResident);
+        $sport->setPriceNotResidentLightsOn($data->priceNotResidentLightsOn);
+
+
+        $em->flush();
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+
+        /*
         $deleteForm = $this->createDeleteForm($sport);
         $editForm = $this->createForm('BookManagerBundle\Form\SportType', $sport);
         $editForm->handleRequest($request);
@@ -116,16 +137,28 @@ class SportController extends Controller
             'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
+        */
     }
 
     /**
      * Deletes a Sport entity.
      *
-     * @Route("/{id}", name="sport_delete")
-     * @Method("DELETE")
+     * @Route("/del", name="sport_delete")
+     * @Method("POST")
      */
-    public function deleteAction(Request $request, Sport $sport)
+    public function deleteAction(Request $request)
     {
+        $data = json_decode($request->getContent());
+        $em = $this->getDoctrine()->getManager();
+
+        $sport =  $em->getRepository('BookManagerBundle:Sport')->find($data->sport_id);
+        $em->remove($sport);
+        $em->flush();
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+        /*
         $form = $this->createDeleteForm($sport);
         $form->handleRequest($request);
 
@@ -136,6 +169,7 @@ class SportController extends Controller
         }
 
         return $this->redirectToRoute('sport_index');
+        */
     }
 
     /**

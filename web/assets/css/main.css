@@ -12,7 +12,8 @@ h1 {
 
 h2 {
   font-size: 1.4em;
-  color: #0088CC; }
+  color: #0088CC;
+  margin-left: 20px; }
 
 h3 {
   font-size: 1.3em;
@@ -115,5 +116,19 @@ table#calendario td.disabled {
 
 .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
   background-color: #cecece; }
+
+#add_sport {
+  padding: 5px 20px 5px 10px; }
+
+.hide {
+  display: none; }
+
+.content-header {
+  height: 25px; }
+  .content-header > .breadcrumb {
+    top: 0; }
+
+.skin-blue .main-header .navbar {
+  background-color: #367fa9; }
 
 /*# sourceMappingURL=main.css.map */

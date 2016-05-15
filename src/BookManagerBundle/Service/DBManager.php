@@ -68,6 +68,8 @@ class DBManager
         return $this->em->getRepository('BookManagerBundle:Sport')->find($sport);
     }
 
+
+
     public function saveSchedule($sport, $day){
         $elencoGiogni = [1=>"LUN", 2=>"MAR", 3=>"MER", 4=>"GIO", 5=>"VEN", 6=>"SAB", 7=>"DOM"];
 
