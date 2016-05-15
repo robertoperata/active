@@ -16,9 +16,10 @@
 
             </section>
 
-        <div class="btn-circle add">
-            <span class="glyphicon glyphicon-plus" style="font-size: 65px; color: #fff; margin:14px 20px;"></span>
+        <div class="btn-circle add" onclick="addSport(this)">
+            <span class="glyphicon glyphicon-plus" style="font-size: 25px; color: #fff; margin:12px 14px;"></span>
         </div>
+            <div id="add_sport" style="display: none">
         <form action="{{ path("sport_new") }}" method="post" class="form-horizontal clearfix">
             <div class="form-group">
 
@@ -61,17 +62,17 @@
 #}
         <input type="submit" class="btn btn-primary pull-right" value="Create" />
         </form>
+        </div>
 
 
-                <a href="{{ path('sport_index') }}">Back to the list</a>
     <table class="table table-striped table-hover">
         <colgroup>
+                <col width="60%"/>
                 <col width="10%"/>
-                <col width="30%"/>
-                <col width="15%"/>
-                <col width="15%"/>
-                <col width="15%"/>
-                <col width="15%"/>
+                <col width="10%"/>
+                <col width="10%"/>
+                <col width="10%"/>
+
         </colgroup>
         <thead>
             <tr>
@@ -80,15 +81,17 @@
                 <th>Prezzo residenti (notturno)</th>
                 <th>Prezzo non residenti</th>
                 <th>Prezzo non residenti (notturno)</th>
-                <th>Actions</th>
+
             </tr>
         </thead>
         <tbody>
         {% for sport in sports %}
-            <tr>
+            <tr onclick="editSport(this)">
                 <td style="display: none"><a href="{{ path('sport_show', { 'id': sport.id }) }}">{{ sport.id }}</a></td>
+                        {#
                 <td>
                     <ul>
+                        Modifica
                         <li>
                             <a href="{{ path('sport_show', { 'id': sport.id }) }}">show</a>
                         </li>
@@ -97,6 +100,7 @@
                         </li>
                     </ul>
                 </td>
+                        #}
                 <td>{{ sport.name }}</td>
                 <td>{{ sport.priceResident }}</td>
                 <td>{{ sport.priceResidentLightsOn }}</td>
@@ -107,13 +111,32 @@
         {% endfor %}
         </tbody>
     </table>
-
+{#
     <ul>
         <li>
             <a href="{{ path('sport_new') }}">Create a new entry</a>
         </li>
     </ul>
+    #}
     </div>
     </div>
     </div>
+    <script>
+
+        function editSport(item){
+            $('div.add').click();
+
+        }
+
+        function addSport(item){
+            if($(item).find('.glyphicon-plus').length > 0){
+                $(item).find('.glyphicon-plus').removeClass('glyphicon-plus').addClass('glyphicon-minus').css('margin', '12px 12px');
+                $("#add_sport").show('slow');
+            }else{
+                $(item).find('.glyphicon-minus').removeClass('glyphicon-minus').addClass('glyphicon-plus').css('margin', '12px 14px');
+                $("#add_sport").hide('slow');
+            }
+        }
+
+    </script>
 {% endblock %}
