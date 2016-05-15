@@ -6,7 +6,7 @@
             <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
             <li class="active">Prenotazioni</li>
         </ol>
-        <div class="col-xs-8 ">
+        <div class="col-xs-12 ">
             <div class="prenotazioni box clearfix" style="min-height: 400px">
                 <section class="content-header">
                 <h1>
@@ -33,18 +33,23 @@
                     <table id="calendario" class="table table-stripped table-bordered">
                         <thead>
                             <tr>
-                                {%  for i in 0..5 %}
-                                    <th></th>
-                                {%  endfor %}
+                                <th id="orario">Orario</th>
+                                <th id="LUN" data-day-number="1">Lunedì</th>
+                                <th id="MAR" data-day-number="2">Martedì</th>
+                                <th id="MER" data-day-number="3">Mercoledì</th>
+                                <th id="GIO" data-day-number="4">Giovedì</th>
+                                <th id="VEN" data-day-number="5">Venerdì</th>
+                                <th id="SAB" data-day-number="6">Sabato</th>
+                                <th id="DOM" data-day-number="7">Domenica</th>
                             </tr>
                         </thead>
-                        {%  for i in 0..16 %}
+                        {%  for i in 0..14 %}
                             <tr>
-                                {%  for n in 0..5 %}
+                                {%  for n in 0..7 %}
                                     {% if loop.index0 == 0 %}
-                                        <th data-hour-number="{{loop.index0 }}"></th>
+                                        <th style="width:200px" data-hour-number="{{ loop.parent.loop.index0 }}">{{loop.parent.loop.index0 + 9}}:00</th>
                                     {%  else %}
-                                     <td></td>
+                                     <td class="disabled"></td>
                                     {%  endif %}
                                 {%  endfor %}
                             </tr>
@@ -53,10 +58,55 @@
                 </div>
             </div>
         </div>
+        <div id="dialog" title="Prenotazione" style="display: none">
+            <div id="listaPrenotazioni"></div>
+            <div id="aggiungi_prenotazione">
+            <div class="form-group clearfix">
+                <label class="col-xs-2">Sport:</label>
+                <div class="col-xs-10">
+                    <input type="text" disabled="disabled" name="sport" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group  clearfix">
+                <label class="col-xs-2">Data:</label>
+                <div class="col-xs-10">
+                    <input type="text" disabled="disabled" name="giorno"  class="form-control" />
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label class="col-xs-2">Ora:</label>
+                <div class="col-xs-10">
+                    <select>
+                        <option data-hour-number="1">9:00</option>
+                        <option data-hour-number="2">10:00</option>
+                        <option data-hour-number="3">11:00</option>
+                        <option data-hour-number="4">12:00</option>
+                        <option data-hour-number="5">13:00</option>
+                        <option data-hour-number="6">14:00</option>
+                        <option data-hour-number="7">15:00</option>
+                        <option data-hour-number="8">16:00</option>
+                        <option data-hour-number="9">17:00</option>
+                        <option data-hour-number="10">18:00</option>
+                        <option data-hour-number="11">19:00</option>
+                        <option data-hour-number="12">20:00</option>
+                        <option data-hour-number="13">21:00</option>
+                        <option data-hour-number="14">22:00</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label class="col-xs-2">Nome:</label>
+                <div class="col-xs-10">
+                    <input type="text" name="nome"  class="form-control"/>
+                </div>
+            </div>
+            <button class="btn btn-primary pull-right" id="salva_prenotazione" onclick="salvaPrenotazione($('#aggiungi_prenotazione'))">Salva</button>
+         </div>
+         </div>
     </div>
     <script>
         function loadReservations(select){
-            console.log(select);
+
             var url = "{{ path('load_reservation') }}";
             var sport_id =  $(select).find("option:selected").attr("data-sport-id");
 
@@ -67,24 +117,117 @@
                 url: url,
                 data: jsonArray,
                 success: function(data){
-                    console.log(data.giorni[0].day);
-                    console.log(data.book[0].giorno);
-                    console.log(data.book[0].h);
-                    console.log(data.book[0].nome);
-                    console.log(data.book[1].giorno);
-                    console.log(data.book[1].h);
-                    console.log(data.book[1].nome);
 
-
+                    createCalendarioPrenotazioni(data);
                 },
                 dataType: 'json'
             });
         }
 
-        function createCalendarioPrenotazioni(){
-            $date = new Date();
+        function createCalendarioPrenotazioni(data){
+            defaultTable();
+
+            var giorniSettimana = ['LUN', 'MAR', 'MER', 'GIO', 'VEN', 'SAB', 'DOM'];
+
+            var giorniAbilitati = data.giorni[0].day.split(',');
+            $(giorniAbilitati).each(function(index, value){
+                var indice = parseInt(value)+1;
+                $("#calendario tr td:nth-child("+indice+")").css('background-color', '#fff').removeClass('disabled').addClass('enabled');
+                $( "td.enabled" ).bind( "click", function( event ) {
+                    var numero_ora = $(this).closest('tr').find('th').attr('data-hour-number');
+                    var indice_giorno = $(this).parent().children().index($(this));
+                    var giorno = $('table thead th[data-day-number="'+indice_giorno+'"]').attr('data-calendario');
+
+                    prenota(giorno, numero_ora );
+                } );
+            });
+            var dataGiorno = new Date(data.giorni[0].parteDa);
+            for(var i = 2; i <= 8; i++){
+                var mese = dataGiorno.getMonth() + 1;
+                $("#calendario thead th:nth-child("+i+")").append("<div class='numero-data'>"+dataGiorno.getDate()+"/"+mese+"</div>");
+                $("#calendario thead th:nth-child("+i+")").attr("data-calendario", dataGiorno.getFullYear()+"-"+mese+"-"+dataGiorno.getDate())
+                dataGiorno = new Date(dataGiorno.getTime() + 86400 * 1000*1);
+
+            }
+          $( data.book).each(function(index, value){
+
+              var indiceGiorno = $("thead th[data-calendario='"+ value.giorno +"']").attr("data-day-number");
+              var table = document.getElementById("calendario");
+              var numero_riga= data.book[index].h;
+
+              var row = table.rows[numero_riga];
+              var cell = row.cells[indiceGiorno];
+              $(cell).css('background-color','#FF0');
+
+          })
+        }
+
+        function defaultTable(){
+            $("table thead th").each(function(){
+                var attr = $(this).attr('data-calendario');
+                if(typeof attr !== typeof undefined && attr !== false){
+                    $(this).removeAttr('data-calendario');
+                    $(this).find('div.numero').remove();
+                }
+            });
+            var lunghezza = $('table#calendario tr td').length;
+            for(var i = 2; i <lunghezza; i++){
+                $("#calendario tr td:nth-child("+ i +")").addClass('disabled');
+            }
+        }
+        
+        function prenota(giorno, numero_ora ){
+            var giorno_ita = giorno.split('-').reverse().join('-');
+            var sport = $("#sport_combo option:checked").text();
+            var sport_id = $("#sport_combo option:checked").attr('data-sport-id');
+            $( "#dialog" ).dialog( "open" );
+            $("#aggiungi_prenotazione input[name='giorno']").attr('value', giorno_ita);
+            $("#aggiungi_prenotazione input[name='sport']").attr('value', sport);
+            $("#aggiungi_prenotazione input[name='sport']").attr('data-sport-id', sport_id);
+            $("#aggiungi_prenotazione select option").each(function(){
+                $(this).removeAttr('selected');
+                var ora = $(this).attr('data-hour-number');
+                if(parseInt(numero_ora) == parseInt(ora) +1){
+                   $(this).attr('selected', true);
+               }
+            })
 
         }
-        var giorniSettimana = ['lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato', 'domenica']
+
+        $(function() {
+            $("#dialog").dialog({
+                autoOpen: false,
+                width: 600,
+                create: function (event, ui) {
+
+                    $(".ui-dialog").removeClass('ui-corner-all');
+                    $(".ui-dialog-titlebar").removeClass('ui-corner-all');
+                },
+            });
+        });
+
+       function salvaPrenotazione(elemento){
+           var sport = $(elemento).find( "input[name='sport']").attr('data-sport-id');
+           var giorno = $(elemento).find("input[name='giorno']").attr('value');
+           var ora = $(elemento).find("option:selected").attr('data-hour-number');
+           var nome = $(elemento).find("input[name='nome']").val();
+
+           console.log("sport: "+sport+" giorno: "+ giorno + " ora: " + ora + " nome: "+nome);
+           var url = "{{ path('save_reservation') }}";
+
+
+           var obj = {'id_sport': sport, 'giorno': giorno, 'ora':ora, 'nome':nome};
+           var jsonArray = JSON.stringify(obj);
+           $.ajax({
+               type: "POST",
+               url: url,
+               data: jsonArray,
+               success: function(data){
+
+               },
+               dataType: 'json'
+           });
+       }
+
     </script>
 {% endblock %}

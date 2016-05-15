@@ -10,6 +10,7 @@ namespace BookManagerBundle\Service;
 
 
 use BookManagerBundle\Entity\ClosingDays;
+use BookManagerBundle\Entity\Reservation;
 use BookManagerBundle\Entity\Schedule;
 use BookManagerBundle\Entity\OrariPreferenze;
 use BookManagerBundle\Entity\Sport;
@@ -47,6 +48,8 @@ class DBManager
 
         return $result;
     }
+
+
 
     public function getDaysPerSport($sport){
 
@@ -184,6 +187,11 @@ class DBManager
            )->setParameter("preferenceId", $sport->getId())->execute();
         */
         return $result;
+    }
+
+    public function saveReservation(Reservation $reservation){
+        $this->em->persist($reservation);
+        $this->em->flush();
     }
 
 

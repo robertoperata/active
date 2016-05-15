@@ -8,6 +8,7 @@
 
 namespace BookManagerBundle\Controller;
 
+use BookManagerBundle\Entity\Reservation;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use BookManagerBundle\Entity\Sport;
@@ -59,15 +60,16 @@ class PrenotazioniController extends Controller{
        // $json = buildTabelloneDisponibile($sportEntity, $daysPerSport, $prenotazioni);
         $json = '{
 	"giorni": [{
-		"day": "lun,mer"
+		"day": "1,3",
+		"parteDa":"2016-5-9"
 	}],
 	"book": [{
-		"giorno": "2016-05-16",
+		"giorno": "2016-5-11",
 		"h": "2",
 		"nome": "xxx"
-	}],
-	"book": [{
-		"giorno": "2016-05-16",
+	},
+	 {
+		"giorno": "2016-5-11",
 		"h": "4",
 		"nome": "hhhh"
 	}]
@@ -82,10 +84,36 @@ class PrenotazioniController extends Controller{
         return $response;
     }
 
+    /**
+     * @Route("/saveRservation", name="save_reservation")
+     * @Method("POST")
+     */
+    public function saveReservation(Request $request){
+        $data = json_decode($request->getContent());
+        $dbManager =    $this->get('app.dbmanager');
+
+        $reservation = new Reservation();
+        $giorno = implode("-",array_reverse(explode("-",$data->giorno)));
+        $giorno_reverse = new \DateTime($giorno);
+        $sport = $dbManager->getSport($data->id_sport);
+
+        $reservation->setName($data->nome);
+        $reservation->setDate($giorno_reverse);
+        $reservation->setSportId($sport);
+        $reservation->setHour($data->ora);
+        $dbManager->saveReservation($reservation);
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+
+    }
+
     private function buildTabelloneDisponibile($sportEntity, $daysPerSport, $prenotazioni){
 
         $orariApertura = 8;
-        $json = "{'giorni':['day': 'lun,mer'],'book':['date':'2016-05-16','h':'2', 'nome':'xxx'],'book':['date':'2016-05-16','h':'4', 'nome':'hhhh']}";
+        $json = "{'giorni':['day': '1,3'],'book':['date':'2016-05-16','h':'2', 'nome':'xxx'],'book':['date':'2016-05-16','h':'4', 'nome':'hhhh']}";
         return $json;
     }
 

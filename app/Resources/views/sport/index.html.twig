@@ -1,7 +1,21 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="col-xs-12">
+<div class="content-wrapper" style="min-height: 916px;">
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Sport</li>
+    </ol>
+    <div class="col-xs-12 ">
+        <div class="prenotazioni box clearfix" style="min-height: 400px">
+            <section class="content-header">
+                <h1>
+                    Gestione Sport
+
+                </h1>
+
+            </section>
+
         <div class="btn-circle add">
             <span class="glyphicon glyphicon-plus" style="font-size: 65px; color: #fff; margin:14px 20px;"></span>
         </div>
@@ -99,5 +113,7 @@
             <a href="{{ path('sport_new') }}">Create a new entry</a>
         </li>
     </ul>
+    </div>
+    </div>
     </div>
 {% endblock %}

@@ -65,7 +65,8 @@ class SportController extends Controller
             $em->persist($sport);
             $em->flush();
 
-            return $this->redirectToRoute('sport_show', array('id' => $sport->getId()));
+        //    return $this->redirectToRoute('sport_index', array('id' => $sport->getId()));
+            return $this->redirectToRoute('sport_index');
         }
 
         return $this->render('sport/new.html.twig', array(
