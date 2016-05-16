@@ -11,10 +11,11 @@
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top" role="navigation">
 
-        <div class="pull-right" style="margin-left: 50px">
+        <div class="pull-right" style="margin-right: 50px">
 
             {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} <br/>
+                {#{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }#}
+                <i class="fa fa-user"></i> {{ app.user.username|capitalize }} -
                 <a href="{{ path('fos_user_security_logout') }}">
                     {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
                 </a>

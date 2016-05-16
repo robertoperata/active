@@ -83,7 +83,12 @@
                         <div><input type="checkbox" name="{{ key }}"{% if value %} checked="checked " {% endif %} onchange="javascript:toggleCalendar(this)"> {{ key|date('d/m/Y') }}</div>
 
                     {% endfor %}
+                    <div >
+                        <input  class="col-xs-10" type="text" placeholder="chiusura" name="chiusura" id="chiusura" />
+                        <button class="col-xs-2 btn btn-primary btn-xs"  onclick="addChiusura()">Add</button>
+                    </div>
                 </div>
+
                 <!-- /.box-body -->
             </div>
             <!-- /.box -->
@@ -137,6 +142,7 @@
             $(document).ready(function(){
                 hideCheckbox();
             });
+
 
             function openHide(box){
                 if($(box).hasClass('fa-plus')){
@@ -209,6 +215,31 @@
                 })
             }
 
+
+            function addChiusura(){
+
+                var data_nuova_chiusura =  $("input[name='chiusura']").val();
+                data_chiusura = data_nuova_chiusura.split("/");
+                data_chiusura = new Date(data_chiusura[2], data_chiusura[1]-1, data_chiusura[0]);
+                var cb = document.createElement('input');
+                cb.type = 'checkbox';
+                data_chiusura = data_chiusura.getTime()/1000;
+                cb.name = data_chiusura;
+                cb.checked = true;
+                $("#calendarioChiusure div").each(function(index){
+                    var current_timestamp = $(this).find('input').attr('name');
+                    if(current_timestamp > data_chiusura){
+
+                        $('#calendarioChiusure > div:nth-child(' + index + ')' ).after("<div id='ins'> "+data_nuova_chiusura+"</div>");
+                        $("#ins").prepend(cb);
+                        return false;
+                    }
+                })
+
+                toggleCalendar(cb);
+
+            }
+
             function toggleCalendar(input){
                 var url = "{{ path('cal_save') }}";
                 var day = $(input).attr('name');
@@ -220,7 +251,13 @@
                     url: url,
                     data: jsonArray,
                     success: function(data){
-                        alert(data.day);
+                        $("#calendarioChiusure #ins").css('opacity', "1");
+                        $("#calendarioChiusure #ins").removeAttr("id");
+                        $("#chiusura").attr('value','');
+                    },
+                    error: function(data){
+                        $("#calendarioChiusure #ins").append("<span style='color:red'> - Si è verificato un errore</span>");
+                        $("#chiusura").attr('value','');
                     },
                     dataType: 'json'
                 });

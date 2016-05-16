@@ -131,4 +131,7 @@ table#calendario td.disabled {
 .skin-blue .main-header .navbar {
   background-color: #367fa9; }
 
+#calendarioChiusure #ins {
+  opacity: 0.6; }
+
 /*# sourceMappingURL=main.css.map */

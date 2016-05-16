@@ -59,6 +59,10 @@ class DashboardController extends Controller{
     public function saveCalendar(Request $request){
         $data = json_decode($request->getContent());
         $dbManager =    $this->get('app.dbmanager');
+        $response = new Response();
+        $response->setStatusCode('200');
+        try{
+
         if($data->checked){
             $dbManager->addClosingDay($data->day);
 
@@ -66,12 +70,34 @@ class DashboardController extends Controller{
             $dbManager->deleteClosedDay($data->day);
 
         }
+        }catch(\Exception $e){
+            $response->setStatusCode('400');
+        }
+
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    /**
+     * List planning entities.
+     *
+     * @Route("/saveChiusura", name="chiusura_save")
+     * @Method("POST")
+     */
+    public function addClosingDay(Request $request){
+        $data = json_decode($request->getContent());
+        $dbManager =    $this->get('app.dbmanager');
+
+        $dbManager->addClosingDay($data->dataChiusura);
 
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
     }
+
 
     /**
      * List planning entities.

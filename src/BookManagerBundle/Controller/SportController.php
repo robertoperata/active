@@ -77,7 +77,6 @@ class SportController extends Controller
 
     /**
      * Finds and displays a Sport entity.
-     *
      * @Route(name="sport_show")
      * @Method("POST")
      */
