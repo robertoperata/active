@@ -89,10 +89,17 @@ class DashboardController extends Controller{
     public function addClosingDay(Request $request){
         $data = json_decode($request->getContent());
         $dbManager =    $this->get('app.dbmanager');
-
-        $dbManager->addClosingDay($data->dataChiusura);
-
         $response = new Response();
+        $response->setStatusCode(200);
+        try{
+
+
+            $dbManager->addClosingDay($data->dataChiusura);
+
+        }catch (\Exception $e){
+         $response->setStatusCode(200);
+
+        }
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
@@ -108,11 +115,16 @@ class DashboardController extends Controller{
     public function deletePreferenze(Request $request){
         $data = json_decode($request->getContent());
         $dbManager =    $this->get('app.dbmanager');
-
-        $dbManager->deletePreference($data->id);
-
-
         $response = new Response();
+        $response->setStatusCode(200);
+        try{
+
+            $dbManager->deletePreference($data->id);
+
+        }catch  (\Exception $e){
+            $response->setStatusCode(400);
+
+        }
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
@@ -129,6 +141,10 @@ class DashboardController extends Controller{
     public function savePreferenze(Request $request){
         $data = json_decode($request->getContent());
         $dbManager =    $this->get('app.dbmanager');
+        $response = new Response();
+        $response->setStatusCode(200);
+        try{
+
         $preferenza = new OrariPreferenze();
         $day = new \DateTime(implode("-", array_reverse(explode("/", $data->date))));
         $day->format('Y-m-d');
@@ -137,9 +153,11 @@ class DashboardController extends Controller{
         $preferenza->setChiusura($data->chiu);
         $preferenza->setNotturno($data->nott);
         $dbManager->savePreferenza($preferenza);
+        }catch (\Exception $e){
+            $response->setStatusCode(400);
+        }
 
 
-        $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;

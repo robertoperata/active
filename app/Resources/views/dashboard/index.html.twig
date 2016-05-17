@@ -83,9 +83,9 @@
                         <div><input type="checkbox" name="{{ key }}"{% if value %} checked="checked " {% endif %} onchange="javascript:toggleCalendar(this)"> {{ key|date('d/m/Y') }}</div>
 
                     {% endfor %}
-                    <div >
-                        <input  class="col-xs-10" type="text" placeholder="chiusura" name="chiusura" id="chiusura" />
-                        <button class="col-xs-2 btn btn-primary btn-xs"  onclick="addChiusura()">Add</button>
+                    <div style="margin-top: 5px">
+                        <input  class="col-xs-4 form-control" style="width: auto;" type="text" placeholder="gg/mm/aaaa" name="chiusura" id="chiusura" />
+                        <button class="pull-right btn btn-primary btn-sm"   onclick="addChiusura()">Add</button>
                     </div>
                 </div>
 
@@ -122,15 +122,15 @@
                         </tr>
 
                     {% endfor %}
-                        <tr id="savePref">
+                        <tr id="savePref" class="savePref">
 
-                            <td><input  type="text" name="data_preferenza" maxlength="10" size="10" /></td>
+                            <td><input id="orari_preferenze"  type="text" name="data_preferenza" maxlength="10" size="10" style="margin: 0 -4px;" /></td>
                             <td class="text-right"><input type="text" name="apertura" maxlength="2" size="2"/>:00</td>
                             <td class="text-right"><input type="text" name="chiusura" maxlength="2" size="2"/>:00</td>
                             <td class="text-right"><input type="text" name="notturno" maxlength="2" size="2"/>:00</td>
                         </tr>
-                        <tr>
-                            <td colspan="4"><button onclick="savePref()" class="btn btn-primary btn-sm" id="salva_pref">Add</button> </td>
+                        <tr class="savePref">
+                            <td colspan="4"><button onclick="savePref()" class="btn btn-primary btn-sm pull-right" id="salva_pref">Add</button> </td>
                         </tr>
                     </table>
                 </div>
@@ -142,7 +142,19 @@
             $(document).ready(function(){
                 hideCheckbox();
             });
-
+            $.datepicker.regional['it'] = {
+                closeText: 'Chiudi', // set a close button text
+                currentText: 'Oggi', // set today text
+                monthNames: ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno',   'Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'], // set month names
+                monthNamesShort: ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'], // set short month names
+                dayNames: ['Domenica','Luned&#236','Marted&#236','Mercoled&#236','Gioved&#236','Venerd&#236','Sabato'], // set days names
+                dayNamesShort: ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'], // set short day names
+                dayNamesMin: ['Do','Lu','Ma','Me','Gio','Ve','Sa'], // set more short days names
+                dateFormat: 'dd/mm/yy' // set format date
+            };
+            $.datepicker.setDefaults( $.datepicker.regional[ "it" ] );
+            $("#chiusura").datepicker();
+            $("#orari_preferenze").datepicker();
 
             function openHide(box){
                 if($(box).hasClass('fa-plus')){
@@ -155,12 +167,24 @@
                 }
             }
 
+            function orariPreferenze(box){
+                if($(box).hasClass('fa-plus')){
+                    $(box).removeClass('fa-plus').addClass('fa-minus');
+                    $('.savePref').show('slow');
+                }else if($(box).hasClass('fa-minus')){
+                    $(box).removeClass('fa-minus').addClass('fa-plus');
+                    $('.savePref').hide('slow');
+
+                }
+            }
+
             function savePref(){
                 var pref = $('#savePref');
                 var date = $(pref).find('input[name="data_preferenza"]').val();
                 var aper = $(pref).find('input[name="apertura"]').val();
                 var chiu = $(pref).find('input[name="chiusura"]').val();
                 var nott = $(pref).find('input[name="notturno"]').val();
+
 
                 var url = "{{ path('pref_save') }}";
 
@@ -172,7 +196,11 @@
                     url: url,
                     data: jsonArray,
                     success: function(data){
-                        alert(data.day);
+
+                    },
+                    error: function(data){
+                        $("#savePref").append("<span style='color:red'>Si è verificato un errore</span>");
+
                     },
                     dataType: 'json'
                 });
@@ -191,6 +219,10 @@
                     success: function(data){
                         alert(data.day);
                     },
+                    error: function(data){
+                        $("#savePref").append("<span style='color:red'>Si è verificato un errore</span>");
+
+                    },
                     dataType: 'json'
                 });
             }
@@ -198,7 +230,7 @@
             function hideCheckbox(){
                 $("#calendarioChiusure div").each(function(){
                     if(!$(this).find('input').is(':checked')){
-                        $(this).css('display','none');
+                        $(this).hide('slow');
                     }else{
                         $(this).find('input').css('visibility','hidden ');
                     }
@@ -208,7 +240,7 @@
             function showCheckbox(){
                 $("#calendarioChiusure div").each(function(){
                     if(!$(this).find('input').is(':checked')){
-                        $(this).css('display','block');
+                        $(this).show('slow');
                     }else{
                         $(this).find('input').css('visibility','visible ');
                     }

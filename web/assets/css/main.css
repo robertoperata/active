@@ -134,4 +134,7 @@ table#calendario td.disabled {
 #calendarioChiusure #ins {
   opacity: 0.6; }
 
+.savePref {
+  display: none; }
+
 /*# sourceMappingURL=main.css.map */
