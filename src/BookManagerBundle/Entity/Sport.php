@@ -52,13 +52,31 @@ class Sport{
      */
     private $schedules;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $fieldsNumber;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $minPlayer;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $maxPlayer;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $sportColor;
+
+
     public function __construct() {
         $this->schedules = new ArrayCollection();
 
     }
-    
-
-  
 
     /**
      * Get id
@@ -222,5 +240,101 @@ class Sport{
     public function getSchedules()
     {
         return $this->schedules;
+    }
+
+    /**
+     * Set fieldsNumber
+     *
+     * @param integer $fieldsNumber
+     *
+     * @return Sport
+     */
+    public function setFieldsNumber($fieldsNumber)
+    {
+        $this->fieldsNumber = $fieldsNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get fieldsNumber
+     *
+     * @return integer
+     */
+    public function getFieldsNumber()
+    {
+        return $this->fieldsNumber;
+    }
+
+    /**
+     * Set minPlayer
+     *
+     * @param integer $minPlayer
+     *
+     * @return Sport
+     */
+    public function setMinPlayer($minPlayer)
+    {
+        $this->minPlayer = $minPlayer;
+
+        return $this;
+    }
+
+    /**
+     * Get minPlayer
+     *
+     * @return integer
+     */
+    public function getMinPlayer()
+    {
+        return $this->minPlayer;
+    }
+
+    /**
+     * Set maxPlayer
+     *
+     * @param integer $maxPlayer
+     *
+     * @return Sport
+     */
+    public function setMaxPlayer($maxPlayer)
+    {
+        $this->maxPlayer = $maxPlayer;
+
+        return $this;
+    }
+
+    /**
+     * Get maxPlayer
+     *
+     * @return integer
+     */
+    public function getMaxPlayer()
+    {
+        return $this->maxPlayer;
+    }
+
+    /**
+     * Set sportColor
+     *
+     * @param integer $sportColor
+     *
+     * @return Sport
+     */
+    public function setSportColor($sportColor)
+    {
+        $this->sportColor = $sportColor;
+
+        return $this;
+    }
+
+    /**
+     * Get sportColor
+     *
+     * @return integer
+     */
+    public function getSportColor()
+    {
+        return $this->sportColor;
     }
 }

@@ -22,37 +22,70 @@
             <div id="add_sport" style="display: none">
         <form action="{{ path("sport_new") }}" method="post" class="form-horizontal clearfix">
             <input type="hidden" id="sport_id">
-            <div class="form-group">
+            <div class="col-xs-6">
+                <div class="form-group">
 
-                <label for="sport_name" class="required col-xs-2 control-label">Nome</label>
-                <div class="col-xs-10">
-                    <input class="form-control" type="text" id="sport_name" name="sport[name]" required="required" maxlength="100">
+                    <label for="sport_name" class="required col-xs-3 control-label">Nome</label>
+                    <div class="col-xs-9">
+                        <input class="form-control" type="text" id="sport_name" name="sport[name]" required="required" maxlength="100">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="sport_priceResident" class="required col-xs-3 control-label">Prezzo residenti</label>
+                    <div class="col-xs-9">
+                        <input type="text" class="form-control" id="sport_priceResident" name="sport[priceResident]" required="required">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="sport_priceResidentLightsOn" class="required col-xs-3 control-label">Prezzo residenti (notturno)</label>
+                    <div class="col-xs-9">
+                        <input type="text" id="sport_priceResidentLightsOn"  class="form-control" name="sport[priceResidentLightsOn]" required="required">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="sport_minPlayer" class="required col-xs-3 control-label">Numero minimo giocatori</label>
+                    <div class="col-xs-9">
+                        <input type="text" id="sport_minPlayer"  class="form-control" name="sport[sport_minPlayer]" required="required">
+                    </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="sport_priceResident" class="required col-xs-2 control-label">Prezzo residenti</label>
-                <div class="col-xs-10">
-                    <input type="text" class="form-control" id="sport_priceResident" name="sport[priceResident]" required="required">
+            <div class="col-xs-6">
+                <div class="form-group">
+                    <label for="sport_fieldsNumber" class="required col-xs-3 control-label">Numero campi</label>
+                    <div class="col-xs-3">
+                        <input type="text" id="sport_fieldsNumber"  class="form-control" name="sport[sport_fieldsNumber]" required="required">
+                    </div>
+                    <label for="sport_sportColor" class="required col-xs-3 control-label">Colore</label>
+                    <div class="col-xs-3">
+                        <input type="text" id="sport_sportColor"  class="form-control" name="sport[sport_sportColor]" required="required">
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label for="sport_priceNotResident" class="required col-xs-3 control-label">Prezzo non residenti</label>
+                    <div class="col-xs-9">
+                        <input type="text" id="sport_priceNotResident" class="form-control" name="sport[priceNotResident]" required="required">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="sport_priceNotResidentLightsOn" class="required col-xs-3 control-label">Prezzo non residenti (notturno)</label>
+                    <div class="col-xs-9">
+                        <input type="text" id="sport_priceNotResidentLightsOn"  class="form-control" name="sport[priceNotResidentLightsOn]" required="required">
+                    </div>
+                </div>
+
+                <div class="form-group">
+
+                    <label for="sport_maxPlayer" class="required col-xs-3 control-label">Numero massimo giocatori</label>
+                    <div class="col-xs-9">
+                        <input type="text" id="sport_maxPlayer"  class="form-control" name="sport[sport_maxPlayer]" required="required">
+                    </div>
+
                 </div>
             </div>
-            <div class="form-group">
-                <label for="sport_priceResidentLightsOn" class="required col-xs-2 control-label">Prezzo residenti (notturno)</label>
-                <div class="col-xs-10">
-                    <input type="text" id="sport_priceResidentLightsOn"  class="form-control" name="sport[priceResidentLightsOn]" required="required">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="sport_priceNotResident" class="required col-xs-2 control-label">Prezzo non residenti</label>
-                <div class="col-xs-10">
-                    <input type="text" id="sport_priceNotResident" class="form-control" name="sport[priceNotResident]" required="required">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="sport_priceNotResidentLightsOn" class="required col-xs-2 control-label">Prezzo non residenti (notturno)</label>
-                <div class="col-xs-10">
-                    <input type="text" id="sport_priceNotResidentLightsOn"  class="form-control" name="sport[priceNotResidentLightsOn]" required="required">
-                </div>
-            </div>
+
+
+
             {{ form_widget(form._token) }}
             {#
             <input type="hidden" id="sport__token" name="sport[_token]" value="{{ sport[_token] }}" >
@@ -125,6 +158,7 @@
     </div>
     </div>
     <script>
+        $("#sport_sportColor").colorpicker();
 
         function editSport(item){
             $('div.add').click();
