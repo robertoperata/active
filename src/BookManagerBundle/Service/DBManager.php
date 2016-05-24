@@ -171,6 +171,27 @@ class DBManager
     }
 
     public function getPrenotazioniPerSport(Sport $sport){
+        /*
+        $qb = $this->em->createQueryBuilder();
+
+        $today = new \DateTime();
+        $today->format('Y-m-d');
+        $result =$qb->select('r')
+            ->from('BookManagerBundle:Reservation', 'r')
+            ->where('r.sport_id = ?1')
+            ->setParameter(1,$sport->getId())
+            ->getQuery()->execute();
+        return $result;
+        */
+        $result =  $this->em->createQuery(
+            'SELECT s FROM BookManagerBundle:Reservation s
+           WHERE s.sport_id = :sportID AND s.date >= CURRENT_DATE()')
+            ->setParameter("sportID", $sport->getId())->execute();
+
+        return $result;
+    }
+
+    public function getPrenotazioniFromToday(){
         $qb = $this->em->createQueryBuilder();
 
         $today = new \DateTime();
@@ -180,16 +201,10 @@ class DBManager
             ->where('r.date > ?1')
             ->setParameter(1,$today)
             ->getQuery()->execute();
-        /*
-        $result = $this->em->createQuery(
-            'SELECT BookManagerBundle:preferences p
-           WHERE p.sport_id = :sportID
-
-           '
-           )->setParameter("preferenceId", $sport->getId())->execute();
-        */
         return $result;
     }
+
+
 
     public function saveReservation(Reservation $reservation){
         $this->em->persist($reservation);

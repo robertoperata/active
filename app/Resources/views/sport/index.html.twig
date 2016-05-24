@@ -57,7 +57,15 @@
                     </div>
                     <label for="sport_sportColor" class="required col-xs-3 control-label">Colore</label>
                     <div class="col-xs-3">
-                        <input type="text" id="sport_sportColor"  class="form-control" name="sport[sport_sportColor]" required="required">
+                        <div id="cp2" class="input-group colorpicker-component">
+                            <input id="sport_sportColor" name="sport[sport_sportColor]" type="text" value="#00AABB" class="form-control" />
+                            <span class="input-group-addon"><i></i></span>
+                        </div>
+                        <script>
+                            $(function() {
+                                $('#cp2').colorpicker();
+                            });
+                        </script>
                     </div>
 
                 </div>
@@ -157,8 +165,10 @@
     </div>
     </div>
     </div>
+
     <script>
-        $("#sport_sportColor").colorpicker();
+
+
 
         function editSport(item){
             $('div.add').click();
