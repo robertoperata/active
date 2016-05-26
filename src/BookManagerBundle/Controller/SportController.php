@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use BookManagerBundle\Entity\Sport;
 use BookManagerBundle\Form\SportType;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Sport controller.
@@ -56,23 +57,35 @@ class SportController extends Controller
      */
     public function newAction(Request $request)
     {
+        $data = json_decode($request->getContent());
+        $response = new Response();
+        $response->setStatusCode(200);
+
         $sport = new Sport();
-        $form = $this->createForm('BookManagerBundle\Form\SportType', $sport);
-        $form->handleRequest($request);
+        $sport->setName($data->sport_name);
+        $sport->setPriceResident($data->priceResident);
+        $sport->setPriceResidentLightsOn($data->priceResidentLightsOn);
+        $sport->setPriceNotResident($data->priceNotResident);
+        $sport->setPriceNotResidentLightsOn($data->priceNotResidentLightsOn);
+        $sport->setFieldsNumber($data->fieldsNumber);
+        $sport->setMinPlayer($data->minPlayer);
+        $sport->setMaxPlayer($data->maxPlayer);
+        $sport->setFieldsNumber($data->fieldsNumber);
+        $sport->setSportColor($data->sportColor);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($sport);
-            $em->flush();
-
-        //    return $this->redirectToRoute('sport_index', array('id' => $sport->getId()));
-            return $this->redirectToRoute('sport_index');
+        $dbManager =    $this->get('app.dbmanager');
+        $id = null;
+        try{
+            $id = $dbManager->saveSport($sport);
+        }catch (\Exception $e){
+            $response->setStatusCode(400);
         }
 
-        return $this->render('sport/new.html.twig', array(
-            'sport' => $sport,
-            'form' => $form->createView(),
-        ));
+        $result = [$id];
+        $response = new Response(json_encode($result));
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
     }
 
     /**
@@ -99,7 +112,6 @@ class SportController extends Controller
     public function editAction(Request $request)
     {
         $data = json_decode($request->getContent());
-        // $dbManager =    $this->get('app.dbmanager');
 
         $em = $this->getDoctrine()->getManager();
 

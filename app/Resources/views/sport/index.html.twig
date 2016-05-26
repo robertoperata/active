@@ -25,40 +25,40 @@
             <div class="col-xs-6">
                 <div class="form-group">
 
-                    <label for="sport_name" class="required col-xs-3 control-label">Nome</label>
-                    <div class="col-xs-9">
-                        <input class="form-control" type="text" id="sport_name" name="sport[name]" required="required" maxlength="100">
+                    <label for="sport_name" class="required col-xs-4 control-label">Nome</label>
+                    <div class="col-xs-8">
+                        <input class="form-control" type="text" id="sport_name" tabindex="1" name="sport[name]" required="required" maxlength="100">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="sport_priceResident" class="required col-xs-3 control-label">Prezzo residenti</label>
-                    <div class="col-xs-9">
-                        <input type="text" class="form-control" id="sport_priceResident" name="sport[priceResident]" required="required">
+                    <label for="sport_priceResident" class="required col-xs-4 control-label">Prezzo residenti</label>
+                    <div class="col-xs-8">
+                        <input type="text" class="form-control"  tabindex="4" id="sport_priceResident" name="sport[priceResident]" required="required">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="sport_priceResidentLightsOn" class="required col-xs-3 control-label">Prezzo residenti (notturno)</label>
-                    <div class="col-xs-9">
-                        <input type="text" id="sport_priceResidentLightsOn"  class="form-control" name="sport[priceResidentLightsOn]" required="required">
+                    <label for="sport_priceResidentLightsOn" class="required col-xs-4 control-label">Prezzo residenti (notturno)</label>
+                    <div class="col-xs-8">
+                        <input type="text" id="sport_priceResidentLightsOn"   tabindex="6" class="form-control" name="sport[priceResidentLightsOn]" required="required">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="sport_minPlayer" class="required col-xs-3 control-label">Numero minimo giocatori</label>
-                    <div class="col-xs-9">
-                        <input type="text" id="sport_minPlayer"  class="form-control" name="sport[sport_minPlayer]" required="required">
+                    <label for="sport_minPlayer" class="required col-xs-4 control-label">Numero minimo giocatori</label>
+                    <div class="col-xs-8">
+                        <input type="text" id="sport_minPlayer"  tabindex="8" class="form-control" name="sport[sport_minPlayer]" required="required">
                     </div>
                 </div>
             </div>
             <div class="col-xs-6">
                 <div class="form-group">
-                    <label for="sport_fieldsNumber" class="required col-xs-3 control-label">Numero campi</label>
+                    <label for="sport_fieldsNumber"  class="required col-xs-4 control-label">Numero campi</label>
                     <div class="col-xs-3">
-                        <input type="text" id="sport_fieldsNumber"  class="form-control" name="sport[sport_fieldsNumber]" required="required">
+                        <input type="text" id="sport_fieldsNumber"  tabindex="2"  class="form-control" name="sport[sport_fieldsNumber]" required="required">
                     </div>
-                    <label for="sport_sportColor" class="required col-xs-3 control-label">Colore</label>
+                    <label for="sport_sportColor" class="required col-xs-2 control-label">Colore</label>
                     <div class="col-xs-3">
                         <div id="cp2" class="input-group colorpicker-component">
-                            <input id="sport_sportColor" name="sport[sport_sportColor]" type="text" value="#00AABB" class="form-control" />
+                            <input id="sport_sportColor" name="sport_sportColor"  tabindex="3" type="text" value="#000"  class="form-control" />
                             <span class="input-group-addon"><i></i></span>
                         </div>
                         <script>
@@ -70,23 +70,23 @@
 
                 </div>
                 <div class="form-group">
-                    <label for="sport_priceNotResident" class="required col-xs-3 control-label">Prezzo non residenti</label>
-                    <div class="col-xs-9">
-                        <input type="text" id="sport_priceNotResident" class="form-control" name="sport[priceNotResident]" required="required">
+                    <label for="sport_priceNotResident" class="required col-xs-4 control-label">Prezzo non residenti</label>
+                    <div class="col-xs-8">
+                        <input type="text" id="sport_priceNotResident"  tabindex="5" class="form-control" name="sport[priceNotResident]" required="required">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="sport_priceNotResidentLightsOn" class="required col-xs-3 control-label">Prezzo non residenti (notturno)</label>
-                    <div class="col-xs-9">
-                        <input type="text" id="sport_priceNotResidentLightsOn"  class="form-control" name="sport[priceNotResidentLightsOn]" required="required">
+                    <label for="sport_priceNotResidentLightsOn" class="required col-xs-4 control-label">Prezzo non residenti (notturno)</label>
+                    <div class="col-xs-8">
+                        <input type="text" id="sport_priceNotResidentLightsOn"  tabindex="7" class="form-control" name="sport[priceNotResidentLightsOn]" required="required">
                     </div>
                 </div>
 
                 <div class="form-group">
 
-                    <label for="sport_maxPlayer" class="required col-xs-3 control-label">Numero massimo giocatori</label>
-                    <div class="col-xs-9">
-                        <input type="text" id="sport_maxPlayer"  class="form-control" name="sport[sport_maxPlayer]" required="required">
+                    <label for="sport_maxPlayer" class="required col-xs-4 control-label">Numero massimo giocatori</label>
+                    <div class="col-xs-8">
+                        <input type="text" id="sport_maxPlayer"   tabindex="9" class="form-control" name="sport[sport_maxPlayer]" required="required">
                     </div>
 
                 </div>
@@ -102,7 +102,7 @@
  {#
         {{ form_widget(form) }}
 #}
-        <input type="button" id="add" class="btn btn-primary pull-right" value="Create"  />
+        <input type="button" id="add" onclick="updateSport()" class="btn btn-primary pull-right" value="Create"  />
         <input type="button" id="edit" onclick="updateSport()" class="btn btn-primary pull-right hide" value="Modifica" style="margin-right:5px" />
         <input type="button" id="del" onclick="deleteSport()"  class="btn btn-danger pull-right hide" value="Eliminia"  style="margin-right:5px" />
         </form>
@@ -196,7 +196,9 @@
                 url: url,
                 data: jsonArray,
                 success: function(data){
-                    alert(data.day);
+
+
+
                 },
                 dataType: 'json'
             });
@@ -204,25 +206,54 @@
 
         function updateSport(){
 
-            var sport_name = $("#sport_name").val();
-            var priceResident = $("#sport_priceResident").val();
-            var priceResidentLightsOn = $("#sport_priceResidentLightsOn").val();
-            var priceNotResident = $("#sport_priceNotResident").val();
+            var sport_name              = $("#sport_name").val();
+            var priceResident           = $("#sport_priceResident").val();
+            var priceResidentLightsOn   = $("#sport_priceResidentLightsOn").val();
+            var priceNotResident        = $("#sport_priceNotResident").val();
             var priceNotResidentLightsOn = $("#sport_priceNotResidentLightsOn").val();
-            var sport_id = $("#sport_id").val();
+            var fieldsNumber            = $("#sport_fieldsNumber").val();
+            var sportColor              = $("#sport_sportColor").val();
+            var minPlayer              = $("#sport_minPlayer").val();
+            var maxPlayer              = $("#sport_maxPlayer").val();
+            var sport_id                = $("#sport_id").val();
+
+            if(sport_id > 0){
+
+                var url = "{{ path('sport_edit') }}";
+            }else{
+                var url = "{{ path('sport_new') }}";
+            }
 
 
-            var url = "{{ path('sport_edit') }}";
-
-
-            var obj = {'sport_id':sport_id, 'sport_name': sport_name, 'priceResident':priceResident, 'priceResidentLightsOn':priceResidentLightsOn, 'priceNotResident':priceNotResident, 'priceNotResidentLightsOn':priceNotResidentLightsOn};
+            var obj = { 'sport_id':sport_id,
+                        'sport_name': sport_name,
+                        'priceResident':priceResident,
+                        'priceResidentLightsOn':priceResidentLightsOn,
+                        'priceNotResident':priceNotResident,
+                        'priceNotResidentLightsOn':priceNotResidentLightsOn,
+                        'fieldsNumber':fieldsNumber,
+                        'sportColor':sportColor,
+                        'minPlayer':minPlayer,
+                        'maxPlayer':maxPlayer};
             var jsonArray = JSON.stringify(obj);
             $.ajax({
                 type: "POST",
                 url: url,
                 data: jsonArray,
                 success: function(data){
-                    alert(data.day);
+                    $("form input").each(function(){
+                        if($(this).attr("id") == "sport_sportColor"){
+                            $(this).val("#000000");
+                        }else{
+                            $(this).val("");
+                        }
+                    });
+                    $('.btn-circle.add').click();
+                    var tr =  $('table tbody tr:last-child');
+                    var tr_clone = tr.clone();
+                    $(tr_clone).attr("data-sport-id", data);
+                    $(tr_clone).find("td:nth-child(1)").text("ddddddddddd");
+                    $("table").append(tr_clone);
                 },
                 dataType: 'json'
             });

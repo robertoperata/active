@@ -68,7 +68,7 @@ class Sport{
     private $maxPlayer;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=7)
      */
     private $sportColor;
 

@@ -49,6 +49,12 @@ class DBManager
         return $result;
     }
 
+    public function saveSport(Sport $sport){
+        $this->em->persist($sport);
+        $this->em->flush();
+        return $sport->getId();
+    }
+
 
 
     public function getDaysPerSport($sport){
@@ -67,6 +73,7 @@ class DBManager
     public function getSport($sport){
         return $this->em->getRepository('BookManagerBundle:Sport')->find($sport);
     }
+
 
 
 
