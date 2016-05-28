@@ -111,11 +111,15 @@
 
     <table class="table table-striped table-hover">
         <colgroup>
-                <col width="60%"/>
+                <col width="30%"/>
                 <col width="10%"/>
                 <col width="10%"/>
                 <col width="10%"/>
                 <col width="10%"/>
+                <col width="10%"/>
+                <col width="10%"/>
+                <col width="5%"/>
+                <col width="5%"/>
 
         </colgroup>
         <thead>
@@ -125,6 +129,10 @@
                 <th>Prezzo residenti (notturno)</th>
                 <th>Prezzo non residenti</th>
                 <th>Prezzo non residenti (notturno)</th>
+                <th>Campi</th>
+                <th>Giocatori Min</th>
+                <th>Giocatori Max</th>
+                <th>Colore</th>
 
             </tr>
         </thead>
@@ -132,36 +140,21 @@
         {% for sport in sports %}
             <tr onclick="editSport(this)" data-sport-id="{{ sport.id }}">
 
-                        {#
-                <td>
-                    <ul>
-                        Modifica
-                        <li>
-                            <a href="{{ path('sport_show', { 'id': sport.id }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('sport_edit', { 'id': sport.id }) }}">edit</a>
-                        </li>
-                    </ul>
-                </td>
-                        #}
+
                 <td>{{ sport.name }}</td>
                 <td>{{ sport.priceResident }}</td>
                 <td>{{ sport.priceResidentLightsOn }}</td>
                 <td>{{ sport.priceNotResident }}</td>
                 <td>{{ sport.priceNotResidentLightsOn }}</td>
-
+                <td>{{ sport.fieldsNumber }}</td>
+                <td>{{ sport.minPlayer }}</td>
+                <td>{{ sport.maxPlayer }}</td>
+                <td style="background: {{ sport.sportColor }}">{{ sport.sportColor }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-{#
-    <ul>
-        <li>
-            <a href="{{ path('sport_new') }}">Create a new entry</a>
-        </li>
-    </ul>
-    #}
+
     </div>
     </div>
     </div>
@@ -177,6 +170,10 @@
             $("#sport_priceResidentLightsOn").val($(item).find("td:nth-child(3)").text());
             $("#sport_priceNotResident").val($(item).find("td:nth-child(4)").text());
             $("#sport_priceNotResidentLightsOn").val($(item).find("td:nth-child(5)").text());
+            $("#sport_fieldsNumber").val($(item).find("td:nth-child(6)").text());
+            $("#sport_minPlayer").val($(item).find("td:nth-child(7)").text());
+            $("#sport_maxPlayer").val($(item).find("td:nth-child(8)").text());
+            $("#sport_sportColor").val($(item).find("td:nth-child(9)").text());
             $("#sport_id").val($(item).attr('data-sport-id'));
             $("#add").addClass('hide');
             $("#edit").removeClass('hide');
@@ -196,16 +193,27 @@
                 url: url,
                 data: jsonArray,
                 success: function(data){
-
-
+                    console.log(sport_id);
+                    $("tr[data-sport-id='"+sport_id+"']").remove();
+                    clearForm();
 
                 },
                 dataType: 'json'
             });
         }
 
-        function updateSport(){
+        function clearForm(){
+            $("form input").each(function(){
+                if($(this).attr("id") == "sport_sportColor"){
+                    $(this).val("#000000");
+                }else{
+                    $(this).val("");
+                }
+            });
+            $('.btn-circle.add').click();
+        }
 
+        function updateSport(){
             var sport_name              = $("#sport_name").val();
             var priceResident           = $("#sport_priceResident").val();
             var priceResidentLightsOn   = $("#sport_priceResidentLightsOn").val();
@@ -213,12 +221,11 @@
             var priceNotResidentLightsOn = $("#sport_priceNotResidentLightsOn").val();
             var fieldsNumber            = $("#sport_fieldsNumber").val();
             var sportColor              = $("#sport_sportColor").val();
-            var minPlayer              = $("#sport_minPlayer").val();
-            var maxPlayer              = $("#sport_maxPlayer").val();
+            var minPlayer               = $("#sport_minPlayer").val();
+            var maxPlayer               = $("#sport_maxPlayer").val();
             var sport_id                = $("#sport_id").val();
 
             if(sport_id > 0){
-
                 var url = "{{ path('sport_edit') }}";
             }else{
                 var url = "{{ path('sport_new') }}";
@@ -241,19 +248,11 @@
                 url: url,
                 data: jsonArray,
                 success: function(data){
-                    $("form input").each(function(){
-                        if($(this).attr("id") == "sport_sportColor"){
-                            $(this).val("#000000");
-                        }else{
-                            $(this).val("");
-                        }
-                    });
-                    $('.btn-circle.add').click();
-                    var tr =  $('table tbody tr:last-child');
-                    var tr_clone = tr.clone();
-                    $(tr_clone).attr("data-sport-id", data);
-                    $(tr_clone).find("td:nth-child(1)").text("ddddddddddd");
-                    $("table").append(tr_clone);
+                    clearForm();
+
+
+                    var tr = "<tr onclick=\"editSport(this)\" data-sport-id=\""+data.id+"\"><td>"+data.sport_name+"</td> <td>"+parseFloat(data.priceResident).toFixed(2)+"</td><td>"+parseFloat(data.priceResidentLightsOn).toFixed(2)+"</td> <td>"+parseFloat(data.priceNotResident).toFixed(2)+"</td> <td>"+parseFloat(data.priceNotResidentLightsOn).toFixed(2)+"</td><td style='background: "+data.sportColor+"'></td></tr>";
+                    $("table").append(tr);
                 },
                 dataType: 'json'
             });

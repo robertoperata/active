@@ -10,7 +10,7 @@
                 <li class="active">Dashboard</li>
             </ol>
         </section>
-        <div class="col-xs-8 ">
+        <div class="col-xs-9 ">
         <div class="prenotazioni box">
             <h2>Prenotazioni</h2>
             <h3>Mercoledì 11/05</h3>
@@ -65,8 +65,14 @@
                 </div>
             </div>
         </div>
+
+            <div id="tabella_sport">
+                <h4 id="tabella_giorno"></h4>
+            </div>
+
+
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="box box-default table-condensed">
                 <div class="box-header with-border">
                     <h3 class="box-title">Chiusure</h3>
@@ -139,19 +145,113 @@
         </div>
 
         <script>
+
+            function createSportTable(day){
+
+                var url = "{{ path('dash_loadTabellaSport') }}";
+
+                var obj = {'day': day};
+                var jsonArray = JSON.stringify(obj);
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: jsonArray,
+                    success: function(data){
+                        giorno = new Date(data.giorno.date);
+                        $("#tabella_giorno").text(giorno.ddmm());
+                        var sport = data.sport;
+                        var body = document.getElementsByTagName('body')[0];
+                        var tbl = document.createElement('table');
+                        tbl.style.width = '100%';
+                        tbl.setAttribute('border', '1');
+                        var tbdy = document.createElement('tbody');
+                        var orarioApertura = data.apertura;
+                        var orarioChiusura = data.chiusura;
+                        var orarioNotturno = data.notturno;
+
+                        var thead = document.createElement('thead');
+                        var tr_head = document.createElement('tr');
+                        var th = document.createElement('th');
+                        tr_head.appendChild(th);
+                        sport.forEach(function (item) {
+                            for (n = 1; n <= item.fieldsNumber; n++) {
+                                var th = document.createElement('th');
+                                th.style['background-color'] = item.sportColor;
+                                th.appendChild(document.createTextNode(item.name + "#" + n));
+                                tr_head.appendChild(th);
+                            }
+
+                        });
+                        thead.appendChild(tr_head);
+                        tbl.appendChild(thead);
+
+                        for (var i = orarioApertura; i < orarioChiusura; i++) {
+                            var tr = document.createElement('tr');
+                            var th = document.createElement('tr');
+                            th.appendChild(document.createTextNode(i + ":00"));
+                            tr.appendChild(th);
+                            sport.forEach(function (item) {
+                                for (n = 1; n <= item.fieldsNumber; n++) {
+                                    var td = document.createElement('td');
+                                  //  td.style['background-color'] = item.sportColor;
+                                   // td.appendChild(document.createTextNode(item.name + "#" + n));
+                                    tr.appendChild(td)
+                                }
+
+                            });
+                            tbdy.appendChild(tr);
+
+                        }
+                        tbl.appendChild(tbdy);
+                        document.getElementById('tabella_sport').appendChild(tbl);
+                        //chiamata per avere elenco di prenotazioni
+                        prenotazioni(day);
+
+                    },
+                    error: function(data){
+                       // $("#savePref").append("<span style='color:red'>Si è verificato un errore</span>");
+
+                    },
+                    dataType: 'json'
+                });
+
+
+
+
+                /*
+                tabella = JSON.parse(json);
+                $("#tabella_giorno").text(tabella.giorno.date);
+                console.log(tabella.giorno.date);
+                console.log(tabella.giorno);
+                */
+            }
+
+            function prenotazioni(day){
+                var url = "{{ path('dash_getReservation') }}";
+                var obj = {'day': day};
+                var jsonArray = JSON.stringify(obj);
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: jsonArray,
+                    success: function(data){
+
+                    },
+                    error: function(data){
+
+                    },
+                    dataType: 'json'
+                });
+
+            }
+
             $(document).ready(function(){
+                today = new Date();
+                createSportTable(today.yyyymmdd());
                 hideCheckbox();
+
             });
-            $.datepicker.regional['it'] = {
-                closeText: 'Chiudi', // set a close button text
-                currentText: 'Oggi', // set today text
-                monthNames: ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno',   'Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'], // set month names
-                monthNamesShort: ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'], // set short month names
-                dayNames: ['Domenica','Luned&#236','Marted&#236','Mercoled&#236','Gioved&#236','Venerd&#236','Sabato'], // set days names
-                dayNamesShort: ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'], // set short day names
-                dayNamesMin: ['Do','Lu','Ma','Me','Gio','Ve','Sa'], // set more short days names
-                dateFormat: 'dd/mm/yy' // set format date
-            };
+
             $.datepicker.setDefaults( $.datepicker.regional[ "it" ] );
             $("#chiusura").datepicker();
             $("#orari_preferenze").datepicker();

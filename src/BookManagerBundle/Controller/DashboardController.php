@@ -11,8 +11,10 @@ use BookManagerBundle\Entity\OrariPreferenze;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * Sport controller.
@@ -43,15 +45,100 @@ class DashboardController extends Controller{
 
         $timePreferencies = $dbManager->getTimePreferencies($today);
 
+        $orariApertura = $dbManager->getOrariApertura();
+
+    //    $tabellaSport = $this->tabellaSport($today);
+
+
+
         return $this->render('dashboard/index.html.twig', array(
             'defaultHolidays' => $defaultHolidays,
-            'timePreferencies' => $timePreferencies
+            'timePreferencies' => $timePreferencies,
+            'orariApertura' => $orariApertura,
+           // 'tabellaSport'=>json_encode($tabellaSport)
         ));
 
     }
 
+    //TODO orari di diefault in file di configurazione
+    private function getOrariDefault(){
+        $orariDefault = array('apertura'=>'9', 'chiusura'=>'21', 'notturno'=>'19');
+        return $orariDefault;
+    }
+
+    public function tabellaSport(\DateTime $date){
+        //prendere orari apertura per quel giorno
+        $dbManager =    $this->get('app.dbmanager');
+        $orariApertura = $dbManager->getOrariAperturaPerGriono($date);
+        if(empty($orariApertura)){
+            $orari = $this->getOrariDefault();
+        }else{
+
+            $orari = $orariApertura[0];
+        }
+        $sportPerGiorno = $dbManager->getAllSportsForDay($date);
+        $elencoSport = array();
+        foreach( $sportPerGiorno as $sport ){
+            $temp = array('name'=>$sport->getSport()->getName(),
+                          'priceResident'=>$sport->getSport()->getPriceResident(),
+                          'priceResidentLightsOn'=>$sport->getSport()->getPriceResidentLightsOn(),
+                          'priceNotResident'=>$sport->getSport()->getPriceNotResident(),
+                          'priceNotResidentLightsOn'=>$sport->getSport()->getPriceNotResidentLightsOn(),
+                          'fieldsNumber'=>$sport->getSport()->getFieldsNumber(),
+                          'sportColor'=>$sport->getSport()->getSportColor()
+                );
+           array_push($elencoSport, $temp);
+        }
+
+        $tabellaSport = array('giorno'=>$date, 'apertura'=>$orari->getApertura(), 'chiusura'=>$orari->getChiusura(), 'notturno'=>$orari->getNotturno(), 'sport'=>$elencoSport);
+
+        return $tabellaSport;
+    }
+
     /**
-     * List planning entities.
+     *  Chiamata ajax che restituisce json con orari validi per il giorno chiamato, sportm numero di campi
+     *
+     * @Route("/", name="dash_loadTabellaSport")
+     * @Method("POST")
+     */
+    public function getSportsPerGiorno(Request $request){
+        $data = json_decode($request->getContent());
+        $day = new \DateTime($data->day);
+        $dbManager =    $this->get('app.dbmanager');
+        $response = new Response();
+        $response->setStatusCode('200');
+        try{
+            $tabellaSport = $this->tabellaSport($day);
+            $response->setContent(json_encode($tabellaSport));
+        }catch (Exception $e){
+            $response->setStatusCode('400');
+        }
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+    }
+
+    /**
+     *  Chiamata ajax che restituisce json con prenotazioni per giorno chiamato
+     *
+     * @Route("/", name="dash_getReservation")
+     * @Method("POST")
+     */
+    public function dash_getReservation(Request $request){
+        $data = json_decode($request->getContent());
+        $day = new \DateTime($data->day);
+        $dbManager =    $this->get('app.dbmanager');
+        $response = new Response();
+        $response->setStatusCode('200');
+        try{
+
+        }catch (Exception $e){
+            $response->setStatusCode('400');
+        }
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+    }
+
+    /**
      *
      * @Route("/saveCal", name="cal_save")
      * @Method("POST")

@@ -49,6 +49,20 @@ class DBManager
         return $result;
     }
 
+    public function getAllSportsForDay(\DateTime $day){
+        $qb = $this->em->createQueryBuilder();
+        $giornoSettimana = date('N', $day->getTimestamp());
+
+        $qb
+            ->select('a', 'u')
+            ->from('BookManagerBundle:Schedule', 'a')
+            ->leftJoin('a.sport', 'u')
+            ->where('a.days_number = ?1')
+            ->setParameter(1,$giornoSettimana);
+
+        return $qb->getQuery()->getResult();
+    }
+
     public function saveSport(Sport $sport){
         $this->em->persist($sport);
         $this->em->flush();
@@ -178,23 +192,25 @@ class DBManager
     }
 
     public function getPrenotazioniPerSport(Sport $sport){
-        /*
-        $qb = $this->em->createQueryBuilder();
 
-        $today = new \DateTime();
-        $today->format('Y-m-d');
-        $result =$qb->select('r')
-            ->from('BookManagerBundle:Reservation', 'r')
-            ->where('r.sport_id = ?1')
-            ->setParameter(1,$sport->getId())
-            ->getQuery()->execute();
-        return $result;
-        */
         $result =  $this->em->createQuery(
             'SELECT s FROM BookManagerBundle:Reservation s
            WHERE s.sport_id = :sportID AND s.date >= CURRENT_DATE()')
             ->setParameter("sportID", $sport->getId())->execute();
 
+        return $result;
+    }
+
+    public function getPrenotazioniPerDay(\DateTime $dateTime){
+        $qb = $this->em->createQueryBuilder();
+
+        $day = new \DateTime($dateTime);
+        $day->format('Y-m-d');
+        $result =$qb->select('r')
+            ->from('BookManagerBundle:Reservation', 'r')
+            ->where('r.date = ?1')
+            ->setParameter(1,$day)
+            ->getQuery()->execute();
         return $result;
     }
 
@@ -216,6 +232,42 @@ class DBManager
     public function saveReservation(Reservation $reservation){
         $this->em->persist($reservation);
         $this->em->flush();
+    }
+
+    //TODO: metodo pessimo che fa 2 query da migliorare
+    public function getOrariApertura(){
+        $qb = $this->em->createQueryBuilder();
+        $today = new \DateTime();
+        $today->format('Y-m-d');
+        $result = null;
+        $subset =$qb->select('r')
+            ->from('BookManagerBundle:OrariPreferenze', 'r')
+            ->where('r.date <= ?1')
+            ->orderBy('r.date', 'DESC')
+            ->setMaxResults(1)
+            ->setParameter(1,$today)
+            ->getQuery()->execute();
+        if(sizeof($subset) > 0){
+            $data = $subset[0];
+            $result =$qb->select('r')
+                ->from('BookManagerBundle:OrariPreferenze', 'p')
+                ->where('p.date >= ?1')
+                ->setParameter(1,$data->getDate())
+                ->getQuery()->execute();
+        }
+        return $result;
+    }
+
+    public function getOrariAperturaPerGriono(\DateTime $date){
+        $qb = $this->em->createQueryBuilder();
+        $result  = $qb->select('r')
+            ->from('BookManagerBundle:OrariPreferenze', 'r')
+            ->where('r.date <= ?1')
+            ->orderBy('r.date', 'DESC')
+            ->setMaxResults(1)
+            ->setParameter(1, $date)
+            ->getQuery()->execute();
+        return $result;
     }
 
 

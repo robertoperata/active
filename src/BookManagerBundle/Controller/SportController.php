@@ -81,8 +81,8 @@ class SportController extends Controller
             $response->setStatusCode(400);
         }
 
-        $result = [$id];
-        $response = new Response(json_encode($result));
+        $data->id = $id;
+        $response = new Response(json_encode($data));
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
@@ -112,6 +112,8 @@ class SportController extends Controller
     public function editAction(Request $request)
     {
         $data = json_decode($request->getContent());
+        $response = new Response();
+        $response->setStatusCode(200);
 
         $em = $this->getDoctrine()->getManager();
 
@@ -121,34 +123,24 @@ class SportController extends Controller
         $sport->setPriceResidentLightsOn($data->priceResidentLightsOn);
         $sport->setPriceNotResident($data->priceNotResident);
         $sport->setPriceNotResidentLightsOn($data->priceNotResidentLightsOn);
+        $sport->setFieldsNumber($data->fieldsNumber);
+        $sport->setMinPlayer($data->minPlayer);
+        $sport->setMaxPlayer($data->maxPlayer);
+        $sport->setSportColor($data->sportColor);
+
+        try{
+
+            $em->flush();
+        }catch (\Exception $e){
+            $response->setStatusCode(400);
+        }
 
 
-        $em->flush();
-
-        $response = new Response();
+        $response = new Response(json_encode($data->sport_id));
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
 
-        /*
-        $deleteForm = $this->createDeleteForm($sport);
-        $editForm = $this->createForm('BookManagerBundle\Form\SportType', $sport);
-        $editForm->handleRequest($request);
-
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($sport);
-            $em->flush();
-
-            return $this->redirectToRoute('sport_edit', array('id' => $sport->getId()));
-        }
-
-        return $this->render('sport/edit.html.twig', array(
-            'sport' => $sport,
-            'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        ));
-        */
     }
 
     /**
@@ -162,25 +154,23 @@ class SportController extends Controller
         $data = json_decode($request->getContent());
         $em = $this->getDoctrine()->getManager();
 
-        $sport =  $em->getRepository('BookManagerBundle:Sport')->find($data->sport_id);
-        $em->remove($sport);
-        $em->flush();
         $response = new Response();
+        $response->setStatusCode(200);
+        $id = null;
+        try{
+            $sport =  $em->getRepository('BookManagerBundle:Sport')->find($data->sport_id);
+            $em->remove($sport);
+            $em->flush();
+        }catch (\Exception $e){
+            $response->setStatusCode(400);
+        }
+
+
+        $response = new Response(json_encode($id));
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
-        /*
-        $form = $this->createDeleteForm($sport);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($sport);
-            $em->flush();
-        }
-
-        return $this->redirectToRoute('sport_index');
-        */
     }
 
     /**
