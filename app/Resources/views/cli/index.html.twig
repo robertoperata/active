@@ -1,0 +1,16 @@
+{% extends 'cli.base.html.twig' %}
+{% block body %}
+    <div class="col-xs-12 col-md-8 col-md-offset-2">
+        <div id="step1">
+            <label class="col-xs-12 col-md-2"> Scegli lo sport:</label>
+            <div class="col-xs-12 col-md-10">
+                <select id="sport_combo" class=" form-control">
+                    <option>Scegli uno sport</option>
+                    {% for item in sports %}
+                        <option data-sport-id="{{ item.id }}">{{ item.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+{% endblock %}

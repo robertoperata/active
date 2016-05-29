@@ -28,6 +28,11 @@ class Sport{
     private $name;
 
     /**
+     * @ORM\Column(type="string", length=2)
+     */
+    private $abbreviazione;
+
+    /**
      * @ORM\Column(type="decimal", scale=2)
      */
     private $priceResident;
@@ -336,5 +341,29 @@ class Sport{
     public function getSportColor()
     {
         return $this->sportColor;
+    }
+
+    /**
+     * Set abbreviazione
+     *
+     * @param string $abbreviazione
+     *
+     * @return Sport
+     */
+    public function setAbbreviazione($abbreviazione)
+    {
+        $this->abbreviazione = $abbreviazione;
+
+        return $this;
+    }
+
+    /**
+     * Get abbreviazione
+     *
+     * @return string
+     */
+    public function getAbbreviazione()
+    {
+        return $this->abbreviazione;
     }
 }

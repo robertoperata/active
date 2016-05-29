@@ -67,7 +67,7 @@
         </div>
 
             <div id="tabella_sport">
-                <h4 id="tabella_giorno"></h4>
+                <h3 id="tabella_giorno"></h3>
             </div>
 
 
@@ -162,8 +162,10 @@
                         var sport = data.sport;
                         var body = document.getElementsByTagName('body')[0];
                         var tbl = document.createElement('table');
+                        tbl.setAttribute('class','table table-striped');
+
                         tbl.style.width = '100%';
-                        tbl.setAttribute('border', '1');
+
                         var tbdy = document.createElement('tbody');
                         var orarioApertura = data.apertura;
                         var orarioChiusura = data.chiusura;
@@ -174,10 +176,16 @@
                         var th = document.createElement('th');
                         tr_head.appendChild(th);
                         sport.forEach(function (item) {
+                        var column_num = 1;
                             for (n = 1; n <= item.fieldsNumber; n++) {
                                 var th = document.createElement('th');
                                 th.style['background-color'] = item.sportColor;
-                                th.appendChild(document.createTextNode(item.name + "#" + n));
+                                th.setAttribute("data-sport-id", item.sport_id);
+                                th.setAttribute("data-column-id", column_num);
+                                th.setAttribute("title", item.name);
+                                column_num++;
+                                th.appendChild(document.createTextNode(item.abbreziazione + " #" + n));
+
                                 tr_head.appendChild(th);
                             }
 
@@ -215,15 +223,6 @@
                     dataType: 'json'
                 });
 
-
-
-
-                /*
-                tabella = JSON.parse(json);
-                $("#tabella_giorno").text(tabella.giorno.date);
-                console.log(tabella.giorno.date);
-                console.log(tabella.giorno);
-                */
             }
 
             function prenotazioni(day){
@@ -235,7 +234,8 @@
                     url: url,
                     data: jsonArray,
                     success: function(data){
-
+                        var col_numb = $('#tabella_sport').find('th[data-sport-id="'+data[0].id_sport+'"][data-column-id="'+data[0].campo+'"]').index();
+                        $("#tabella_sport tr:nth-child(2) td:eq("+ --col_numb +")").text(data[0].name);
                     },
                     error: function(data){
 

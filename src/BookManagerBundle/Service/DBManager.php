@@ -15,7 +15,6 @@ use BookManagerBundle\Entity\Schedule;
 use BookManagerBundle\Entity\OrariPreferenze;
 use BookManagerBundle\Entity\Sport;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Validator\Constraints\DateTime;
 
 class DBManager
 {
@@ -201,17 +200,35 @@ class DBManager
         return $result;
     }
 
-    public function getPrenotazioniPerDay(\DateTime $dateTime){
+    public function getReservationPerSportAndDay(Sport $sport, \DateTime $dateTime, $ora){
         $qb = $this->em->createQueryBuilder();
 
-        $day = new \DateTime($dateTime);
-        $day->format('Y-m-d');
+        $dateTime->format('Y-m-d');
         $result =$qb->select('r')
             ->from('BookManagerBundle:Reservation', 'r')
             ->where('r.date = ?1')
-            ->setParameter(1,$day)
+            ->andWhere('r.sport_id = ?2')
+            ->andWhere('r.hour = ?3')
+            ->setParameter(1,$dateTime)
+            ->setParameter(2, $sport->getId())
+            ->setParameter(3, $ora)
             ->getQuery()->execute();
         return $result;
+    }
+
+    public function getPrenotazioniPerDay(\DateTime $dateTime){
+
+
+        $qb = $this->em->createQueryBuilder();
+
+        $dateTime->format('Y-m-d');
+        $result =$qb->select('r')
+            ->from('BookManagerBundle:Reservation', 'r')
+            ->where('r.date = ?1')
+            ->setParameter(1,$dateTime)
+            ->getQuery()->execute();
+        return $result;
+
     }
 
     public function getPrenotazioniFromToday(){

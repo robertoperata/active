@@ -14,4 +14,7 @@ class DefaultController extends Controller
     {
         return $this->render('PrizUserBundle:Default:index.html.twig');
     }
+
+
+
 }

@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
- * Sport controller.
+ * Dashboard controller.
  *
  * @Route("/admin/dashboard")
  */
@@ -78,8 +78,12 @@ class DashboardController extends Controller{
         }
         $sportPerGiorno = $dbManager->getAllSportsForDay($date);
         $elencoSport = array();
+
         foreach( $sportPerGiorno as $sport ){
+
             $temp = array('name'=>$sport->getSport()->getName(),
+                          'sport_id'=>$sport->getSport()->getId(),
+                          'abbreziazione'=>$sport->getSport()->getAbbreviazione(),
                           'priceResident'=>$sport->getSport()->getPriceResident(),
                           'priceResidentLightsOn'=>$sport->getSport()->getPriceResidentLightsOn(),
                           'priceNotResident'=>$sport->getSport()->getPriceNotResident(),
@@ -98,7 +102,7 @@ class DashboardController extends Controller{
     /**
      *  Chiamata ajax che restituisce json con orari validi per il giorno chiamato, sportm numero di campi
      *
-     * @Route("/", name="dash_loadTabellaSport")
+     * @Route("/loadTabellaSport", name="dash_loadTabellaSport")
      * @Method("POST")
      */
     public function getSportsPerGiorno(Request $request){
@@ -120,7 +124,7 @@ class DashboardController extends Controller{
     /**
      *  Chiamata ajax che restituisce json con prenotazioni per giorno chiamato
      *
-     * @Route("/", name="dash_getReservation")
+     * @Route("/getReservations", name="dash_getReservation")
      * @Method("POST")
      */
     public function dash_getReservation(Request $request){
@@ -130,7 +134,20 @@ class DashboardController extends Controller{
         $response = new Response();
         $response->setStatusCode('200');
         try{
-
+            $prenotazioni = $dbManager->getPrenotazioniPerDay($day);
+            $elencoPrenotazioni = array();
+            foreach( $prenotazioni as $sport ) {
+                $temp = array('id_sport' => $sport->getSportId()->getId(),
+                   'campo' => $sport->getCampoId(),
+                    'hour' => $sport->getHour(),
+                    'name' => $sport->getName(),
+                    'cell' => $sport->getCell(),
+                    'resident_nr' => $sport->getResidentsNum(),
+                    'not_resident_nr' => $sport->getNotResidentNum(),
+                );
+            }
+            array_push($elencoPrenotazioni, $temp);
+            $response->setContent(json_encode($elencoPrenotazioni));
         }catch (Exception $e){
             $response->setStatusCode('400');
         }

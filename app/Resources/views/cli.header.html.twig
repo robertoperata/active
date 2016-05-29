@@ -1,0 +1,30 @@
+<header class="main-header">
+
+    <!-- Logo -->
+    <a href="#" class="logo">
+        <!-- mini logo for sidebar mini 50x50 pixels -->
+        <span class="logo-mini"></span>
+        <!-- logo for regular state and mobile devices -->
+        <span class="logo-lg"><img src="/assets/img/logo_firma_email.jpg" height="50px" width="auto"/> </span>
+    </a>
+
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top" role="navigation">
+
+        <div class="pull-right" style="margin-right: 50px">
+
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                {#{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }#}
+                <i class="fa fa-user"></i> {{ app.user.username|capitalize }} -
+                <a href="{{ path('fos_user_security_logout') }}">
+                    {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
+                </a>
+                {# % else %}
+                    <a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
+                    #}
+            {% endif %}
+
+        </div>
+
+    </nav>
+</header>

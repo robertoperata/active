@@ -13,6 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use BookManagerBundle\Entity\Sport;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -84,6 +85,10 @@ class PrenotazioniController extends Controller{
         return $response;
     }
 
+    private function getReservationPerSportAndDay($sport_id, $dat){
+
+    }
+
     /**
      * @Route("/saveRservation", name="save_reservation")
      * @Method("POST")
@@ -91,16 +96,39 @@ class PrenotazioniController extends Controller{
     public function saveReservation(Request $request){
         $data = json_decode($request->getContent());
         $dbManager =    $this->get('app.dbmanager');
+        $today = new \DateTime();
+        $today->format('Y-m-d');
+
+
 
         $reservation = new Reservation();
         $giorno = implode("-",array_reverse(explode("-",$data->giorno)));
         $giorno_reverse = new \DateTime($giorno);
         $sport = $dbManager->getSport($data->id_sport);
 
+        $response = new Response();
+        $response->setStatusCode(200);
+        try{
+            $prenotazioni = $dbManager->getReservationPerSportAndDay($sport, $giorno_reverse,  $data->ora);
+
+        }catch (Exception $e){
+            $response->setStatusCode(400);
+        }
+        $campo_numero = 1;
+        if(sizeof($prenotazioni) > 0){
+            $campo_numero = sizeof($prenotazioni) + 1;
+        }
+        if($campo_numero > $sport->getFieldsNumber){
+            $response->setStatusCode(400);
+            return $response;
+        }
+
         $reservation->setName($data->nome);
         $reservation->setDate($giorno_reverse);
         $reservation->setSportId($sport);
         $reservation->setHour($data->ora);
+        $reservation->setCampoId($campo_numero);
+        $reservation->setDataPrenotazione($today);
         $dbManager->saveReservation($reservation);
 
         $response = new Response();

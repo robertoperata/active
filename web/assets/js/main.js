@@ -10,7 +10,7 @@ Date.prototype.ddmm = function() {
 
     var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
     var dd  = this.getDate().toString();
-    var day = giornoSettimanaAbbr(this.getDay());
+    var day = giornoSettimana(this.getDay());
     return day+" "+ (dd[1]?dd:"0"+dd[0]) +"/" +(mm[1]?mm:"0"+mm[0]); // padding
 };
 
@@ -33,7 +33,7 @@ function giornoSettimana(num){
     weekday[3] = "Mercoledì";
     weekday[4] = "Giovedì";
     weekday[5] = "Venerdì";
-    weekday[6] = "Sabatp";
+    weekday[6] = "Sabato";
 
    return weekday[num];
 

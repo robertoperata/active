@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.css') }}" />
+        <link rel="stylesheet" href="{{ asset('assets/css/jquery-ui.min.css') }}" />
+        <link rel="stylesheet" href="{{ asset('assets/css/ionicons.min.css') }}" />
+        <link rel="stylesheet" href="{{ asset('assets/css/font-awesome.min.css') }}" />
+
+        <link rel="stylesheet" href="{{ asset('dist/css/skins/_all-skins.min.css')}}"/>
+        <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}" />
+
+        <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+        <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
+        <script src="{{ asset('assets/js/jquery-ui.min.js') }}"></script>
+        <script src="{{ asset('assets/js/main.js') }}"></script>
+    </head>
+    <body class="cli">
+        <div class="wrapper">
+            {% include 'cli.header.html.twig' %}
+            {% block body %}{% endblock %}
+        </div>
+            {% block javascripts %}{% endblock %}
+
+    </body>
+</html>

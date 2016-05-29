@@ -137,4 +137,7 @@ table#calendario td.disabled {
 .savePref {
   display: none; }
 
+#tabella_sport h3 {
+  text-align: center; }
+
 /*# sourceMappingURL=main.css.map */

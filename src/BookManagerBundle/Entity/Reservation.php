@@ -50,18 +50,28 @@ class Reservation{
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=13)
+     * @ORM\Column(type="integer")
+     */
+    private $campo_id;
+
+    /**
+     * @ORM\Column(type="string", length=13,  nullable=true)
      */
     private $cell;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer",  nullable=true)
      */
     private $residentsNum;
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer",  nullable=true)
      */
     private $notResidentNum;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $dataPrenotazione;
 
     /**
      * Get id
@@ -263,5 +273,55 @@ class Reservation{
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Set dataPrenotazione
+     *
+     * @param \DateTime $dataPrenotazione
+     *
+     * @return Reservation
+     */
+    public function setDataPrenotazione($dataPrenotazione)
+    {
+        $this->dataPrenotazione = $dataPrenotazione;
+
+        return $this;
+    }
+
+    /**
+     * Get dataPrenotazione
+     *
+     * @return \DateTime
+     */
+    public function getDataPrenotazione()
+    {
+        return $this->dataPrenotazione;
+    }
+
+
+
+    /**
+     * Set campoId
+     *
+     * @param integer $campoId
+     *
+     * @return Reservation
+     */
+    public function setCampoId($campoId)
+    {
+        $this->campo_id = $campoId;
+
+        return $this;
+    }
+
+    /**
+     * Get campoId
+     *
+     * @return integer
+     */
+    public function getCampoId()
+    {
+        return $this->campo_id;
     }
 }
