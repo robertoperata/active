@@ -140,4 +140,10 @@ table#calendario td.disabled {
 #tabella_sport h3 {
   text-align: center; }
 
+#step2 > div {
+  margin-top: 10px; }
+
+#step3 > div {
+  margin-top: 10px; }
+
 /*# sourceMappingURL=main.css.map */

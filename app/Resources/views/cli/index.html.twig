@@ -1,16 +1,193 @@
 {% extends 'cli.base.html.twig' %}
 {% block body %}
     <div class="col-xs-12 col-md-8 col-md-offset-2">
-        <div id="step1">
+        <div id="step1" class="clearfix">
             <label class="col-xs-12 col-md-2"> Scegli lo sport:</label>
             <div class="col-xs-12 col-md-10">
-                <select id="sport_combo" class=" form-control">
+                <select id="sport_combo" class=" form-control" onchange="javascript:step2(this)">
                     <option>Scegli uno sport</option>
                     {% for item in sports %}
-                        <option data-sport-id="{{ item.id }}">{{ item.name }}</option>
+                        <option data-sport-id="{{ item.id }}" >{{ item.name }}</option>
                     {% endfor %}
                 </select>
             </div>
         </div>
+        <div id="step2" style="display: none" class="clearfix">
+            <label class="col-xs-12 col-md-2"> Scegli la data:</label>
+            <div class="col-xs-12 col-md-10">
+                <input type="text" id="datepicker" class="form-control">
+            </div>
+        </div>
+        <div id="step3" style="display: none" class="clearfix">
+            <div  class="clearfix">
+            <label class="col-xs-12 col-md-2"> Ora:</label>
+            <div class="col-xs-12 col-md-10">
+                <select name="hour" class="form-control">
+                    <option value="9">9:00</option>
+                    <option value="10">10:00</option>
+                    <option value="11">11:00</option>
+                    <option value="12">12:00</option>
+                    <option value="13">13:00</option>
+                    <option value="14">14:00</option>
+                    <option value="15">15:00</option>
+                    <option value="16">16:00</option>
+                    <option value="17">17:00</option>
+                    <option value="18">18:00</option>
+                    <option value="19">19:00</option>
+                    <option value="20">20:00</option>
+                    <option value="21">21:00</option>
+                </select>
+            </div>
+            </div>
+            <div class="clearfix">
+                <label class="col-xs-12 col-md-2"> Numero residenti:</label>
+                <div class="col-xs-12 col-md-10">
+                    <input  type="number" min="0" step="1" name="residentsNum" class="form-control">
+                </div>
+            </div>
+            <div  class="clearfix">
+                <label class="col-xs-12 col-md-2"> Numero non residenti:</label>
+                <div class="col-xs-12 col-md-10">
+                    <input type="number" min="0" step="1" name="notResidentNum" class="form-control">
+                </div>
+            </div>
+           <div> <button class="btn btn-primary pull-right" onclick="salva()">Prenota</button></div>
+        </div>
     </div>
+    <script>
+         function step2(select){
+
+
+                var url = "{{ path('step2') }}";
+                var sport_id =  $(select).find("option:selected").attr("data-sport-id");
+
+                var obj = {'id_sport': sport_id};
+                var jsonArray = JSON.stringify(obj);
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: jsonArray,
+                    success: function(data){
+                        $('#datepicker').datepicker("destroy");
+                        $('#datepicker').val("");
+
+                        prenotazioneForm(data.schedule);
+                    },
+                    dataType: 'json'
+                });
+        }
+
+         function salva(){
+
+             var residentsNum = $('input[name="residentsNum"]').val();
+             var notResidentNum = $('input[name="notResidentNum"]').val();
+             var hour = $('select[name="hour"]').val();
+             var day = $('#datepicker').val();
+             var sport = $('select#sport_combo').val();
+             console.log("residentsNum:"+reservation.residentsNum + " notResidentNum:"+reservation.notResidentNum+"  reservation.hour:"+ reservation.hour+" reservation.day:"+reservation.day+" reservation.sport:"+reservation.sport);
+
+
+             var obj = { 'residentsNum':residentsNum,
+                 'notResidentNum': notResidentNum,
+                 'hour':hour,
+                 'day':day,
+                 'sport':sport
+             };
+
+             var url = "{{ path('saveReservation') }}";
+             var jsonArray = JSON.stringify(obj);
+             $.ajax({
+                 type: "POST",
+                 url: url,
+                 data: jsonArray,
+                 success: function(data){
+
+
+                 },
+                 dataType: 'json'
+             });
+
+         }
+
+
+
+         function prenotazioneForm(schedule) {
+             $("#step2").show();
+             $.datepicker.setDefaults( $.datepicker.regional[ "it" ] );
+             $('#datepicker').datepicker({
+
+                 minDate: 0,
+                 beforeShowDay:  function(date){
+                     var day = date.getDay();
+                     var disabledDays = ["-1", "-1", "-1", "-1", "-1", "-1", "-1"];
+                     for(var n = 0; n < schedule.length; n++){
+                         disabledDays[schedule[n].day_number] = schedule[n].day_number;
+                      }
+                     if( day ==   disabledDays[0] || day ==   disabledDays[1] || day ==   disabledDays[2] || day ==   disabledDays[3] || day ==   disabledDays[4] || day ==   disabledDays[5] || day ==   disabledDays[5] ||day ==   disabledDays[6]  ){
+                         return [true] ;
+                     } else {
+
+                         return [false] ;
+                     }
+                 },
+                 onSelect: function () {
+                     var date = $(this).val();
+                     loadOrari(date);
+                     showStep3();
+                 }
+             })
+         };
+
+         function loadOrari(date){
+             var obj = {'day':date};
+             var url = "{{ path('loadOrari') }}";
+             var jsonArray = JSON.stringify(obj);
+             $.ajax({
+                 type: "POST",
+                 url: url,
+                 data: jsonArray,
+                 success: function(data){
+
+
+                 },
+                 dataType: 'json'
+             });
+         }
+
+         function showStep3(){
+             $("#step3").show();
+         }
+
+
+
+        function calendarioPrenotazioni(schedule){
+            var today = new Date();
+            var numeroGiornoSettimana = today.getDay();
+            var giornoCorrente = today.getDate();
+            var meseCorrente = today.getMonth() + 1;
+            var annoCorrente = today.getFullYear();
+            for(var i = 1; i < 11; i++){
+                for(var n = 0; n < schedule.length; n++){
+                    giornoNumero = schedule[n].day_number;
+                    giornoDaCalcolare = giornoNumero - numeroGiornoSettimana;
+                     //numeroDaAggiungere = 7 + giornoDaCalcolare;
+
+                    if(i == 1){
+
+                        giorno = new Date(today.getTime() + (86400000 * giornoDaCalcolare ));
+                    }else{
+                        giorno = new Date(today.getTime() + (86400000 * giornoDaCalcolare )+(7 * 86400000 * i));
+
+                    }
+
+                        $('#step2').append("<div class='col-xs-12 col-sm-3 step2_box' ><span>"+ giorno.ddmm() +" <i class='fa fa-calendar' onclick='step3()'></i></span></div>");
+                }
+
+            }
+        }
+
+        function step3(){
+
+        }
+    </script>
 {% endblock %}

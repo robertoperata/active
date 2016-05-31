@@ -8,7 +8,7 @@ $dark-blue-color: #153776
 $font-size:16px
 $calcetto:#08761B
 $beach:#C5AC3C
-
+$small: 767px
 
 body
   background: $primary-bkground-color
@@ -151,3 +151,12 @@ table#calendario td.disabled
 
 #tabella_sport h3
   text-align: center
+
+#step2 > div
+  //min-height: 140px
+  margin-top: 10px
+  @media screen and (max-width: $small)
+  // min-height: 50px
+
+#step3 > div
+  margin-top: 10px
