@@ -1,13 +1,17 @@
 {% extends 'cli.base.html.twig' %}
 {% block body %}
-    <div class="col-xs-12 col-md-8 col-md-offset-2">
+    <div class="col-xs-12 col-md-8 col-md-offset-2" id="compilazione">
         <div id="step1" class="clearfix">
             <label class="col-xs-12 col-md-2"> Scegli lo sport:</label>
             <div class="col-xs-12 col-md-10">
                 <select id="sport_combo" class=" form-control" onchange="javascript:step2(this)">
                     <option>Scegli uno sport</option>
                     {% for item in sports %}
-                        <option data-sport-id="{{ item.id }}" >{{ item.name }}</option>
+                        <option data-sport-id="{{ item.id }}"
+                                data-res-p="{{ item.priceResident }}"
+                                data-not-res-p="{{ item.priceNotResident }}"
+                                data-res-np="{{ item.priceResidentLightsOn }}"
+                                data-not-res-np="{{ item.priceNotResidentLightsOn }}">{{ item.name }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -54,6 +58,17 @@
            <div> <button class="btn btn-primary pull-right" onclick="salva()">Prenota</button></div>
         </div>
     </div>
+    <div class="col-xs-12 col-md-6 col-md-offset-3" id="checkout" style="display: none">
+
+    <div class="box box-default table-condensed clearfix" >
+        <div class="box-header with-border">
+            <h1>Prenotazione</h1>
+
+
+        </div>
+        <div id="dettaglioCheckout">
+        </div>
+    </div>
     <script>
          function step2(select){
 
@@ -81,35 +96,44 @@
 
              var residentsNum = $('input[name="residentsNum"]').val();
              var notResidentNum = $('input[name="notResidentNum"]').val();
-             var hour = $('select[name="hour"]').val();
-             var day = $('#datepicker').val();
-             var sport = $('select#sport_combo').val();
-             console.log("residentsNum:"+reservation.residentsNum + " notResidentNum:"+reservation.notResidentNum+"  reservation.hour:"+ reservation.hour+" reservation.day:"+reservation.day+" reservation.sport:"+reservation.sport);
+             var hour = $('select[name="hour"] :selected').val();
+             var day = toDate($('#datepicker').val());
+             var sport = $('select#sport_combo :selected').attr('data-sport-id');
+             console.log("residentsNum:"+residentsNum + " notResidentNum:"+notResidentNum+"  reservation.hour:"+ hour+" reservation.day:"+day.yyyymmdd());
 
 
              var obj = { 'residentsNum':residentsNum,
                  'notResidentNum': notResidentNum,
                  'hour':hour,
-                 'day':day,
+                 'day':day.yyyymmdd(),
                  'sport':sport
              };
 
-             var url = "{{ path('saveReservation') }}";
+             var url = "{{ path('preCheckout') }}";
              var jsonArray = JSON.stringify(obj);
              $.ajax({
                  type: "POST",
                  url: url,
                  data: jsonArray,
                  success: function(data){
-
-
+                     $("#compilazione").hide();
+                     $("#checkout").show();
+                     $("#dettaglioCheckout").append("<span class='col-xs-12 sportName'>Calcio a 5</span>");
+                     $("#dettaglioCheckout").append("<span class='col-xs-12 calendario'>29/9 alle 9:00</span>");
+                     $("#dettaglioCheckout").append("<span class='col-sm-8 col-sm-offset-2 residenti'>"+residentsNum+" players resdienti x <span class='pull-right'>"+data.tariffaResidenti+" &euro;</span></span>");
+                     $("#dettaglioCheckout").append("<span class='col-sm-8 col-sm-offset-2 rigaSomma'>"+notResidentNum+" players non resdienti  x <span class='pull-right'>"+data.tariffaNonResidenti+" &euro;</span></span>");
+                     $("#dettaglioCheckout").append("<span class='col-sm-8 col-sm-offset-2 totale'>Totale <span class='pull-right'>"+data.totale+" &euro;</span></span>");
+                     $("#dettaglioCheckout").append("<span class='col-xs-12'><button id='annulla' onclick='annulla()' class='btn btn-danger col-sm-3 col-xs-12' >Annulla</button><button id='conferma' class='btn btn-primary col-sm-3 col-xs-6 pull-right' onclick='save()' >Conferma</button></span>");
                  },
                  dataType: 'json'
              });
 
          }
 
-
+        function annulla(){
+            $('#checkout').empty().hide();
+            $("#compilazione").show();
+        }
 
          function prenotazioneForm(schedule) {
              $("#step2").show();
@@ -186,8 +210,19 @@
             }
         }
 
-        function step3(){
+        function save(){
 
+            var url = "{{ path('checkout') }}";
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                success: function(data){
+
+
+                },
+                dataType: 'json'
+            });
         }
     </script>
 {% endblock %}

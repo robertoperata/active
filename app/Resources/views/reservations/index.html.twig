@@ -206,7 +206,8 @@
        function salvaPrenotazione(elemento){
            var sport = $(elemento).find( "input[name='sport']").attr('data-sport-id');
            var giorno = $(elemento).find("input[name='giorno']").attr('value');
-           var ora = $(elemento).find("option:selected").attr('data-hour-number');
+           var ora = toDate($(elemento).find("option:selected").attr('data-hour-number'));
+
            var nome = $(elemento).find("input[name='nome']").val();
 
            console.log("sport: "+sport+" giorno: "+ giorno + " ora: " + ora + " nome: "+nome);

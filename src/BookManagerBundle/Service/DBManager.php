@@ -251,6 +251,8 @@ class DBManager
         $this->em->flush();
     }
 
+
+
     //TODO: metodo pessimo che fa 2 query da migliorare
     public function getOrariApertura(){
         $qb = $this->em->createQueryBuilder();

@@ -78,7 +78,7 @@
                     <h3 class="box-title">Chiusure</h3>
 
                     <div class="box-tools pull-right">
-                        <button type="button"  class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus" onclick="javascript:openHide(this)"></i>
+                        <button type="button"  class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus" onclick="openHide(this)"></i>
                         </button>
                     </div>
                     <!-- /.box-tools -->
@@ -86,7 +86,7 @@
                 <!-- /.box-header -->
                 <div id="calendarioChiusure" class="box-body">
                     {% for key, value in defaultHolidays %}
-                        <div><input type="checkbox" name="{{ key }}"{% if value %} checked="checked " {% endif %} onchange="javascript:toggleCalendar(this)"> {{ key|date('d/m/Y') }}</div>
+                        <div><input type="checkbox" name="{{ key }}"{% if value %} checked="checked " {% endif %} onchange="toggleCalendar(this)"> {{ key|date('d/m/Y') }}</div>
 
                     {% endfor %}
                     <div style="margin-top: 5px">
@@ -103,7 +103,7 @@
                     <h3 class="box-title">Orari Preferenze</h3>
 
                     <div class="box-tools pull-right">
-                        <button type="button"  class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus" onclick="javascript:orariPreferenze(this)"></i>
+                        <button type="button"  class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus" onclick="orariPreferenze(this)"></i>
                         </button>
                     </div>
                     <!-- /.box-tools -->
@@ -121,7 +121,7 @@
                         </thead>
                     {% for  value in timePreferencies %}
                         <tr>
-                            <td><i class="fa fa-trash" date-preferenze="{{ value.id }}" onclick="javascript:deletePreference(this)"></i>&nbsp;{{ value.date|date('d/m/Y') }}</td>
+                            <td><i class="fa fa-trash" data-preferenze="{{ value.id }}" onclick="deletePreference(this)"></i>&nbsp;{{ value.date|date('d/m/Y') }}</td>
                             <td class="text-right">{{ value.apertura }}:00</td>
                             <td class="text-right">{{ value.chiusura }}:00</td>
                             <td class="text-right">{{ value.notturno }}:00</td>
@@ -157,7 +157,7 @@
                     url: url,
                     data: jsonArray,
                     success: function(data){
-                        giorno = new Date(data.giorno.date);
+                        var giorno = new Date(data.giorno.date);
                         $("#tabella_giorno").text(giorno.ddmm());
                         var sport = data.sport;
                         var body = document.getElementsByTagName('body')[0];

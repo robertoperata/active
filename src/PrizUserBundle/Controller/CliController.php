@@ -8,6 +8,7 @@
 
 namespace PrizUserBundle\Controller;
 
+use BookManagerBundle\Entity\Reservation;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -15,6 +16,9 @@ use BookManagerBundle\Entity\Sport;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Constraints\DateTime;
+use Symfony\Component\HttpFoundation\Session\Session;
+
 /**
  * End USer controller.
  *
@@ -75,10 +79,67 @@ class CliController extends Controller{
     /**
      * Salva prenotazione
      *
-     * @Route("/save", name="saveReservation")
+     * @Route("/save", name="preCheckout")
      * @Method("POST")
      */
-    public function saveReservation(Request $request){
+    public function preCheckout(Request $request){
+        $data = json_decode($request->getContent());
+        $reservation = new Reservation();
+        $data_prenotazione = new \DateTime($data->day);
+
+      //  $reservation->setDataPrenotazione($data_prenotazione);
+        $reservation->setNotResidentNum($data->notResidentNum);
+        $reservation->setResidentsNum($data->residentsNum);
+        $reservation->getHour($data->hour);
+//        $reservation->setSportId($data->sport);
+        $session = $request->getSession();
+        if(empty($session)){
+
+            $session = new Session();
+        }
+        $session->start();
+
+        $session->set('reservation', $reservation);
+
+
+
+        $dbManager =    $this->get('app.dbmanager');
+        $response = new Response();
+        $response->setStatusCode('200');
+        try{
+           // $sport = new Sport();
+            $sport =  $dbManager->getSport($data->sport);
+            $orari = $dbManager->getTimePreferencies($data_prenotazione);
+            $tariffaNotturna = false;
+            $tariffaResidenti = 0;
+            $tariffaNonResidenti = 0;
+            if($data->hour >= $orari[0]->getNotturno()){
+                $importoResidenti = $data->residentsNum * $sport->getPriceResidentLightsOn();
+                $importoNonResidenti = $data->notResidentsNum * $sport->getPriceNotResidentLightsOn();
+                $tariffaNotturna  = true;
+                $tariffaResidenti = $sport->getPriceResidentLightsOn();
+                $tariffaNonResidenti = $sport->getPriceNotResidentLightsOn();
+
+            }else{
+                $importoResidenti = $data->residentsNum * $sport->getPriceResident();
+                $importoNonResidenti = $data->notResidentNum * $sport->getPriceNotResident();
+                $tariffaResidenti = $sport->getPriceResident();
+                $tariffaNonResidenti = $sport->getPriceNotResident();
+
+            }
+            $totale = $importoResidenti + $importoNonResidenti;
+            $importi = array(   'totale'=>$totale,
+                                'tariffaNotturna'=>$tariffaNotturna,
+                                'tariffaResidenti'=>$tariffaResidenti,
+                                'tariffaNonResidenti'=>$tariffaNonResidenti,
+                                'sport'=>$sport);
+
+           $response->setContent(json_encode($importi));
+        }catch (Exception $e){
+            $response->setStatusCode('400');
+        }
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
 
     }
 
@@ -103,6 +164,31 @@ class CliController extends Controller{
         $response->headers->set('Content-Type', 'application/json');
         return $response;
 
+    }
+
+    /**
+     * Salva prenotazione
+     *
+     * @Route("/checkout", name="checkout")
+     * @Method("POST")
+     */
+    public function checkout(Request $request){
+        $session = new Session();
+        $session->start();
+
+        $reservation = $session->get('reservation');
+
+        $dbManager =    $this->get('app.dbmanager');
+        $response = new Response();
+        $response->setStatusCode('200');
+        try{
+            $orariApertura = $dbManager->saveReservation($reservation);
+
+        }catch (Exception $e){
+            $response->setStatusCode('400');
+        }
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
 }
