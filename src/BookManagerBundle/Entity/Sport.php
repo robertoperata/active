@@ -58,6 +58,11 @@ class Sport{
     private $schedules;
 
     /**
+     * @ORM\OneToMany(targetEntity="Reservation", mappedBy="sport")
+     */
+    private $reservation;
+
+    /**
      * @ORM\Column(type="integer")
      */
     private $fieldsNumber;
@@ -80,6 +85,7 @@ class Sport{
 
     public function __construct() {
         $this->schedules = new ArrayCollection();
+        $this->reservation = new ArrayCollection();
 
     }
 
@@ -365,5 +371,39 @@ class Sport{
     public function getAbbreviazione()
     {
         return $this->abbreviazione;
+    }
+
+    /**
+     * Add reservation
+     *
+     * @param \BookManagerBundle\Entity\Reservation $reservation
+     *
+     * @return Sport
+     */
+    public function addReservation(\BookManagerBundle\Entity\Reservation $reservation)
+    {
+        $this->reservation[] = $reservation;
+
+        return $this;
+    }
+
+    /**
+     * Remove reservation
+     *
+     * @param \BookManagerBundle\Entity\Reservation $reservation
+     */
+    public function removeReservation(\BookManagerBundle\Entity\Reservation $reservation)
+    {
+        $this->reservation->removeElement($reservation);
+    }
+
+    /**
+     * Get reservation
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getReservation()
+    {
+        return $this->reservation;
     }
 }

@@ -26,10 +26,16 @@
                 <div class="form-group">
 
                     <label for="sport_name" class="required col-xs-4 control-label">Nome</label>
-                    <div class="col-xs-8">
+                    <div class="col-xs-5">
                         <input class="form-control" type="text" id="sport_name" tabindex="1" name="sport[name]" required="required" maxlength="100">
                     </div>
+                    <label for="sport_abbr" class="required col-xs-1">Abbrev.</label>
+                    <div class="col-xs-2">
+                        <input class="form-control" type="text" id="sport_abbr" tabindex="1" name="sport[abbreviazione]" required="required" maxlength="2">
+
+                    </div>
                 </div>
+
                 <div class="form-group">
                     <label for="sport_priceResident" class="required col-xs-4 control-label">Prezzo residenti</label>
                     <div class="col-xs-8">
@@ -102,9 +108,9 @@
  {#
         {{ form_widget(form) }}
 #}
-        <input type="button" id="add" onclick="updateSport()" class="btn btn-primary pull-right" value="Create"  />
-        <input type="button" id="edit" onclick="updateSport()" class="btn btn-primary pull-right hide" value="Modifica" style="margin-right:5px" />
-        <input type="button" id="del" onclick="deleteSport()"  class="btn btn-danger pull-right hide" value="Eliminia"  style="margin-right:5px" />
+        <button id="add" onclick="updateSport()" class="btn btn-primary pull-right"  >Create</button>
+        <button type="button" id="edit" onclick="updateSport()" class="btn btn-primary pull-right hide" style="margin-right:5px" >Modifica</button>
+        <button type="button" id="del" onclick="deleteSport()"  class="btn btn-danger pull-right hide" style="margin-right:5px" >Elimina</button>
         </form>
         </div>
 
@@ -142,6 +148,7 @@
 
 
                 <td>{{ sport.name }}</td>
+                <td class="hide">{{ sport.abbreviazione }}</td>
                 <td>{{ sport.priceResident }}</td>
                 <td>{{ sport.priceResidentLightsOn }}</td>
                 <td>{{ sport.priceNotResident }}</td>
@@ -164,16 +171,18 @@
 
 
         function editSport(item){
-            $('div.add').click();
+            $('.glyphicon-plus').removeClass('glyphicon-plus').addClass('glyphicon-minus').css('margin', '12px 12px');
+            $("#add_sport").show('slow');
             $("#sport_name").val($(item).find("td:nth-child(1)").text());
-            $("#sport_priceResident").val($(item).find("td:nth-child(2)").text());
-            $("#sport_priceResidentLightsOn").val($(item).find("td:nth-child(3)").text());
-            $("#sport_priceNotResident").val($(item).find("td:nth-child(4)").text());
-            $("#sport_priceNotResidentLightsOn").val($(item).find("td:nth-child(5)").text());
-            $("#sport_fieldsNumber").val($(item).find("td:nth-child(6)").text());
-            $("#sport_minPlayer").val($(item).find("td:nth-child(7)").text());
-            $("#sport_maxPlayer").val($(item).find("td:nth-child(8)").text());
-            $("#sport_sportColor").val($(item).find("td:nth-child(9)").text());
+            $("#sport_abbr").val($(item).find("td:nth-child(2)").text());
+            $("#sport_priceResident").val($(item).find("td:nth-child(3)").text());
+            $("#sport_priceResidentLightsOn").val($(item).find("td:nth-child(4)").text());
+            $("#sport_priceNotResident").val($(item).find("td:nth-child(5)").text());
+            $("#sport_priceNotResidentLightsOn").val($(item).find("td:nth-child(6)").text());
+            $("#sport_fieldsNumber").val($(item).find("td:nth-child(7)").text());
+            $("#sport_minPlayer").val($(item).find("td:nth-child(8)").text());
+            $("#sport_maxPlayer").val($(item).find("td:nth-child(9)").text());
+            $("#sport_sportColor").val($(item).find("td:nth-child(10)").text());
             $("#sport_id").val($(item).attr('data-sport-id'));
             $("#add").addClass('hide');
             $("#edit").removeClass('hide');
@@ -210,11 +219,12 @@
                     $(this).val("");
                 }
             });
-            $('.btn-circle.add').click();
+
         }
 
         function updateSport(){
             var sport_name              = $("#sport_name").val();
+            var sport_abbr              = $("#sport_abbr").val();
             var priceResident           = $("#sport_priceResident").val();
             var priceResidentLightsOn   = $("#sport_priceResidentLightsOn").val();
             var priceNotResident        = $("#sport_priceNotResident").val();
@@ -234,6 +244,7 @@
 
             var obj = { 'sport_id':sport_id,
                         'sport_name': sport_name,
+                        'sport_abbr': sport_abbr,
                         'priceResident':priceResident,
                         'priceResidentLightsOn':priceResidentLightsOn,
                         'priceNotResident':priceNotResident,
@@ -248,11 +259,15 @@
                 url: url,
                 data: jsonArray,
                 success: function(data){
-                    clearForm();
+                   clearForm();
+                    var tr = "<tr onclick=\"editSport(this)\" data-sport-id=\""+data.id+"\"><td>"+data.sport_name+"</td><td class='hide'>"+data.sport_abbr+"</td> <td>"+parseFloat(data.priceResident).toFixed(2)+"</td><td>"+parseFloat(data.priceResidentLightsOn).toFixed(2)+"</td> <td>"+parseFloat(data.priceNotResident).toFixed(2)+"</td> <td>"+parseFloat(data.priceNotResidentLightsOn).toFixed(2)+"</td><td>"+data.fieldsNumber+"</td><td>"+data.minPlayer+"</td><td>"+data.maxPlayer+"</td><td style='background: "+data.sportColor+"'>"+data.sportColor+"</td></tr>";
+                    if(sport_id > 0){
+                        $('tr[data-sport-id='+sport_id+']').replaceWith(tr);
+                    }else{
+                     $("table").append(tr);
 
+                    }
 
-                    var tr = "<tr onclick=\"editSport(this)\" data-sport-id=\""+data.id+"\"><td>"+data.sport_name+"</td> <td>"+parseFloat(data.priceResident).toFixed(2)+"</td><td>"+parseFloat(data.priceResidentLightsOn).toFixed(2)+"</td> <td>"+parseFloat(data.priceNotResident).toFixed(2)+"</td> <td>"+parseFloat(data.priceNotResidentLightsOn).toFixed(2)+"</td><td style='background: "+data.sportColor+"'></td></tr>";
-                    $("table").append(tr);
                 },
                 dataType: 'json'
             });
@@ -262,9 +277,15 @@
             if($(item).find('.glyphicon-plus').length > 0){
                 $(item).find('.glyphicon-plus').removeClass('glyphicon-plus').addClass('glyphicon-minus').css('margin', '12px 12px');
                 $("#add_sport").show('slow');
+                clearForm();
+                $("#sport_id").val("");
+                $("#add").removeClass('hide');
+                $("#edit").addClass('hide');
+                $("#del").addClass('hide');
             }else{
                 $(item).find('.glyphicon-minus').removeClass('glyphicon-minus').addClass('glyphicon-plus').css('margin', '12px 14px');
                 $("#add_sport").hide('slow');
+                clearForm();
             }
         }
 

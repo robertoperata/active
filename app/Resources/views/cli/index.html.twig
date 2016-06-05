@@ -99,8 +99,6 @@
              var hour = $('select[name="hour"] :selected').val();
              var day = toDate($('#datepicker').val());
              var sport = $('select#sport_combo :selected').attr('data-sport-id');
-             console.log("residentsNum:"+residentsNum + " notResidentNum:"+notResidentNum+"  reservation.hour:"+ hour+" reservation.day:"+day.yyyymmdd());
-
 
              var obj = { 'residentsNum':residentsNum,
                  'notResidentNum': notResidentNum,
@@ -131,7 +129,8 @@
          }
 
         function annulla(){
-            $('#checkout').empty().hide();
+            $('#dettaglioCheckout').empty();
+            $('#checkout').hide();
             $("#compilazione").show();
         }
 

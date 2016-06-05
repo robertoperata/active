@@ -84,31 +84,34 @@ class CliController extends Controller{
      */
     public function preCheckout(Request $request){
         $data = json_decode($request->getContent());
-        $reservation = new Reservation();
+        $dbManager =    $this->get('app.dbmanager');
+
         $data_prenotazione = new \DateTime($data->day);
 
-      //  $reservation->setDataPrenotazione($data_prenotazione);
+        $sport =  $dbManager->getSport($data->sport);
+
+        $reservation = new Reservation();
+        $reservation->setSport($sport);
+        $reservation->setDataPrenotazione($data_prenotazione);
+        $reservation->setDate(new \DateTime());
         $reservation->setNotResidentNum($data->notResidentNum);
         $reservation->setResidentsNum($data->residentsNum);
-        $reservation->getHour($data->hour);
-//        $reservation->setSportId($data->sport);
+        $reservation->setHour($data->hour);
+
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $reservation->setUser($user);
+        $reservation->setName($user->getUsername());
+
         $session = $request->getSession();
         if(empty($session)){
-
             $session = new Session();
         }
         $session->start();
-
         $session->set('reservation', $reservation);
 
-
-
-        $dbManager =    $this->get('app.dbmanager');
         $response = new Response();
         $response->setStatusCode('200');
         try{
-           // $sport = new Sport();
-            $sport =  $dbManager->getSport($data->sport);
             $orari = $dbManager->getTimePreferencies($data_prenotazione);
             $tariffaNotturna = false;
             $tariffaResidenti = 0;
@@ -131,8 +134,8 @@ class CliController extends Controller{
             $importi = array(   'totale'=>$totale,
                                 'tariffaNotturna'=>$tariffaNotturna,
                                 'tariffaResidenti'=>$tariffaResidenti,
-                                'tariffaNonResidenti'=>$tariffaNonResidenti,
-                                'sport'=>$sport);
+                                'tariffaNonResidenti'=>$tariffaNonResidenti
+                                );
 
            $response->setContent(json_encode($importi));
         }catch (Exception $e){
@@ -173,12 +176,20 @@ class CliController extends Controller{
      * @Method("POST")
      */
     public function checkout(Request $request){
-        $session = new Session();
-        $session->start();
+        $session = $request->getSession();
 
         $reservation = $session->get('reservation');
 
         $dbManager =    $this->get('app.dbmanager');
+
+        $campo_id = $dbManager->getReservationPerSportAndDay($reservation->getSport(), $reservation->getDataPrenotazione(), $reservation->getHour());
+
+        $numeroCampo = 1;
+        if(sizeof($campo_id) > 0){
+            $numeroCampo = sizeof($campo_id) + 1;
+        }
+        $reservation->setCampoId($numeroCampo);
+
         $response = new Response();
         $response->setStatusCode('200');
         try{

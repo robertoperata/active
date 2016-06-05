@@ -10,10 +10,21 @@
                 <li class="active">Dashboard</li>
             </ol>
         </section>
-        <div class="col-xs-9 ">
-        <div class="prenotazioni box">
-            <h2>Prenotazioni</h2>
-            <h3>Mercoledì 11/05</h3>
+        <div class="col-xs-8 ">
+        <div class="prenotazioni box box-default" id="prenotazioni">
+            <div class="box-header with-border">
+                <h3 class="box-title">Prenotazioni</h3>
+
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool"><i class="fa fa-list disabled"></i>
+                    </button>
+                    <button type="button" class="btn btn-box-tool"><i class="fa fa-table"></i>
+                    </button>
+                </div>
+                <!-- /.box-tools -->
+            </div>
+
+            <h3 id="tabella_giorno"></h3>
             <div class="prenotazioni_ora">
                 <h4>ore 9:00</h4>
                 <div class="singola_prenotazione row ">
@@ -72,7 +83,8 @@
 
 
         </div>
-        <div class="col-md-3">
+
+        <div class="col-md-4">
             <div class="box box-default table-condensed">
                 <div class="box-header with-border">
                     <h3 class="box-title">Chiusure</h3>
@@ -195,7 +207,7 @@
 
                         for (var i = orarioApertura; i < orarioChiusura; i++) {
                             var tr = document.createElement('tr');
-                            var th = document.createElement('tr');
+                            var th = document.createElement('th');
                             th.appendChild(document.createTextNode(i + ":00"));
                             tr.appendChild(th);
                             sport.forEach(function (item) {

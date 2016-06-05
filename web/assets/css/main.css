@@ -181,4 +181,11 @@ table#calendario td.disabled {
   position: relative;
   width: 100%; }
 
+.fa.disabled {
+  opacity: 0.5;
+  cursor: default; }
+
+tbody tr th {
+  text-align: right; }
+
 /*# sourceMappingURL=main.css.map */

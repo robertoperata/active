@@ -30,6 +30,11 @@ class User extends BaseUser{
      */
     private $reservations;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $cell_number;
+
     public function __construct(){
         parent::__construct();
         $this->schedules = new ArrayCollection();
@@ -67,5 +72,29 @@ class User extends BaseUser{
     public function getReservations()
     {
         return $this->reservations;
+    }
+
+    /**
+     * Set cellNumber
+     *
+     * @param integer $cellNumber
+     *
+     * @return User
+     */
+    public function setCellNumber($cellNumber)
+    {
+        $this->cell_number = $cellNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get cellNumber
+     *
+     * @return integer
+     */
+    public function getCellNumber()
+    {
+        return $this->cell_number;
     }
 }

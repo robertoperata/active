@@ -15,6 +15,7 @@ use BookManagerBundle\Entity\Schedule;
 use BookManagerBundle\Entity\OrariPreferenze;
 use BookManagerBundle\Entity\Sport;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 class DBManager
 {
@@ -50,7 +51,7 @@ class DBManager
 
     public function getAllSportsForDay(\DateTime $day){
         $qb = $this->em->createQueryBuilder();
-        $giornoSettimana = date('N', $day->getTimestamp());
+        $giornoSettimana = date('w', $day->getTimestamp());
 
         $qb
             ->select('a', 'u')
@@ -91,7 +92,7 @@ class DBManager
 
 
     public function saveSchedule($sport, $day){
-        $elencoGiogni = [1=>"LUN", 2=>"MAR", 3=>"MER", 4=>"GIO", 5=>"VEN", 6=>"SAB", 7=>"DOM"];
+        $elencoGiogni = [1=>"LUN", 2=>"MAR", 3=>"MER", 4=>"GIO", 5=>"VEN", 6=>"SAB", 0=>"DOM"];
 
         $sport = $this->getSport($sport);
 
@@ -194,7 +195,7 @@ class DBManager
 
         $result =  $this->em->createQuery(
             'SELECT s FROM BookManagerBundle:Reservation s
-           WHERE s.sport_id = :sportID AND s.date >= CURRENT_DATE()')
+           WHERE s.sport = :sportID AND s.date >= CURRENT_DATE()')
             ->setParameter("sportID", $sport->getId())->execute();
 
         return $result;
@@ -203,11 +204,11 @@ class DBManager
     public function getReservationPerSportAndDay(Sport $sport, \DateTime $dateTime, $ora){
         $qb = $this->em->createQueryBuilder();
 
-        $dateTime->format('Y-m-d');
+       // $dateTime = $dateTime->format('Y-m-d');
         $result =$qb->select('r')
             ->from('BookManagerBundle:Reservation', 'r')
-            ->where('r.date = ?1')
-            ->andWhere('r.sport_id = ?2')
+            ->where('r.dataPrenotazione = ?1')
+            ->andWhere('r.sport = ?2')
             ->andWhere('r.hour = ?3')
             ->setParameter(1,$dateTime)
             ->setParameter(2, $sport->getId())
@@ -247,9 +248,10 @@ class DBManager
 
 
     public function saveReservation(Reservation $reservation){
-        $this->em->persist($reservation);
+        $this->em->merge($reservation);
         $this->em->flush();
     }
+
 
 
 

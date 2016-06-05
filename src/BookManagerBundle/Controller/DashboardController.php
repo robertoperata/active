@@ -136,18 +136,20 @@ class DashboardController extends Controller{
         try{
             $prenotazioni = $dbManager->getPrenotazioniPerDay($day);
             $elencoPrenotazioni = array();
-            foreach( $prenotazioni as $sport ) {
-                $temp = array('id_sport' => $sport->getSportId()->getId(),
-                   'campo' => $sport->getCampoId(),
-                    'hour' => $sport->getHour(),
-                    'name' => $sport->getName(),
-                    'cell' => $sport->getCell(),
-                    'resident_nr' => $sport->getResidentsNum(),
-                    'not_resident_nr' => $sport->getNotResidentNum(),
-                );
+            if(sizeof($prenotazioni) > 0) {
+                foreach ($prenotazioni as $sport) {
+                    $temp = array('id_sport' => $sport->getSportId()->getId(),
+                        'campo' => $sport->getCampoId(),
+                        'hour' => $sport->getHour(),
+                        'name' => $sport->getName(),
+                        'cell' => $sport->getCell(),
+                        'resident_nr' => $sport->getResidentsNum(),
+                        'not_resident_nr' => $sport->getNotResidentNum(),
+                    );
+                }
             }
-            array_push($elencoPrenotazioni, $temp);
-            $response->setContent(json_encode($elencoPrenotazioni));
+                array_push($elencoPrenotazioni, $temp);
+                $response->setContent(json_encode($elencoPrenotazioni));
         }catch (Exception $e){
             $response->setStatusCode('400');
         }

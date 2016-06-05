@@ -63,6 +63,7 @@ class SportController extends Controller
 
         $sport = new Sport();
         $sport->setName($data->sport_name);
+        $sport->setAbbreviazione($data->sport_abbr);
         $sport->setPriceResident($data->priceResident);
         $sport->setPriceResidentLightsOn($data->priceResidentLightsOn);
         $sport->setPriceNotResident($data->priceNotResident);
@@ -119,6 +120,7 @@ class SportController extends Controller
 
         $sport =  $em->getRepository('BookManagerBundle:Sport')->find($data->sport_id);
         $sport->setName($data->sport_name);
+        $sport->setAbbreviazione($data->sport_abbr);
         $sport->setPriceResident($data->priceResident);
         $sport->setPriceResidentLightsOn($data->priceResidentLightsOn);
         $sport->setPriceNotResident($data->priceNotResident);
@@ -136,7 +138,7 @@ class SportController extends Controller
         }
 
 
-        $response = new Response(json_encode($data->sport_id));
+        $response = new Response(json_encode($data));
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;

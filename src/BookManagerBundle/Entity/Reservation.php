@@ -26,7 +26,7 @@ class Reservation{
      * @ORM\ManyToOne(targetEntity="Sport", inversedBy="reservations")
      * @ORM\JoinColumn(name="sport_id", referencedColumnName="id")
      */
-    private $sport_id;
+    private $sport;
 
     /**
      * @ORM\Column(type="datetime")
@@ -69,7 +69,7 @@ class Reservation{
     private $notResidentNum;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="date")
      */
     private $dataPrenotazione;
 
@@ -234,9 +234,9 @@ class Reservation{
      *
      * @return Reservation
      */
-    public function setSportId(\BookManagerBundle\Entity\Sport $sportId = null)
+    public function setSport(\BookManagerBundle\Entity\Sport $sport = null)
     {
-        $this->sport_id = $sportId;
+        $this->sport = $sport;
 
         return $this;
     }
@@ -246,9 +246,9 @@ class Reservation{
      *
      * @return \BookManagerBundle\Entity\Sport
      */
-    public function getSportId()
+    public function getSport()
     {
-        return $this->sport_id;
+        return $this->sport;
     }
 
     /**
