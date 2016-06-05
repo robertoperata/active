@@ -225,7 +225,7 @@ class DBManager
         $dateTime->format('Y-m-d');
         $result =$qb->select('r')
             ->from('BookManagerBundle:Reservation', 'r')
-            ->where('r.date = ?1')
+            ->where('r.dataPrenotazione = ?1')
             ->setParameter(1,$dateTime)
             ->getQuery()->execute();
         return $result;

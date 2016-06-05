@@ -138,7 +138,7 @@ class DashboardController extends Controller{
             $elencoPrenotazioni = array();
             if(sizeof($prenotazioni) > 0) {
                 foreach ($prenotazioni as $sport) {
-                    $temp = array('id_sport' => $sport->getSportId()->getId(),
+                    $temp = array('id_sport' => $sport->getSport()->getId(),
                         'campo' => $sport->getCampoId(),
                         'hour' => $sport->getHour(),
                         'name' => $sport->getName(),
@@ -146,9 +146,9 @@ class DashboardController extends Controller{
                         'resident_nr' => $sport->getResidentsNum(),
                         'not_resident_nr' => $sport->getNotResidentNum(),
                     );
+                array_push($elencoPrenotazioni, $temp);
                 }
             }
-                array_push($elencoPrenotazioni, $temp);
                 $response->setContent(json_encode($elencoPrenotazioni));
         }catch (Exception $e){
             $response->setStatusCode('400');
