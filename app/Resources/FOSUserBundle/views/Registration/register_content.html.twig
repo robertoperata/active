@@ -4,6 +4,12 @@
     <h1>Registrazione</h1>
     {{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'class': 'fos_user_form fos_user_registration_register clearfix'}}) }}
     {{  form_errors(form) }}
+        <div class="col-xs-12" style="margin-bottom: 10px">
+
+        <div class="pull-right">
+            Già registrato?&nbsp;<a class="pull-right" href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
+        </div>
+        </div>
     <div class="form-group">
 
 
@@ -14,6 +20,13 @@
     {{ form_errors(form.username) }}
 
 
+</div>
+<div class="form-group">
+    {{ form_label(form.cell_number,  'Cellulare') }}
+
+    {{ form_widget(form.cell_number,  { 'attr': {'class': 'form-control'}}) }}
+
+    {{ form_errors(form.cell_number) }}
 </div>
 <div class="form-group">
     {{ form_label(form.email,  'Email') }}

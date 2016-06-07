@@ -60,7 +60,7 @@
     </div>
     <div class="col-xs-12 col-md-6 col-md-offset-3" id="checkout" style="display: none">
 
-    <div class="box box-default table-condensed clearfix" >
+    <div class="clearfix" >
         <div class="box-header with-border">
             <h1>Prenotazione</h1>
 
@@ -121,7 +121,7 @@
                      $("#dettaglioCheckout").append("<span class='col-sm-8 col-sm-offset-2 residenti'>"+residentsNum+" players resdienti x <span class='pull-right'>"+data.tariffaResidenti+" &euro;</span></span>");
                      $("#dettaglioCheckout").append("<span class='col-sm-8 col-sm-offset-2 rigaSomma'>"+notResidentNum+" players non resdienti  x <span class='pull-right'>"+data.tariffaNonResidenti+" &euro;</span></span>");
                      $("#dettaglioCheckout").append("<span class='col-sm-8 col-sm-offset-2 totale'>Totale <span class='pull-right'>"+data.totale+" &euro;</span></span>");
-                     $("#dettaglioCheckout").append("<span class='col-xs-12'><button id='annulla' onclick='annulla()' class='btn btn-danger col-sm-3 col-xs-12' >Annulla</button><button id='conferma' class='btn btn-primary col-sm-3 col-xs-6 pull-right' onclick='save()' >Conferma</button></span>");
+                     $("#dettaglioCheckout").append("<span class='col-xs-12'><button type=\"button\" class=\"btn btn-success pull-right btn-circle btn-lg\"  onclick='save()'><i class=\"glyphicon glyphicon glyphicon-ok\"></i></button>&nbsp;<button id='annulla' onclick='annulla()' class='btn btn-danger btn-circle btn-lg pull-right' ><i class=\"glyphicon glyphicon-remove\"></i></button></span>");
                  },
                  dataType: 'json'
              });

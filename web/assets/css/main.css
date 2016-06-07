@@ -1,14 +1,16 @@
 body {
-  background: #ededed;
+  background: url(../img/sfondo_bottom.png) no-repeat right bottom, url(../img/sfondo_top.png) no-repeat left top, url(../img/sfondo.png) no-repeat;
+  background-size: auto auto, auto auto, 100% auto;
+  background-attachment: fixed;
   font-family: Raleway, Arial, Helvetica, sans-serif;
-  border-top: 5px solid #0088CC;
   font-size: 16px;
   color: #333; }
 
 h1 {
   color: #666;
   font-size: 1.8em;
-  margin-bottom: 20px; }
+  margin-bottom: 20px;
+  font-family: arvobold, Arial, Helvetica, sans-serif; }
 
 h2 {
   font-size: 1.4em;
@@ -67,7 +69,7 @@ a:hover {
   border-radius: 2px; }
 
 .fos_user_form {
-  padding: 40px;
+  padding: 20px 40px 40px 40px;
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 2px; }
@@ -150,10 +152,11 @@ table#calendario td.disabled {
   margin-top: 10px; }
 
 #checkout {
-  color: #153776; }
+  color: #fff; }
 
 #checkout h1 {
-  text-align: center; }
+  text-align: center;
+  font-size: 4.8em; }
 
 #checkout span.sportName {
   font-size: 4em;
@@ -170,7 +173,10 @@ table#calendario td.disabled {
   text-align: left; }
 
 #checkout span.rigaSomma {
-  border-bottom: 3px #153776 solid; }
+  border-bottom: 3px #ffef00 solid; }
+
+body.cli {
+  font-family: arvoregular, Arial, Helvetica, sans-serif; }
 
 .box.box-default {
   border-top-color: #d2d6de; }
@@ -206,5 +212,30 @@ tbody tr th {
 #next:hover,
 #prev:hover {
   text-decoration: underline; }
+
+.btn-circle {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 12px;
+  line-height: 1.42857;
+  border-radius: 15px; }
+
+.btn-circle.btn-lg {
+  width: 50px;
+  height: 50px;
+  padding: 10px 16px;
+  font-size: 18px;
+  line-height: 1.33;
+  border-radius: 25px; }
+
+.btn-circle.btn-xl {
+  width: 70px;
+  height: 70px;
+  padding: 10px 16px;
+  font-size: 24px;
+  line-height: 1.33;
+  border-radius: 35px; }
 
 /*# sourceMappingURL=main.css.map */

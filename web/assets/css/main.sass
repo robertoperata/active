@@ -1,4 +1,7 @@
 $primary-bkground-color: #ededed
+$black: #000
+$white: #fff
+$yellow:#ffef00
 $primary-color: #666
 $primary-font: Raleway, Arial, Helvetica, sans-serif
 $primary-font-color: #333
@@ -11,16 +14,19 @@ $beach:#C5AC3C
 $small: 767px
 
 body
-  background: $primary-bkground-color
+  background: url(../img/sfondo_bottom.png) no-repeat right bottom ,url(../img/sfondo_top.png) no-repeat left top, url(../img/sfondo.png) no-repeat
+  background-size: auto auto, auto auto, 100% auto
+  background-attachment: fixed
   font-family: $primary-font
-  border-top: 5px solid $blue-color
   font-size: $font-size
   color: $primary-font-color
+
 
 h1
   color: $primary-color
   font-size: 1.8em
   margin-bottom: 20px
+  font-family: arvobold, Arial, Helvetica, sans-serif
 
 h2
   font-size: 1.4em
@@ -79,7 +85,7 @@ a:hover
   border-radius: $border-radious
 
 .fos_user_form
-  padding: 40px
+  padding: 20px 40px 40px 40px
   background: #fff
   border: 1px solid #ddd
   border-radius: $border-radious
@@ -165,10 +171,11 @@ table#calendario td.disabled
   margin-top: 10px
 
 #checkout
-  color: $dark-blue-color
+  color: $white
 
 #checkout h1
   text-align: center
+  font-size: 4.8em
 
 
 #checkout span.sportName
@@ -186,8 +193,10 @@ table#calendario td.disabled
   text-align: left
 
 #checkout span.rigaSomma
-  border-bottom: 3px $dark-blue-color solid
+  border-bottom: 3px $yellow solid
 
+body.cli
+  font-family: arvoregular,  Arial, Helvetica, sans-serif
 
 .box.box-default
   border-top-color: #d2d6de
@@ -224,3 +233,27 @@ tbody tr th
 #prev:hover
   text-decoration: underline
 
+.btn-circle
+  width: 30px
+  height: 30px
+  text-align: center
+  padding: 6px 0
+  font-size: 12px
+  line-height: 1.428571429
+  border-radius: 15px
+
+.btn-circle.btn-lg
+  width: 50px
+  height: 50px
+  padding: 10px 16px
+  font-size: 18px
+  line-height: 1.33
+  border-radius: 25px
+
+.btn-circle.btn-xl
+  width: 70px
+  height: 70px
+  padding: 10px 16px
+  font-size: 24px
+  line-height: 1.33
+  border-radius: 35px
