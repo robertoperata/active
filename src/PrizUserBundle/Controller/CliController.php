@@ -86,9 +86,39 @@ class CliController extends Controller{
         $data = json_decode($request->getContent());
         $dbManager =    $this->get('app.dbmanager');
 
+        $response = new Response();
+        $response->setStatusCode('200');
+
         $data_prenotazione = new \DateTime($data->day);
 
         $sport =  $dbManager->getSport($data->sport);
+
+        //caricare elenco di prenotazioni per sport giorno ora
+
+        // controllo numero giocatori
+        $giocatoriResidenti = $data->residentsNum;
+        $giocatoriNonResidenti = $data->notResidentNum;
+        $giocatoriTotale = $giocatoriResidenti + $giocatoriNonResidenti;
+
+        $errori = false;
+        if($giocatoriTotale < $sport->getMinPlayer()){
+            $testo =  "I giocatori devono essere almeno ".$sport->getMinPlayer();
+            $errori = true;
+        }elseif( $giocatoriTotale > $sport->getMaxPlayer()){
+            $errori = true;
+            $testo =   "I giocatori non devono essere più di ".$sport->getMaxPlayer();
+
+
+
+        }
+        if($errori){
+            $response->setStatusCode('400');
+
+            $response->setContent($testo);
+            $response->headers->set('Content-Type', 'application/json');
+            return $response;
+        }
+
 
         $reservation = new Reservation();
         $reservation->setSport($sport);
@@ -193,8 +223,8 @@ class CliController extends Controller{
         $response = new Response();
         $response->setStatusCode('200');
         try{
-            $orariApertura = $dbManager->saveReservation($reservation);
-
+            $prenotazione = $dbManager->saveReservation($reservation);
+            $response->setContent(json_encode($prenotazione));
         }catch (Exception $e){
             $response->setStatusCode('400');
         }

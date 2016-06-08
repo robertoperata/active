@@ -2,6 +2,7 @@
 {% block body %}
     <div class="col-xs-12 col-md-8 col-md-offset-2" id="compilazione">
         <div id="step1" class="clearfix">
+             <div id="errori" style="display: none" class="alert alert-danger" role="alert"></div>
             <label class="col-xs-12 col-md-2"> Scegli lo sport:</label>
             <div class="col-xs-12 col-md-10">
                 <select id="sport_combo" class=" form-control" onchange="javascript:step2(this)">
@@ -16,6 +17,9 @@
                 </select>
             </div>
         </div>
+
+
+
         <div id="step2" style="display: none" class="clearfix">
             <label class="col-xs-12 col-md-2"> Scegli la data:</label>
             <div class="col-xs-12 col-md-10">
@@ -52,7 +56,7 @@
             <div  class="clearfix">
                 <label class="col-xs-12 col-md-2"> Numero non residenti:</label>
                 <div class="col-xs-12 col-md-10">
-                    <input type="number" min="0" step="1" name="notResidentNum" class="form-control">
+                    <input type="number" min="0" step="1"  name="notResidentNum" class="form-control">
                 </div>
             </div>
            <div> <button class="btn btn-primary pull-right" onclick="salva()">Prenota</button></div>
@@ -67,6 +71,9 @@
 
         </div>
         <div id="dettaglioCheckout">
+        </div>
+        <div id="success" style="display: none">
+            <span class="col-xs-12 sportName">Prenotazione eseguita</span>
         </div>
     </div>
     <script>
@@ -93,12 +100,13 @@
         }
 
          function salva(){
-
+             $('#errori').empty().hide();
              var residentsNum = $('input[name="residentsNum"]').val();
              var notResidentNum = $('input[name="notResidentNum"]').val();
              var hour = $('select[name="hour"] :selected').val();
              var day = toDate($('#datepicker').val());
              var sport = $('select#sport_combo :selected').attr('data-sport-id');
+             var sport_nome = $('select#sport_combo :selected').val();
 
              var obj = { 'residentsNum':residentsNum,
                  'notResidentNum': notResidentNum,
@@ -116,13 +124,19 @@
                  success: function(data){
                      $("#compilazione").hide();
                      $("#checkout").show();
-                     $("#dettaglioCheckout").append("<span class='col-xs-12 sportName'>Calcio a 5</span>");
-                     $("#dettaglioCheckout").append("<span class='col-xs-12 calendario'>29/9 alle 9:00</span>");
+                     $("#dettaglioCheckout").append("<span class='col-xs-12 sportName'>"+capitalizeFirstLetter(sport_nome)+"</span>");
+                     $("#dettaglioCheckout").append("<span class='col-xs-12 calendario'>"+day.ddmm()+" alle "+hour+"</span>");
                      $("#dettaglioCheckout").append("<span class='col-sm-8 col-sm-offset-2 residenti'>"+residentsNum+" players resdienti x <span class='pull-right'>"+data.tariffaResidenti+" &euro;</span></span>");
                      $("#dettaglioCheckout").append("<span class='col-sm-8 col-sm-offset-2 rigaSomma'>"+notResidentNum+" players non resdienti  x <span class='pull-right'>"+data.tariffaNonResidenti+" &euro;</span></span>");
-                     $("#dettaglioCheckout").append("<span class='col-sm-8 col-sm-offset-2 totale'>Totale <span class='pull-right'>"+data.totale+" &euro;</span></span>");
+                     $("#dettaglioCheckout").append("<span class='col-sm-8 col-sm-offset-2 totale'>Totale <span class='pull-right'>"+parseFloat(data.totale).toFixed(2)+" &euro;</span></span>");
                      $("#dettaglioCheckout").append("<span class='col-xs-12'><button type=\"button\" class=\"btn btn-success pull-right btn-circle btn-lg\"  onclick='save()'><i class=\"glyphicon glyphicon glyphicon-ok\"></i></button>&nbsp;<button id='annulla' onclick='annulla()' class='btn btn-danger btn-circle btn-lg pull-right' ><i class=\"glyphicon glyphicon-remove\"></i></button></span>");
                  },
+                 error(msg){
+
+                      $('#errori').append("<div><strong>Errore!</strong> "+msg.responseText+"</div>");
+                      $('#errori').show();
+
+                },
                  dataType: 'json'
              });
 
@@ -131,6 +145,7 @@
         function annulla(){
             $('#dettaglioCheckout').empty();
             $('#checkout').hide();
+            $('#success').hide();
             $("#compilazione").show();
         }
 
@@ -216,7 +231,9 @@
             $.ajax({
                 type: "POST",
                 url: url,
-                success: function(data){
+                success: function(){
+                    $('#dettaglioCheckout').hide();
+                    $('#success').show();
 
 
                 },

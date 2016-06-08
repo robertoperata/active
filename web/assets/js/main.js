@@ -55,3 +55,7 @@ function toDate(dateStr) {
     return new Date(parts[2], parts[1] - 1, parts[0]);
 }
 
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
