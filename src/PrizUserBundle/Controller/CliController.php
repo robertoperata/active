@@ -96,21 +96,19 @@ class CliController extends Controller{
         //caricare elenco di prenotazioni per sport giorno ora
 
         // controllo numero giocatori
-        $giocatoriResidenti = $data->residentsNum;
-        $giocatoriNonResidenti = $data->notResidentNum;
-        $giocatoriTotale = $giocatoriResidenti + $giocatoriNonResidenti;
+        $players = $data->players;
+
 
         $errori = false;
-        if($giocatoriTotale < $sport->getMinPlayer()){
+        /*
+        if($players < $sport->getMinPlayer()){
             $testo =  "I giocatori devono essere almeno ".$sport->getMinPlayer();
             $errori = true;
         }elseif( $giocatoriTotale > $sport->getMaxPlayer()){
             $errori = true;
             $testo =   "I giocatori non devono essere più di ".$sport->getMaxPlayer();
-
-
-
         }
+        */
         if($errori){
             $response->setStatusCode('400');
 
@@ -119,14 +117,19 @@ class CliController extends Controller{
             return $response;
         }
 
+        $residentChk = false;
+        if( $data->residenti === 'true' ){
+            $residentChk = true;
+        }
+
 
         $reservation = new Reservation();
         $reservation->setSport($sport);
         $reservation->setDataPrenotazione($data_prenotazione);
         $reservation->setDate(new \DateTime());
-        $reservation->setNotResidentNum($data->notResidentNum);
-        $reservation->setResidentsNum($data->residentsNum);
+        $reservation->setPlayers($data->players);
         $reservation->setHour($data->hour);
+        $reservation->setResidentChk($residentChk);
 
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $reservation->setUser($user);
@@ -147,25 +150,21 @@ class CliController extends Controller{
             $tariffaResidenti = 0;
             $tariffaNonResidenti = 0;
             if($data->hour >= $orari[0]->getNotturno()){
-                $importoResidenti = $data->residentsNum * $sport->getPriceResidentLightsOn();
-                $importoNonResidenti = $data->notResidentsNum * $sport->getPriceNotResidentLightsOn();
+                if($residentChk){
+                    $totale = $data->$players * $sport->getPriceResidentLightsOn();
+                }else{
+                    $totale = $data->$players *  $sport->getPriceNotResidentLightsOn();
+                }
                 $tariffaNotturna  = true;
-                $tariffaResidenti = $sport->getPriceResidentLightsOn();
-                $tariffaNonResidenti = $sport->getPriceNotResidentLightsOn();
-
             }else{
-                $importoResidenti = $data->residentsNum * $sport->getPriceResident();
-                $importoNonResidenti = $data->notResidentNum * $sport->getPriceNotResident();
-                $tariffaResidenti = $sport->getPriceResident();
-                $tariffaNonResidenti = $sport->getPriceNotResident();
-
+                if($residentChk){
+                    $totale = $data->players * $sport->getPriceResident();
+                }else{
+                    $totale = $data->players * $sport->getPriceNotResident();
+                }
             }
-            $totale = $importoResidenti + $importoNonResidenti;
-            $importi = array(   'totale'=>$totale,
-                                'tariffaNotturna'=>$tariffaNotturna,
-                                'tariffaResidenti'=>$tariffaResidenti,
-                                'tariffaNonResidenti'=>$tariffaNonResidenti
-                                );
+
+            $importi = array(   'totale'=>$totale, );
 
            $response->setContent(json_encode($importi));
         }catch (Exception $e){

@@ -1,9 +1,9 @@
 body {
   background: url(../img/sfondo_bottom.png) no-repeat right bottom, url(../img/sfondo_top.png) no-repeat left top, url(../img/sfondo.png) no-repeat;
-  background-size: auto auto, auto auto, 100% auto;
+  background-size: auto auto, auto auto, 100% 100%;
   background-attachment: fixed;
   font-family: Raleway, Arial, Helvetica, sans-serif;
-  font-size: 16px;
+  font-size: 18px;
   color: #333; }
 
 h1 {
@@ -38,7 +38,8 @@ a {
 
 a:hover {
   color: #333;
-  text-decoration: underline; }
+  text-decoration: underline;
+  cursor: pointer; }
 
 .row {
   display: -webkit-box;

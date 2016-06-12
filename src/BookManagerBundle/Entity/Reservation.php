@@ -62,11 +62,11 @@ class Reservation{
     /**
      * @ORM\Column(type="integer",  nullable=true)
      */
-    private $residentsNum;
+    private $players;
     /**
-     * @ORM\Column(type="integer",  nullable=true)
+     * @ORM\Column(type="boolean",  nullable=true)
      */
-    private $notResidentNum;
+    private $residentChk;
 
     /**
      * @ORM\Column(type="date")
@@ -323,5 +323,77 @@ class Reservation{
     public function getCampoId()
     {
         return $this->campo_id;
+    }
+
+    /**
+     * Set player
+     *
+     * @param integer $player
+     *
+     * @return Reservation
+     */
+    public function setPlayer($player)
+    {
+        $this->player = $player;
+
+        return $this;
+    }
+
+    /**
+     * Get player
+     *
+     * @return integer
+     */
+    public function getPlayer()
+    {
+        return $this->player;
+    }
+
+    /**
+     * Set residentChk
+     *
+     * @param boolean $residentChk
+     *
+     * @return Reservation
+     */
+    public function setResidentChk($residentChk)
+    {
+        $this->residentChk = $residentChk;
+
+        return $this;
+    }
+
+    /**
+     * Get residentChk
+     *
+     * @return boolean
+     */
+    public function getResidentChk()
+    {
+        return $this->residentChk;
+    }
+
+    /**
+     * Set players
+     *
+     * @param integer $players
+     *
+     * @return Reservation
+     */
+    public function setPlayers($players)
+    {
+        $this->players = $players;
+
+        return $this;
+    }
+
+    /**
+     * Get players
+     *
+     * @return integer
+     */
+    public function getPlayers()
+    {
+        return $this->players;
     }
 }

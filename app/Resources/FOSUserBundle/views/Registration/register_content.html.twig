@@ -4,7 +4,7 @@
     <h1>Registrazione</h1>
     {{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'class': 'fos_user_form fos_user_registration_register clearfix'}}) }}
     {{  form_errors(form) }}
-        <div class="col-xs-12" style="margin-bottom: 10px">
+        <div  style="margin-bottom: 20px">
 
         <div class="pull-right">
             Già registrato?&nbsp;<a class="pull-right" href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>

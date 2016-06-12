@@ -1,18 +1,16 @@
 {% extends 'cli.base.html.twig' %}
 {% block body %}
-    <div class="col-xs-12 col-md-8 col-md-offset-2" id="compilazione">
+    <div class="col-xs-12 col-md-6 col-md-offset-3" id="compilazione">
         <div id="step1" class="clearfix">
              <div id="errori" style="display: none" class="alert alert-danger" role="alert"></div>
-            <label class="col-xs-12 col-md-2"> Scegli lo sport:</label>
-            <div class="col-xs-12 col-md-10">
+            <label class="col-xs-12 col-md-3"> Scegli lo sport:</label>
+            <div class="col-xs-12 col-md-9">
                 <select id="sport_combo" class=" form-control" onchange="javascript:step2(this)">
                     <option>Scegli uno sport</option>
                     {% for item in sports %}
                         <option data-sport-id="{{ item.id }}"
-                                data-res-p="{{ item.priceResident }}"
-                                data-not-res-p="{{ item.priceNotResident }}"
-                                data-res-np="{{ item.priceResidentLightsOn }}"
-                                data-not-res-np="{{ item.priceNotResidentLightsOn }}">{{ item.name }}</option>
+                                data-min-player="{{ item.minPlayer }}"
+                                data-max-player="{{ item.maxPlayer }}">{{ item.name }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -21,15 +19,15 @@
 
 
         <div id="step2" style="display: none" class="clearfix">
-            <label class="col-xs-12 col-md-2"> Scegli la data:</label>
-            <div class="col-xs-12 col-md-10">
+            <label class="col-xs-12 col-md-3"> Scegli la data:</label>
+            <div class="col-xs-12 col-md-9">
                 <input type="text" id="datepicker" class="form-control">
             </div>
         </div>
         <div id="step3" style="display: none" class="clearfix">
             <div  class="clearfix">
-            <label class="col-xs-12 col-md-2"> Ora:</label>
-            <div class="col-xs-12 col-md-10">
+            <label class="col-xs-12 col-md-3"> Ora:</label>
+            <div class="col-xs-12 col-md-9">
                 <select name="hour" class="form-control">
                     <option value="9">9:00</option>
                     <option value="10">10:00</option>
@@ -48,15 +46,16 @@
             </div>
             </div>
             <div class="clearfix">
-                <label class="col-xs-12 col-md-2"> Numero residenti:</label>
-                <div class="col-xs-12 col-md-10">
-                    <input  type="number" min="0" step="1" name="residentsNum" class="form-control">
+                <label class="col-xs-12 col-md-3">Giocatori:</label>
+                <div class="col-xs-12 col-md-9" >
+                    <span class="min pull-left" style="color: #fff"></span>
+                    <span class="max pull-right" style="color: #fff"></span>
+                    <div class="col-md-10 col-md-offset-1" id="slider"></div>
                 </div>
             </div>
             <div  class="clearfix">
-                <label class="col-xs-12 col-md-2"> Numero non residenti:</label>
-                <div class="col-xs-12 col-md-10">
-                    <input type="number" min="0" step="1"  name="notResidentNum" class="form-control">
+                <div class="col-xs-12 col-md-9 col-md-offset-3">
+                    <input type="checkbox" id="residenti_check" name="residenti_check" /><span style="color: #fff"> Almeno l'80% dei giocatori sono residenti</span>
                 </div>
             </div>
            <div> <button class="btn btn-primary pull-right" onclick="salva()">Prenota</button></div>
@@ -74,6 +73,9 @@
         </div>
         <div id="success" style="display: none">
             <span class="col-xs-12 sportName">Prenotazione eseguita</span>
+        </div>
+        <div>
+
         </div>
     </div>
     <script>
@@ -101,18 +103,24 @@
 
          function salva(){
              $('#errori').empty().hide();
-             var residentsNum = $('input[name="residentsNum"]').val();
-             var notResidentNum = $('input[name="notResidentNum"]').val();
+             var players = $('#slider').slider("option", "value");
+
              var hour = $('select[name="hour"] :selected').val();
              var day = toDate($('#datepicker').val());
              var sport = $('select#sport_combo :selected').attr('data-sport-id');
              var sport_nome = $('select#sport_combo :selected').val();
+             var residenti = false;
+             if( $('#residenti_check').is(':checked')){
+                residenti = false;
 
-             var obj = { 'residentsNum':residentsNum,
-                 'notResidentNum': notResidentNum,
+             }
+
+             var obj = {
+                 'players': players,
                  'hour':hour,
                  'day':day.yyyymmdd(),
-                 'sport':sport
+                 'sport':sport,
+                 'residenti':residenti
              };
 
              var url = "{{ path('preCheckout') }}";
@@ -126,9 +134,9 @@
                      $("#checkout").show();
                      $("#dettaglioCheckout").append("<span class='col-xs-12 sportName'>"+capitalizeFirstLetter(sport_nome)+"</span>");
                      $("#dettaglioCheckout").append("<span class='col-xs-12 calendario'>"+day.ddmm()+" alle "+hour+"</span>");
-                     $("#dettaglioCheckout").append("<span class='col-sm-8 col-sm-offset-2 residenti'>"+residentsNum+" players resdienti x <span class='pull-right'>"+data.tariffaResidenti+" &euro;</span></span>");
-                     $("#dettaglioCheckout").append("<span class='col-sm-8 col-sm-offset-2 rigaSomma'>"+notResidentNum+" players non resdienti  x <span class='pull-right'>"+data.tariffaNonResidenti+" &euro;</span></span>");
-                     $("#dettaglioCheckout").append("<span class='col-sm-8 col-sm-offset-2 totale'>Totale <span class='pull-right'>"+parseFloat(data.totale).toFixed(2)+" &euro;</span></span>");
+             //        $("#dettaglioCheckout").append("<span class='col-sm-10 col-sm-offset-1 residenti'>"+residentsNum+" players resdienti x <span class='pull-right'>"+data.tariffaResidenti+" &euro;</span></span>");
+              //       $("#dettaglioCheckout").append("<span class='col-sm-10 col-sm-offset-1 rigaSomma'>"+notResidentNum+" players non resdienti  x <span class='pull-right'>"+data.tariffaNonResidenti+" &euro;</span></span>");
+                     $("#dettaglioCheckout").append("<span class='col-sm-10 col-sm-offset-1 totale'>Totale <span class='pull-right'>"+parseFloat(data.totale).toFixed(2)+" &euro;</span></span>");
                      $("#dettaglioCheckout").append("<span class='col-xs-12'><button type=\"button\" class=\"btn btn-success pull-right btn-circle btn-lg\"  onclick='save()'><i class=\"glyphicon glyphicon glyphicon-ok\"></i></button>&nbsp;<button id='annulla' onclick='annulla()' class='btn btn-danger btn-circle btn-lg pull-right' ><i class=\"glyphicon glyphicon-remove\"></i></button></span>");
                  },
                  error(msg){
@@ -151,6 +159,29 @@
 
          function prenotazioneForm(schedule) {
              $("#step2").show();
+
+             if($('#slider').hasClass('ui-slider')){
+                 $("#slider").destroy();
+             }
+
+             var minPlayer = $("#sport_combo :selected").attr('data-min-player');
+             var maxPlayer = $("#sport_combo :selected").attr('data-max-player');
+             $(".min").text(minPlayer);
+             $(".max").text(maxPlayer);
+
+
+             $("#slider").slider({
+                 min: parseInt(minPlayer), // min value
+                 max: parseInt(maxPlayer), // max value
+                 step: 1,
+                 value: parseInt(minPlayer), // default value of slider
+                 slide: function(event, ui) {
+                     $(".ui-slider-handle").text(ui.value).css('color', '#666');
+                 }
+             });
+             $(".ui-slider-handle").text(minPlayer).css('color', '#666');
+
+
              $.datepicker.setDefaults( $.datepicker.regional[ "it" ] );
              $('#datepicker').datepicker({
 
