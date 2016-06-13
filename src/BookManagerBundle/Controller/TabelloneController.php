@@ -82,7 +82,11 @@ class TabelloneController extends Controller{
 */
         $dbManager =    $this->get('app.dbmanager');
 
-        $savedScheduled = $dbManager->getSportScheduledForDay($data->sport, $data->day);
+        $savedScheduled = $dbManager->getSportScheduledForDay($data->sport, $data->giorno);
+        $schedule = new Schedule();
+        $schedule->setDaysNumber($data->giorno_numero);
+        $schedule->setValidFrom($data->giorno);
+        $schedule->setSport();
 
         if($data->checked){
             if(sizeof($savedScheduled) == 0){
