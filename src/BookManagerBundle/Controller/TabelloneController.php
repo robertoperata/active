@@ -41,13 +41,23 @@ class TabelloneController extends Controller{
 
         $dbManager =    $this->get('app.dbmanager');
 
+        $lun = array('name'=> 'lunedì', 'code'=>'lun', 'giorno_num' => 1);
+        $mar = array('name'=> 'martedì', 'code'=>'mar', 'giorno_num' => 2);
+        $mer = array('name'=> 'mercoledì', 'code'=>'mer', 'giorno_num' => 3);
+        $gio = array('name'=> 'giovedì', 'code'=>'gio', 'giorno_num' => 4);
+        $ven = array('name'=> 'venerdì', 'code'=>'ven', 'giorno_num' => 5);
+        $sab = array('name'=> 'sabato', 'code'=>'sab', 'giorno_num' => 6);
+        $dom = array('name'=> 'domenica', 'code'=>'dom', 'giorno_num' => 0);
+        $box_giorni = array($lun, $mar, $mer, $gio, $ven, $sab, $dom);
+
         $schedules = $dbManager->getAllSchedules();
 
         $sports = $dbManager->getAllSports();
 
         return $this->render('tab/index.html.twig', array(
             'sports' => $sports,
-            'schedules' => $schedules
+            'schedules' => $schedules,
+            'box_giorni' => $box_giorni
         ));
     }
     /**

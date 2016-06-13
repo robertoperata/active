@@ -208,8 +208,9 @@
          };
 
          function loadOrari(date){
-             var obj = {'day':date};
+             var data_orari = toDate(date);
              var url = "{{ path('loadOrari') }}";
+             var obj = {'data_orari': data_orari.yyyymmdd()};
              var jsonArray = JSON.stringify(obj);
              $.ajax({
                  type: "POST",

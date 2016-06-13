@@ -183,12 +183,13 @@ class CliController extends Controller{
      */
     public function loadOrari(Request $request){
         $data = json_decode($request->getContent());
-        $day = new \DateTime($data->day);
+        $day = new \DateTime($data->data_orari);
         $dbManager =    $this->get('app.dbmanager');
         $response = new Response();
         $response->setStatusCode('200');
         try{
             $orariApertura = $dbManager->getOrariAperturaPerGriono($day);
+
             $response->setContent(json_encode($orariApertura));
         }catch (Exception $e){
             $response->setStatusCode('400');
