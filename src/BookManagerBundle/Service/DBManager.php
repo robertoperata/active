@@ -89,8 +89,13 @@ class DBManager
     }
 
 
+    public function saveSchedule(Schedule $schedule){
+        $this->em->persist($schedule);
+        $this->em->flush();
+        return $schedule->getId();
+    }
 
-
+        /*
     public function saveSchedule($sport, $day){
         $elencoGiogni = [1=>"LUN", 2=>"MAR", 3=>"MER", 4=>"GIO", 5=>"VEN", 6=>"SAB", 0=>"DOM"];
 
@@ -107,8 +112,8 @@ class DBManager
         $schedule->setDaysNumber($day_number);
         $this->em->persist($schedule);
         $this->em->flush();
-
     }
+        */
 
     public function deleteSchedule($schedule){
         $this->em->createQuery(

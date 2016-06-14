@@ -99,17 +99,17 @@
 
 function saveSchedule(code_giorno){
     var elementi =  $("div[data-id-giorno='"+code_giorno+"']").find(".aggiungiProgrammazione");
-	var giorno = $(elementi).find(".datepicker").val();
+	var giorno = toDate($(elementi).find(".datepicker").val()).yyyymmdd();
+	var giorno_numero = code_giorno;
 	var sport_array = [];
 	$(elementi).find(".riga").each(function(){
 		var sport_id = $(this).find( 'select :selected').attr('data-sport-id');
 		var sport_name = $(this).find( 'select :selected').val();
 		var fields = $(this).find("input[name='fields']").val();
-		var giorno_numero = code_giorno;
-		var sport = {'sport_id': sport_id, 'sport_name': sport_name,'fields': fields, 'giorno_numero': giorno_numero};
+		var sport = {'sport_id': sport_id, 'sport_name': sport_name,'fields': fields};
 		sport_array.push(sport);
 	});
-	var obj = {'giorno': giorno, 'sport':sport_array};
+	var obj = {'giorno': giorno,  'giorno_numero': giorno_numero, 'sport':sport_array};
 
              var url = "{{ path('tab_save') }}";
              var jsonArray = JSON.stringify(obj);
