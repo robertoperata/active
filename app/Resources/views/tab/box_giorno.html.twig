@@ -2,9 +2,9 @@
 <div class="col-sm-4" data-id-giorno="{{day.giorno_num}}">
     <div class="box box-default">
         <div class="box-header with-border">
-            <h3>{{ day.name|upper }}</h3>
+            <h3 style="text-align: center; color:#000">{{ day.name|upper }}</h3>
             <div class="box-tools pull-right">
-                <button type="button"  class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus" ></i>
+                <button type="button"  class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus showForm" onclick="showProgrammagione({{ day.giorno_num }})"></i>
                 </button>
             </div>
             <table class="table"  data-day={{day.giorno_num}}>
@@ -26,11 +26,11 @@
                 {% endfor %#}
                 </tbody>
             </table>
-            <div class="col-xs-12 aggiungiProgrammazione">
+            <div class="col-xs-12 aggiungiProgrammazione hide" >
                 <h5>Aggiungi programmazione:</h5>
                 <div class="col-xs-12 pull-right" style="margin-bottom: 10px ">
-                    Dal: <input type="text" name="data" class="datepicker" id="datepicker_{{day.giorno_num}}"  /></div>
-                <div class="riga">
+                    Dal: <input type="text" name="data" class="datepicker pull-right" id="datepicker_{{day.giorno_num}}"  /></div>
+                <div class="riga aggiungiProgrammazione hide">
                     <div class="col-sm-8 col-xs-12 ">
                             <select id="sport_combo" class=" form-control" >
                                 <option>Sport</option>
@@ -42,18 +42,21 @@
                     <div class="col-sm-3 col-xs-10">
                         <input type="text" name="fields" id="fields_lun" maxlength="2" size="5" />
                     </div>
-                    <div class="col-sm-1 col-xs-2">
-                        <button type="button"  class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus" ></i></button>
+                    <div class="col-sm-1 col-xs-2" style="margin-bottom: 10px">
+                        <button type="button"  class="btn-circle" data-widget="collapse"><i class="fa fa-plus" ></i></button>
                     </div>
                 </div>
-            </div>
                 <button class="btn btn-primary pull-right" onclick="saveSchedule({{day.giorno_num}})" >Salva</button>
+            </div>
             </div>
 
 
         </div>
     </div>
 <script>
+
+
+
     $(document).ready(function(){
         $.datepicker.setDefaults( $.datepicker.regional[ "it" ] );
         $('#datepicker_{{day.giorno_num}}').datepicker({
@@ -62,6 +65,19 @@
             beforeShowDay:function(dt){
                 return [dt.getDay() == {{day.giorno_num}} ? true : false];
             }
+        });
+
+        var day_number = {{day.giorno_num}};
+        var url = "{{ path('tab_load_preferenze') }}";
+        var obj = { 'day_number':day_number};
+        var jsonArray = JSON.stringify(obj);
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: jsonArray,
+            success: function(data){
+            },
+            dataType: 'json'
         });
 
     })

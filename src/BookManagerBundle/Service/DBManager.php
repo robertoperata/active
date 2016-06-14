@@ -206,6 +206,27 @@ class DBManager
         return $result;
     }
 
+    public function getPrenotazioniTabellone($day){
+        $today = new DateTime();
+        $qb = $this->em->createQueryBuilder();
+        $tabellonePreferenzeBefore = $qb->select('o')
+            ->from('BookManagerBundle:Schedule', 'o')
+            ->where('o.valid_from <= ?1')
+            ->andWhere('o.days_number = ?2')
+            ->setParameter(1, $today)
+            ->setParameter(2, $day)
+            ->getQuery()->execute();
+        $tabellonePreferenzeAfter = $qb->select('o')
+            ->from('BookManagerBundle:Schedule', 'p')
+            ->where('p.date > ?1')
+            ->andWhere('o.days_number = ?2')
+            ->setParameter(1, $today)
+            ->setParameter(2, $day)
+            ->getQuery()->execute();
+
+        return array_merge($tabellonePreferenzeBefore ,$tabellonePreferenzeAfter) ;
+    }
+
     public function getReservationPerSportAndDay(Sport $sport, \DateTime $dateTime, $ora){
         $qb = $this->em->createQueryBuilder();
 

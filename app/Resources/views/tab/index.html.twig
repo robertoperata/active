@@ -48,7 +48,7 @@
         </ol>
             </section>
         <div class="col-xs-12 ">
-            <div class="prenotazioni box clearfix" style="min-height: 400px">
+            <div class="prenotazioni clearfix" style="min-height: 400px">
 
                 {% for day in box_giorni %}
 
@@ -96,6 +96,20 @@
  </div>
 
     <script>
+
+    function showProgrammagione(id_giorno){
+        if($('div[data-id-giorno="'+id_giorno+'"]').find('.aggiungiProgrammazione').hasClass('hide')){
+            $('div[data-id-giorno="'+id_giorno+'"]').find('.aggiungiProgrammazione').removeClass('hide');
+        }else{
+            $('div[data-id-giorno="'+id_giorno+'"]').find('.aggiungiProgrammazione').addClass('hide');
+        }
+        if($('div[data-id-giorno="'+id_giorno+'"]').find('.showForm').hasClass('fa-plus')){
+            $('div[data-id-giorno="'+id_giorno+'"]').find('.showForm').removeClass('fa-plus').addClass('fa-minus');
+        }else{
+            $('div[data-id-giorno="'+id_giorno+'"]').find('.showForm').removeClass('fa-minus').addClass('fa-plus');
+        }
+
+    }
 
 function saveSchedule(code_giorno){
     var elementi =  $("div[data-id-giorno='"+code_giorno+"']").find(".aggiungiProgrammazione");

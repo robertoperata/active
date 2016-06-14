@@ -67,6 +67,32 @@ class TabelloneController extends Controller{
             'box_giorni' => $box_giorni
         ));
     }
+
+    /**
+     * Ottiene la programmazione in corso e le future basate sul day_number.
+     *
+     * @Route("/loadPreferenze", name="tab_load_preferenze")
+     * @Method("POST")
+     */
+    public function load_preferenze(Request $request){
+        $data = json_decode($request->getContent());
+
+        $dbManager =    $this->get('app.dbmanager');
+        $response = new Response();
+        $response->setStatusCode(200);
+
+        try{
+            $tabellonePreferenze = $dbManager->getPrenotazioniTabellone($data->day_number);
+            $response->setContent($tabellonePreferenze);
+        }catch (\Exception $e){
+            $response->setStatusCode(400);
+        }
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
     /**
      * Save planning.
      *
