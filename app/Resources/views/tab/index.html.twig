@@ -42,22 +42,28 @@
 
     <div class="content-wrapper" style="min-height: 916px;">
         <section class="content-header">
-        <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="active">Gestione tabellone</li>
-        </ol>
-            </section>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                <li class="active">Gestione tabellone</li>
+            </ol>
+        </section>
         <div class="col-xs-12 ">
             <div class="prenotazioni clearfix" style="min-height: 400px">
-
+                {% set index = 1 %}
                 {% for day in box_giorni %}
-
+                    {% if  index == 1 or index == 4 or index == 7  %}
+                        <div class="row">
+                    {% endif %}
                     {% include 'tab/box_giorno.html.twig' with day %}
+                    {% if  index == 3 or index == 6  or index == 7%}
+                    </div>
+                    {% endif %}
+                    {% set index = index + 1 %}
                 {% endfor %}
              </div>
         </div>
 
-
+{#
 
     <table class="table table-hover has-js" >
         <thead>
@@ -91,9 +97,9 @@
 
         </tbody>
     </table>
+    #}
  </div>
- </div>
- </div>
+
 
     <script>
 
@@ -133,7 +139,7 @@ function saveSchedule(code_giorno){
                  data: jsonArray,
                  success: function(data){
 					 for(var i=0; i < sport_array.length; i++){
-						$('table').append("<tr data-id-scheudle="+data.id+"><td>"+sport_array[i].sport_name+"</td><td>"+sport_array[i].fields+"</td></tr>");
+                         $("div[data-id-giorno='"+code_giorno+"']").find('table').append("<tr><td>"+giorno.ddmmyyyy()+"</td>><td>"+sport_array[i].sport_name+"</td><td>"+sport_array[i].fields+"</td></tr>");
 					 }
 
                  },
@@ -141,6 +147,23 @@ function saveSchedule(code_giorno){
                  dataType: 'json'
              })
 }
+
+    function deleteSchedule(id){
+        var obj = {'id': id};
+        var url = "{{ path('tab_delete') }}";
+        var jsonArray = JSON.stringify(obj);
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: jsonArray,
+            success: function(data){
+
+
+            },
+
+            dataType: 'json'
+        })
+    }
 
 
 

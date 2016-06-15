@@ -95,6 +95,12 @@ class DBManager
         return $schedule->getId();
     }
 
+    public function deleteSchedule($id){
+        $schedule = $this->em->getRepository('BookManagerBundle:Schedule')->find($id);
+        $this->em->remove($schedule);
+        $this->em->flush();
+    }
+
         /*
     public function saveSchedule($sport, $day){
         $elencoGiogni = [1=>"LUN", 2=>"MAR", 3=>"MER", 4=>"GIO", 5=>"VEN", 6=>"SAB", 0=>"DOM"];
@@ -113,7 +119,6 @@ class DBManager
         $this->em->persist($schedule);
         $this->em->flush();
     }
-        */
 
     public function deleteSchedule($schedule){
         $this->em->createQuery(
@@ -121,6 +126,7 @@ class DBManager
                WHERE s.id = :scheduledId')
             ->setParameter("scheduledId", $schedule[0]->getId())->execute();
     }
+        */
 
 
     /**
@@ -215,45 +221,28 @@ class DBManager
             ->from('BookManagerBundle:Schedule', 'o')
             ->where('o.valid_from <= ?1')
             ->andWhere('o.days_number = ?2')
+            ->orderBy('o.valid_from', 'DESC')
             ->setMaxResults(1)
             ->setParameter(1, $today)
             ->setParameter(2, $day)
             ->getQuery()->execute();
 
         if(sizeof($preferenzeAttuali) > 0){
-
             $valid_from = $preferenzeAttuali[0]->getValidFrom();
-
-
         }else{
             $valid_from = $today;
-
         }
 
-        $tabellonePreferenze = $qb->select('p')
+        $qb2 = $this->em->createQueryBuilder();
+        $tabellonePreferenze = $qb2->select('p')
             ->from('BookManagerBundle:Schedule', 'p')
             ->where('p.valid_from >= ?1')
             ->andWhere('p.days_number = ?2')
+            ->orderBy('p.valid_from', 'ASC')
             ->setParameter(1, $valid_from)
             ->setParameter(2, $day)
             ->getQuery()->execute();
 
-        /*
-        $tabellonePreferenzeBefore = $qb->select('o')
-            ->from('BookManagerBundle:Schedule', 'o')
-            ->where('o.valid_from <= ?1')
-            ->andWhere('o.days_number = ?2')
-            ->setParameter(1, $today)
-            ->setParameter(2, $day)
-            ->getQuery()->execute();
-        $tabellonePreferenzeAfter = $qb->select('o')
-            ->from('BookManagerBundle:Schedule', 'p')
-            ->where('p.date > ?1')
-            ->andWhere('o.days_number = ?2')
-            ->setParameter(1, $today)
-            ->setParameter(2, $day)
-            ->getQuery()->execute();
-*/
         return $tabellonePreferenze ;
     }
 

@@ -157,4 +157,26 @@ class TabelloneController extends Controller{
         // return $this->render('tab/save.html.twig', $data);
     }
 
+    /**
+     * Save planning.
+     *
+     * @Route("/del", name="tab_delete")
+     * @Method("POST")
+     */
+    function deleteTab(Request $request){
+        $data = json_decode($request->getContent());
+
+        $dbManager =    $this->get('app.dbmanager');
+        $response = new Response();
+        $response->setStatusCode(200);
+        try{
+            $dbManager->deleteSchedule($data->id);
+
+        }catch (\Exception $e){
+            $response->setStatusCode(400);
+        }
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
+    }
+
 }
