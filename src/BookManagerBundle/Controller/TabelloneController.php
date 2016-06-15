@@ -83,7 +83,22 @@ class TabelloneController extends Controller{
 
         try{
             $tabellonePreferenze = $dbManager->getPrenotazioniTabellone($data->day_number);
-            $response->setContent($tabellonePreferenze);
+            $elencoPrenotazioni = array();
+            if(sizeof($tabellonePreferenze) > 0) {
+                foreach ($tabellonePreferenze as $preferenza) {
+                    $sport = ['id_sport'=>$preferenza->getSport()->getId(), 'nome'=>$preferenza->getSport()->getName()];
+                    $temp = array('id_schedule' => $preferenza->getId(),
+                        'sport' => $sport,
+                        'day' => $preferenza->getDays(),
+                        'valid_from' => $preferenza->getValidFrom(),
+                        'day_number' => $preferenza->getDaysNumber(),
+                        'fields' => $preferenza->getFieldsNumber()
+                    );
+                    array_push($elencoPrenotazioni, $temp);
+                }
+            }
+
+            $response->setContent(json_encode($elencoPrenotazioni));
         }catch (\Exception $e){
             $response->setStatusCode(400);
         }

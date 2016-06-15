@@ -76,6 +76,12 @@
             url: url,
             data: jsonArray,
             success: function(data){
+                for(var i=0; i< data.length; i++){
+                    var valid_from = new Date(data[i].valid_from.date);
+
+                    $('div[data-id-giorno="'+day_number+'"]').find('table').append("<tr><td>"+valid_from.ddmmyyyy()+"</td><td>"+data[i].sport.nome+"</td><td>"+data[i].fields+"</td></tr>");
+
+                }
             },
             dataType: 'json'
         });

@@ -207,8 +207,38 @@ class DBManager
     }
 
     public function getPrenotazioniTabellone($day){
-        $today = new DateTime();
+        $today = new \DateTime();
+        $today->format('Y-m-d');
         $qb = $this->em->createQueryBuilder();
+
+        $preferenzeAttuali = $qb->select('o')
+            ->from('BookManagerBundle:Schedule', 'o')
+            ->where('o.valid_from <= ?1')
+            ->andWhere('o.days_number = ?2')
+            ->setMaxResults(1)
+            ->setParameter(1, $today)
+            ->setParameter(2, $day)
+            ->getQuery()->execute();
+
+        if(sizeof($preferenzeAttuali) > 0){
+
+            $valid_from = $preferenzeAttuali[0]->getValidFrom();
+
+
+        }else{
+            $valid_from = $today;
+
+        }
+
+        $tabellonePreferenze = $qb->select('p')
+            ->from('BookManagerBundle:Schedule', 'p')
+            ->where('p.valid_from >= ?1')
+            ->andWhere('p.days_number = ?2')
+            ->setParameter(1, $valid_from)
+            ->setParameter(2, $day)
+            ->getQuery()->execute();
+
+        /*
         $tabellonePreferenzeBefore = $qb->select('o')
             ->from('BookManagerBundle:Schedule', 'o')
             ->where('o.valid_from <= ?1')
@@ -223,8 +253,8 @@ class DBManager
             ->setParameter(1, $today)
             ->setParameter(2, $day)
             ->getQuery()->execute();
-
-        return array_merge($tabellonePreferenzeBefore ,$tabellonePreferenzeAfter) ;
+*/
+        return $tabellonePreferenze ;
     }
 
     public function getReservationPerSportAndDay(Sport $sport, \DateTime $dateTime, $ora){

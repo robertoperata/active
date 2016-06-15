@@ -14,6 +14,14 @@ Date.prototype.ddmm = function() {
     return day+" "+ (dd[1]?dd:"0"+dd[0]) +"/" +(mm[1]?mm:"0"+mm[0]); // padding
 };
 
+Date.prototype.ddmmyyyy = function() {
+
+    var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
+    var dd  = this.getDate().toString();
+    var yyyy = this.getFullYear().toString();
+    return  (dd[1]?dd:"0"+dd[0]) +"/" +(mm[1]?mm:"0"+mm[0]) + "/" + yyyy; // padding
+};
+
 $.datepicker.regional['it'] = {
     closeText: 'Chiudi', // set a close button text
     currentText: 'Oggi', // set today text
