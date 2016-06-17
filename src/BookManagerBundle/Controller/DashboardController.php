@@ -79,17 +79,17 @@ class DashboardController extends Controller{
         $sportPerGiorno = $dbManager->getAllSportsForDay($date);
         $elencoSport = array();
 
-        foreach( $sportPerGiorno as $sport ){
+        foreach( $sportPerGiorno as $item ){
 
-            $temp = array('name'=>$sport->getSport()->getName(),
-                          'sport_id'=>$sport->getSport()->getId(),
-                          'abbreziazione'=>$sport->getSport()->getAbbreviazione(),
-                          'priceResident'=>$sport->getSport()->getPriceResident(),
-                          'priceResidentLightsOn'=>$sport->getSport()->getPriceResidentLightsOn(),
-                          'priceNotResident'=>$sport->getSport()->getPriceNotResident(),
-                          'priceNotResidentLightsOn'=>$sport->getSport()->getPriceNotResidentLightsOn(),
-                          'fieldsNumber'=>$sport->getSport()->getFieldsNumber(),
-                          'sportColor'=>$sport->getSport()->getSportColor()
+            $temp = array('name'=>$item->getSport()->getName(),
+                          'sport_id'=>$item->getSport()->getId(),
+                          'abbreziazione'=>$item->getSport()->getAbbreviazione(),
+                          'priceResident'=>$item->getSport()->getPriceResident(),
+                          'priceResidentLightsOn'=>$item->getSport()->getPriceResidentLightsOn(),
+                          'priceNotResident'=>$item->getSport()->getPriceNotResident(),
+                          'priceNotResidentLightsOn'=>$item->getSport()->getPriceNotResidentLightsOn(),
+                          'fieldsNumber'=>$item->getFieldsNumber(),
+                          'sportColor'=>$item->getSport()->getSportColor()
                 );
            array_push($elencoSport, $temp);
         }
@@ -100,7 +100,7 @@ class DashboardController extends Controller{
     }
 
     /**
-     *  Chiamata ajax che restituisce json con orari validi per il giorno chiamato, sportm numero di campi
+     *  Chiamata ajax che restituisce json con orari validi per il giorno chiamato, sport numero di campi
      *
      * @Route("/loadTabellaSport", name="dash_loadTabellaSport")
      * @Method("POST")

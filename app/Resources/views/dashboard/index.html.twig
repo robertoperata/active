@@ -112,8 +112,82 @@
                 <!-- /.box-body -->
             </div>
         </div>
-
+        <div id="dialog" title="Prenotazione" style="display: none">
+            <div id="listaPrenotazioni"></div>
+            <div id="aggiungi_prenotazione">
+                <div class="form-group clearfix">
+                    <label class="col-xs-2">Sport:</label>
+                    <div class="col-xs-10">
+                        <input type="text" disabled="disabled" name="sport" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group  clearfix">
+                    <label class="col-xs-2">Data:</label>
+                    <div class="col-xs-10">
+                        <input type="text" disabled="disabled" name="giorno"  class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group clearfix">
+                    <label class="col-xs-2">Ora:</label>
+                    <div class="col-xs-10">
+                        <select>
+                            <option data-hour-number="1">9:00</option>
+                            <option data-hour-number="2">10:00</option>
+                            <option data-hour-number="3">11:00</option>
+                            <option data-hour-number="4">12:00</option>
+                            <option data-hour-number="5">13:00</option>
+                            <option data-hour-number="6">14:00</option>
+                            <option data-hour-number="7">15:00</option>
+                            <option data-hour-number="8">16:00</option>
+                            <option data-hour-number="9">17:00</option>
+                            <option data-hour-number="10">18:00</option>
+                            <option data-hour-number="11">19:00</option>
+                            <option data-hour-number="12">20:00</option>
+                            <option data-hour-number="13">21:00</option>
+                            <option data-hour-number="14">22:00</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group clearfix">
+                    <label class="col-xs-2">Nome:</label>
+                    <div class="col-xs-10">
+                        <input type="text" name="nome"  class="form-control"/>
+                    </div>
+                </div>
+                <button class="btn btn-primary pull-right" id="salva_prenotazione" onclick="salvaPrenotazione($('#aggiungi_prenotazione'))">Salva</button>
+            </div>
+        </div>
         <script>
+
+            function prenota(sport, numero_ora ){
+                var giorno_ita = giorno.split('-').reverse().join('-');
+                var sport = $("#sport_combo option:checked").text();
+                var sport_id = $("#sport_combo option:checked").attr('data-sport-id');
+                $( "#dialog" ).dialog( "open" );
+                $("#aggiungi_prenotazione input[name='giorno']").attr('value', giorno_ita);
+                $("#aggiungi_prenotazione input[name='sport']").attr('value', sport);
+                $("#aggiungi_prenotazione input[name='sport']").attr('data-sport-id', sport_id);
+                $("#aggiungi_prenotazione select option").each(function(){
+                    $(this).removeAttr('selected');
+                    var ora = $(this).attr('data-hour-number');
+                    if(parseInt(numero_ora) == parseInt(ora) +1){
+                        $(this).attr('selected', true);
+                    }
+                })
+
+            }
+
+            $(function() {
+                $("#dialog").dialog({
+                    autoOpen: false,
+                    width: 600,
+                    create: function (event, ui) {
+
+                        $(".ui-dialog").removeClass('ui-corner-all');
+                        $(".ui-dialog-titlebar").removeClass('ui-corner-all');
+                    },
+                });
+            });
 
             function vistaDsashboard(tipo){
                 if(tipo == 'tabella'){
@@ -144,6 +218,7 @@
                         $("#tabella_sport table").remove();
                         var giorno = new Date(data.giorno.date);
                         $("h3#tabella_giorno").text(giorno.ddmm());
+                        $("h3#tabella_giorno").attr("data-giorno", giorno.ddmmyyyy());
 
                         var tomorrow = new Date(data.giorno.date);
                         tomorrow.setDate(giorno.getDate()+1);
@@ -197,10 +272,12 @@
                             var tr = document.createElement('tr');
                             var th = document.createElement('th');
                             th.appendChild(document.createTextNode(i + ":00"));
+                            th.setAttribute('data-ora', i);
                             tr.appendChild(th);
                             sport.forEach(function (item) {
                                 for (n = 1; n <= item.fieldsNumber; n++) {
                                     var td = document.createElement('td');
+
                                   //  td.style['background-color'] = item.sportColor;
                                    // td.appendChild(document.createTextNode(item.name + "#" + n));
                                     tr.appendChild(td)
@@ -251,6 +328,18 @@
 
             }
 
+            $(function() {
+                $("#dialog").dialog({
+                    autoOpen: false,
+                    width: 600,
+                    create: function (event, ui) {
+
+                        $(".ui-dialog").removeClass('ui-corner-all');
+                        $(".ui-dialog-titlebar").removeClass('ui-corner-all');
+                    },
+                });
+            });
+
             $(document).ready(function(){
                 today = new Date();
                 createSportTable(today.yyyymmdd());
@@ -261,6 +350,31 @@
  //               $('#next').attr('data-next', tomorrow.yyyymmdd());
 
             });
+
+
+            $(document.body).on('click', "#tabella_sport td", function(e){
+                var column_num = parseInt( $(this).index() ) + 1;
+                var row_num = parseInt( $(this).parent().index() )+1;
+                var giorno_ita = $('h3#tabella_giorno').attr('data-giorno');
+                var sportId = $("#tabella_sport thead tr th:nth-child("+ column_num +")").attr('data-sport-id');
+                var campoId = $("#tabella_sport thead tr th:nth-child("+ column_num +")").attr('data-column-id');
+                var orario  = $("#tabella_sport tr").eq(row_num).find('th').attr('data-ora');
+                $( "#dialog" ).dialog( "open" );
+                $("#aggiungi_prenotazione input[name='giorno']").attr('value', giorno_ita);
+                $("#aggiungi_prenotazione input[name='sport']").attr('value', sport);
+                $("#aggiungi_prenotazione input[name='sport']").attr('data-sport-id', sport_id);
+                $("#aggiungi_prenotazione select option").each(function(){
+                    $(this).removeAttr('selected');
+                    var ora = $(this).attr('data-hour-number');
+                    if(parseInt(numero_ora) == parseInt(ora) +1){
+                        $(this).attr('selected', true);
+                    }
+                })
+
+
+                alert( "sportId =" + sportId + "  ,  campoId ="+ campoId + " orario = "+ orario);
+            });
+
 
             $.datepicker.setDefaults( $.datepicker.regional[ "it" ] );
             $("#chiusura").datepicker();

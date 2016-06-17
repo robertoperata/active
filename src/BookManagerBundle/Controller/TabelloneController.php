@@ -118,43 +118,36 @@ class TabelloneController extends Controller{
         $data = json_decode($request->getContent());
 
         $dbManager =    $this->get('app.dbmanager');
+        $response = new Response(json_encode($data));
 
         $box_giorni = $this->getBoxGiorni();
 
      //   $savedScheduled = $dbManager->getSportScheduledForDay($data->sport, $data->giorno);
-        $schedule = new Schedule();
-        $validFrom = new \DateTime($data->giorno);
-        $validFrom->format('Y-m-d');
-        $schedule->setDaysNumber($data->giorno_numero);
-        $schedule->setValidFrom($validFrom);
-        $schedule->setDays($box_giorni[$data->giorno_numero]['code']);
         $elencoSport = $data->sport;
-
-        for($i = 0; $i < sizeof($elencoSport); $i++){
-            $sport = $dbManager->getSport($elencoSport[$i]->sport_id);
-            $schedule->setSport($sport);
-            $schedule->setFieldsNumber($elencoSport[$i]->fields);
-            $dbManager->saveSchedule($schedule);
-
-        }
-
-/*
-        if($data->checked){
-            if(sizeof($savedScheduled) == 0){
-                $dbManager->saveSchedule($data->sport, $data->day);
+        $ids = [];
+        try{
+            $response->setStatusCode(200);
+            for($i = 0; $i < sizeof($elencoSport); $i++){
+                $schedule = new Schedule();
+                $validFrom = new \DateTime($data->giorno);
+                $validFrom->format('Y-m-d');
+                $schedule->setDaysNumber($data->giorno_numero);
+                $schedule->setValidFrom($validFrom);
+                $schedule->setDays($box_giorni[$data->giorno_numero]['code']);
+                $sport = $dbManager->getSport($elencoSport[$i]->sport_id);
+                $schedule->setSport($sport);
+                $schedule->setFieldsNumber($elencoSport[$i]->fields);
+                $id = $dbManager->saveSchedule($schedule);
+                array_push($ids, $id);
             }
-        }else{
-            $dbManager->deleteSchedule($savedScheduled);
+             $response->setContent(json_encode($ids));
+        }catch (\Exception $e){
+            $response->setStatusCode(400);
         }
 
-*/
-        $response = new Response(json_encode($data));
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
-        //  var_dump($request);
-        // $data = $request->request->get('data');
-        // return $this->render('tab/save.html.twig', $data);
     }
 
     /**
@@ -171,11 +164,11 @@ class TabelloneController extends Controller{
         $response->setStatusCode(200);
         try{
             $dbManager->deleteSchedule($data->id);
-
+            $response->setContent("200");
         }catch (\Exception $e){
             $response->setStatusCode(400);
         }
-        $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Content-Type', 'text/plain');
         return $response;
     }
 

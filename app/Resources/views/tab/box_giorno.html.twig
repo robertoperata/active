@@ -25,25 +25,32 @@
                 {% endfor %#}
                 </tbody>
             </table>
-            <div class="col-xs-12 aggiungiProgrammazione hide" >
+            <div class="col-xs-12 aggiungiProgrammazione hide "  id="formProgrammazione{{ day.giorno_num }}">
                 <h5>Aggiungi programmazione:</h5>
                 <div class="col-xs-12 pull-right" style="margin-bottom: 10px ">
                     Dal: <input type="text" name="data" class="datepicker pull-right" id="datepicker_{{day.giorno_num}}"  /></div>
-                <div class="riga aggiungiProgrammazione hide">
-                    <div class="col-sm-8 col-xs-12 ">
-                            <select id="sport_combo" class=" form-control" >
-                                <option>Sport</option>
-                                {% for item in sports %}
-                                    <option data-sport-id="{{ item.id }}">{{ item.name }}</option>
-                                {% endfor %}
-                            </select>
+                <div class="aggiungiProgrammazione hide">
+                    <div class="original">
+                        <div class="riga">
+                        <div class="col-sm-8 col-xs-12 ">
+                                <select id="sport_combo" class=" form-control" >
+                                    <option>Sport</option>
+                                    {% for item in sports %}
+                                        <option data-sport-id="{{ item.id }}">{{ item.name }}</option>
+                                    {% endfor %}
+                                </select>
+                        </div>
+                        <div class="col-sm-3 col-xs-10">
+                            <input type="text" name="fields" id="fields_lun" maxlength="2" size="5" />
+                        </div>
+                        <div class="col-sm-1 col-xs-2" style="margin-bottom: 10px">
+                            <button type="button"  class="btn-circle" data-widget="collapse"><i class="fa fa-plus" onclick="addLine{{day.giorno_num}}()"></i></button>
+                        </div>
+                     </div>
                     </div>
-                    <div class="col-sm-3 col-xs-10">
-                        <input type="text" name="fields" id="fields_lun" maxlength="2" size="5" />
-                    </div>
-                    <div class="col-sm-1 col-xs-2" style="margin-bottom: 10px">
-                        <button type="button"  class="btn-circle" data-widget="collapse"><i class="fa fa-plus" ></i></button>
-                    </div>
+                     <div class="cloned">
+
+                     </div>
                 </div>
                 <button class="btn btn-primary pull-right" onclick="saveSchedule({{day.giorno_num}})" >Salva</button>
             </div>
@@ -55,7 +62,14 @@
 
 
 <script>
+    function addLine{{day.giorno_num}}(){
+       var cloned =  $("#formProgrammazione{{day.giorno_num}} div.original").children().clone()
+       $(cloned).find('input[name="fields"]').val('');
 
+
+               $('#formProgrammazione{{day.giorno_num}} .cloned').append(cloned);
+
+    }
 
 
     $(document).ready(function(){
@@ -80,7 +94,7 @@
                 for(var i=0; i< data.length; i++){
                     var valid_from = new Date(data[i].valid_from.date);
 
-                    $('div[data-id-giorno="'+day_number+'"]').find('table').append("<tr data-id-schedule='"+data[i].id_schedule+"' ><td>"+valid_from.ddmmyyyy()+"</td><td>"+data[i].sport.nome+"</td><td>"+data[i].fields+"</td><td><i style='color:#aa1d1d' class='fa fa-minus showForm' onclick='deleteSchedule("+data[i].id_schedule+")'></i></td></tr>");
+                    $('div[data-id-giorno="'+day_number+'"]').find('table').append("<tr data-id-schedule='"+data[i].id_schedule+"' ><td>"+valid_from.ddmmyyyy()+"</td><td>"+data[i].sport.nome+"</td><td>"+data[i].fields+"</td><td><i style='color:#aa1d1d' class='fa fa-minus delLIne' onclick='deleteSchedule("+data[i].id_schedule+")'></i></td></tr>");
 
                 }
             },

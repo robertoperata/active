@@ -57,7 +57,8 @@ a:hover {
   height: 50px; }
 
 .fa {
-  color: #444; }
+  color: #444;
+  cursor: pointer; }
 
 .add {
   background: dodgerblue;

@@ -118,8 +118,9 @@
     }
 
 function saveSchedule(code_giorno){
-    var elementi =  $("div[data-id-giorno='"+code_giorno+"']").find(".aggiungiProgrammazione");
-	var giorno = toDate($(elementi).find(".datepicker").val()).yyyymmdd();
+    var elementi =  $("div[data-id-giorno='"+code_giorno+"']").find(" div[id^='formProgrammazione']");
+	var giorno = $(elementi).find("#datepicker_"+code_giorno).val();
+    var giornoyyymmdd = toDate(giorno).yyyymmdd();
 	var giorno_numero = code_giorno;
 	var sport_array = [];
 	$(elementi).find(".riga").each(function(){
@@ -129,7 +130,7 @@ function saveSchedule(code_giorno){
 		var sport = {'sport_id': sport_id, 'sport_name': sport_name,'fields': fields};
 		sport_array.push(sport);
 	});
-	var obj = {'giorno': giorno,  'giorno_numero': giorno_numero, 'sport':sport_array};
+	var obj = {'giorno': giornoyyymmdd,  'giorno_numero': giorno_numero, 'sport':sport_array};
 
              var url = "{{ path('tab_save') }}";
              var jsonArray = JSON.stringify(obj);
@@ -139,8 +140,11 @@ function saveSchedule(code_giorno){
                  data: jsonArray,
                  success: function(data){
 					 for(var i=0; i < sport_array.length; i++){
-                         $("div[data-id-giorno='"+code_giorno+"']").find('table').append("<tr><td>"+giorno.ddmmyyyy()+"</td>><td>"+sport_array[i].sport_name+"</td><td>"+sport_array[i].fields+"</td></tr>");
+                         var data_prog =  $("div[data-id-giorno='"+code_giorno+"']").find('table').append("<tr data-id-schedule='"+data[i]+"'><td>"+giorno+"</td>><td>"+sport_array[i].sport_name+"</td><td>"+sport_array[i].fields+"</td><td><i style='color:#aa1d1d' class='fa fa-minus delLine' onclick='deleteSchedule("+data[i]+")'></i></td></tr>");
 					 }
+                     $("div[data-id-giorno='"+code_giorno+"'] div[id^='formProgrammazione']").find('input').val("");
+                     $("div[data-id-giorno='"+code_giorno+"']").find('.showForm').click();
+                     $("div[data-id-giorno='"+code_giorno+"'] div[id^='formProgrammazione']").find('.cloned').empty();
 
                  },
 
@@ -157,9 +161,14 @@ function saveSchedule(code_giorno){
             url: url,
             data: jsonArray,
             success: function(data){
-
+                    $('tr[data-id-schedule="'+id+'"]').remove();
 
             },
+            error: function(data){
+                $('tr[data-id-schedule="'+id+'"]').find(".aggiungiProgrammazione").append("<span style='color:red'>Si è verificato un errore</span>");
+
+            },
+
 
             dataType: 'json'
         })

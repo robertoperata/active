@@ -49,19 +49,27 @@ class DBManager
         return $result;
     }
 
-    public function getAllSportsForDay(\DateTime $day){
-        $qb = $this->em->createQueryBuilder();
-        $giornoSettimana = date('w', $day->getTimestamp());
 
-        $qb
-            ->select('a', 'u')
+    public function getAllSportsForDay(\DateTime $day){
+        $day_number = $day->format('w');
+        $day->format('Y-m-d');
+        $valid_from = $this->getDataTabelloneInCorso($day, $day_number);
+
+        $qb = $this->em->createQueryBuilder();
+      //  $giornoSettimana = date('w', $day->getTimestamp());
+        //$day->format('Y-m-d');
+
+        $qb ->select('a', 'u')
             ->from('BookManagerBundle:Schedule', 'a')
             ->leftJoin('a.sport', 'u')
             ->where('a.days_number = ?1')
-            ->setParameter(1,$giornoSettimana);
+            ->andWhere('a.valid_from <= ?2')
+            ->setParameter(1,$day_number)
+            ->setParameter(2,$valid_from);
 
         return $qb->getQuery()->getResult();
     }
+
 
     public function saveSport(Sport $sport){
         $this->em->persist($sport);
@@ -212,9 +220,7 @@ class DBManager
         return $result;
     }
 
-    public function getPrenotazioniTabellone($day){
-        $today = new \DateTime();
-        $today->format('Y-m-d');
+    private function getDataTabelloneInCorso(\DateTime $day, $day_number){
         $qb = $this->em->createQueryBuilder();
 
         $preferenzeAttuali = $qb->select('o')
@@ -223,15 +229,23 @@ class DBManager
             ->andWhere('o.days_number = ?2')
             ->orderBy('o.valid_from', 'DESC')
             ->setMaxResults(1)
-            ->setParameter(1, $today)
-            ->setParameter(2, $day)
+            ->setParameter(1, $day)
+            ->setParameter(2, $day_number)
             ->getQuery()->execute();
 
         if(sizeof($preferenzeAttuali) > 0){
             $valid_from = $preferenzeAttuali[0]->getValidFrom();
         }else{
-            $valid_from = $today;
+            $valid_from = $day;
         }
+        return $valid_from;
+    }
+
+
+    public function getPrenotazioniTabellone($day_number){
+        $today = new \DateTime();
+        $today->format('Y-m-d');
+        $valid_from = $this->getDataTabelloneInCorso($today, $day_number);
 
         $qb2 = $this->em->createQueryBuilder();
         $tabellonePreferenze = $qb2->select('p')
@@ -240,7 +254,7 @@ class DBManager
             ->andWhere('p.days_number = ?2')
             ->orderBy('p.valid_from', 'ASC')
             ->setParameter(1, $valid_from)
-            ->setParameter(2, $day)
+            ->setParameter(2, $day_number)
             ->getQuery()->execute();
 
         return $tabellonePreferenze ;

@@ -61,11 +61,7 @@ class Sport{
      * @ORM\OneToMany(targetEntity="Reservation", mappedBy="sport")
      */
     private $reservation;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $fieldsNumber;
+    
 
     /**
      * @ORM\Column(type="integer")
