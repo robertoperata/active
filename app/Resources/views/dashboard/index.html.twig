@@ -67,12 +67,12 @@
                 <!-- /.box-body -->
             </div>
             <!-- /.box -->
-            <div class="box box-default table-condensed">
+            <div class="box box-default table-condensed" id="orariPreferenzeBox">
                 <div class="box-header with-border">
                     <h3 class="box-title">Orari Preferenze</h3>
 
                     <div class="box-tools pull-right">
-                        <button type="button"  class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus" onclick="orariPreferenze(this)"></i>
+                        <button type="button"  class="btn btn-box-tool toggleOrariPreferenze" data-widget="collapse"><i class="fa fa-plus" onclick="orariPreferenze(this)"></i>
                         </button>
                     </div>
                     <!-- /.box-tools -->
@@ -443,7 +443,13 @@
                     url: url,
                     data: jsonArray,
                     success: function(data){
-
+                        var row_num = parseInt( $("#timePreferences table tr").length )-2;
+                        var addRow = '<tr><td><i class="fa fa-trash" data-preferenze="'+data.id+'" onclick="deletePreference(this)"></i>&nbsp;'+date+'</td><td class="text-right">'+aper+':00</td><td class="text-right">'+chiu+':00</td><td class="text-right">'+nott+':00</td> </tr>';
+                        $("#timePreferences table tr").eq(row_num).before(addRow);
+                        $("#timePreferences input").each(function(){
+                           $(this).val('');
+                        });
+                        $("#orariPreferenzeBox button.toggleOrariPreferenze .fa").click();
                     },
                     error: function(xhr, ajaxOptions, thrownError){
                         $("#savePref").append("<span style='color:red'>Si è verificato un errore</span>");

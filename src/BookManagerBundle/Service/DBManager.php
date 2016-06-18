@@ -209,6 +209,7 @@ class DBManager
     public function savePreferenza(OrariPreferenze $preferenza){
         $this->em->persist($preferenza);
         $this->em->flush();
+        return $preferenza->getId();
     }
 
     public function getPrenotazioniPerSport(Sport $sport){

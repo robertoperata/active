@@ -256,8 +256,9 @@ class DashboardController extends Controller{
             $preferenza->setApertura($data->aper);
             $preferenza->setChiusura($data->chiu);
             $preferenza->setNotturno($data->nott);
-            $dbManager->savePreferenza($preferenza);
-            $response->setContent("ok");
+            $id = $dbManager->savePreferenza($preferenza);
+            $obj = array('status'=>'ok', 'id'=>$id);
+            $response->setContent(json_encode($obj));
         }catch (\Exception $e){
             $response->setStatusCode(400);
         }
