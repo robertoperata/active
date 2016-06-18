@@ -64,14 +64,8 @@ class SportController extends Controller
         $sport = new Sport();
         $sport->setName($data->sport_name);
         $sport->setAbbreviazione($data->sport_abbr);
-        $sport->setPriceResident($data->priceResident);
-        $sport->setPriceResidentLightsOn($data->priceResidentLightsOn);
-        $sport->setPriceNotResident($data->priceNotResident);
-        $sport->setPriceNotResidentLightsOn($data->priceNotResidentLightsOn);
-        $sport->setFieldsNumber($data->fieldsNumber);
-        $sport->setMinPlayer($data->minPlayer);
-        $sport->setMaxPlayer($data->maxPlayer);
-        $sport->setFieldsNumber($data->fieldsNumber);
+        $sport->setPrice($data->price);
+        $sport->setPriceLightsOn($data->price);
         $sport->setSportColor($data->sportColor);
 
         $dbManager =    $this->get('app.dbmanager');
@@ -121,13 +115,8 @@ class SportController extends Controller
         $sport =  $em->getRepository('BookManagerBundle:Sport')->find($data->sport_id);
         $sport->setName($data->sport_name);
         $sport->setAbbreviazione($data->sport_abbr);
-        $sport->setPriceResident($data->priceResident);
-        $sport->setPriceResidentLightsOn($data->priceResidentLightsOn);
-        $sport->setPriceNotResident($data->priceNotResident);
-        $sport->setPriceNotResidentLightsOn($data->priceNotResidentLightsOn);
-        $sport->setFieldsNumber($data->fieldsNumber);
-        $sport->setMinPlayer($data->minPlayer);
-        $sport->setMaxPlayer($data->maxPlayer);
+        $sport->setPrice($data->price);
+        $sport->setPriceLightsOn($data->priceLightsOn);
         $sport->setSportColor($data->sportColor);
 
         try{
@@ -166,7 +155,6 @@ class SportController extends Controller
         }catch (\Exception $e){
             $response->setStatusCode(400);
         }
-
 
         $response = new Response(json_encode($id));
         $response->headers->set('Content-Type', 'application/json');

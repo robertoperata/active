@@ -40,14 +40,14 @@ class DashboardController extends Controller{
         $closingDays = $dbManager->getClosingDays($today);
 
         if(sizeof($closingDays)){
-                $defaultHolidays = $calendarManager->createClosingCalendar($defaultHolidays, $closingDays);
+            $defaultHolidays = $calendarManager->createClosingCalendar($defaultHolidays, $closingDays);
         }
 
         $timePreferencies = $dbManager->getTimePreferencies($today);
 
         $orariApertura = $dbManager->getOrariApertura();
 
-    //    $tabellaSport = $this->tabellaSport($today);
+        //    $tabellaSport = $this->tabellaSport($today);
 
 
 
@@ -55,7 +55,8 @@ class DashboardController extends Controller{
             'defaultHolidays' => $defaultHolidays,
             'timePreferencies' => $timePreferencies,
             'orariApertura' => $orariApertura,
-           // 'tabellaSport'=>json_encode($tabellaSport)
+            'closingDays' => $closingDays,
+            // 'tabellaSport'=>json_encode($tabellaSport)
         ));
 
     }
@@ -82,16 +83,14 @@ class DashboardController extends Controller{
         foreach( $sportPerGiorno as $item ){
 
             $temp = array('name'=>$item->getSport()->getName(),
-                          'sport_id'=>$item->getSport()->getId(),
-                          'abbreziazione'=>$item->getSport()->getAbbreviazione(),
-                          'priceResident'=>$item->getSport()->getPriceResident(),
-                          'priceResidentLightsOn'=>$item->getSport()->getPriceResidentLightsOn(),
-                          'priceNotResident'=>$item->getSport()->getPriceNotResident(),
-                          'priceNotResidentLightsOn'=>$item->getSport()->getPriceNotResidentLightsOn(),
-                          'fieldsNumber'=>$item->getFieldsNumber(),
-                          'sportColor'=>$item->getSport()->getSportColor()
-                );
-           array_push($elencoSport, $temp);
+                'sport_id'=>$item->getSport()->getId(),
+                'abbreziazione'=>$item->getSport()->getAbbreviazione(),
+                'price'=>$item->getSport()->getPrice(),
+                'priceLightsOn'=>$item->getSport()->getPriceLightsOn(),
+                'sportColor'=>$item->getSport()->getSportColor(),
+                'fieldsNumber'=>$item->getFieldsNumber(),
+            );
+            array_push($elencoSport, $temp);
         }
 
         $tabellaSport = array('giorno'=>$date, 'apertura'=>$orari->getApertura(), 'chiusura'=>$orari->getChiusura(), 'notturno'=>$orari->getNotturno(), 'sport'=>$elencoSport);
@@ -142,14 +141,12 @@ class DashboardController extends Controller{
                         'campo' => $sport->getCampoId(),
                         'hour' => $sport->getHour(),
                         'name' => $sport->getName(),
-                        'cell' => $sport->getCell(),
-                        'resident_nr' => $sport->getResidentsNum(),
-                        'not_resident_nr' => $sport->getNotResidentNum(),
+                        'cell' => $sport->getCell()
                     );
-                array_push($elencoPrenotazioni, $temp);
+                    array_push($elencoPrenotazioni, $temp);
                 }
             }
-                $response->setContent(json_encode($elencoPrenotazioni));
+            $response->setContent(json_encode($elencoPrenotazioni));
         }catch (Exception $e){
             $response->setStatusCode('400');
         }
@@ -169,13 +166,13 @@ class DashboardController extends Controller{
         $response->setStatusCode('200');
         try{
 
-        if($data->checked){
-            $dbManager->addClosingDay($data->day);
+            if($data->checked){
+                $dbManager->addClosingDay($data->day);
 
-        }else{
-            $dbManager->deleteClosedDay($data->day);
+            }else{
+                $dbManager->deleteClosedDay($data->day);
 
-        }
+            }
         }catch(\Exception $e){
             $response->setStatusCode('400');
         }
@@ -203,7 +200,7 @@ class DashboardController extends Controller{
             $dbManager->addClosingDay($data->dataChiusura);
 
         }catch (\Exception $e){
-         $response->setStatusCode(200);
+            $response->setStatusCode(200);
 
         }
         $response->headers->set('Content-Type', 'application/json');
@@ -224,8 +221,9 @@ class DashboardController extends Controller{
         $response = new Response();
         $response->setStatusCode(200);
         try{
-
+            $obj = array('status'=>'ok');
             $dbManager->deletePreference($data->id);
+            $response->setContent(json_encode($obj));
 
         }catch  (\Exception $e){
             $response->setStatusCode(400);
@@ -251,14 +249,15 @@ class DashboardController extends Controller{
         $response->setStatusCode(200);
         try{
 
-        $preferenza = new OrariPreferenze();
-        $day = new \DateTime(implode("-", array_reverse(explode("/", $data->date))));
-        $day->format('Y-m-d');
-        $preferenza->setDate($day);
-        $preferenza->setApertura($data->aper);
-        $preferenza->setChiusura($data->chiu);
-        $preferenza->setNotturno($data->nott);
-        $dbManager->savePreferenza($preferenza);
+            $preferenza = new OrariPreferenze();
+            $day = new \DateTime(implode("-", array_reverse(explode("/", $data->date))));
+            $day->format('Y-m-d');
+            $preferenza->setDate($day);
+            $preferenza->setApertura($data->aper);
+            $preferenza->setChiusura($data->chiu);
+            $preferenza->setNotturno($data->nott);
+            $dbManager->savePreferenza($preferenza);
+            $response->setContent("ok");
         }catch (\Exception $e){
             $response->setStatusCode(400);
         }

@@ -35,22 +35,13 @@ class Sport{
     /**
      * @ORM\Column(type="decimal", scale=2)
      */
-    private $priceResident;
+    private $price;
 
     /**
      * @ORM\Column(type="decimal", scale=2)
      */
-    private $priceResidentLightsOn;
-
-    /**
-     * @ORM\Column(type="decimal", scale=2)
-     */
-    private $priceNotResident;
-
-    /**
-     * @ORM\Column(type="decimal", scale=2)
-     */
-    private $priceNotResidentLightsOn;
+    private $priceLightsOn;
+    
 
     /**
      * @ORM\OneToMany(targetEntity="Schedule", mappedBy="sport")
@@ -61,17 +52,6 @@ class Sport{
      * @ORM\OneToMany(targetEntity="Reservation", mappedBy="sport")
      */
     private $reservation;
-    
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $minPlayer;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $maxPlayer;
 
     /**
      * @ORM\Column(type="string", length=7)
@@ -119,102 +99,7 @@ class Sport{
         return $this->name;
     }
 
-    /**
-     * Set priceResident
-     *
-     * @param string $priceResident
-     *
-     * @return Sport
-     */
-    public function setPriceResident($priceResident)
-    {
-        $this->priceResident = $priceResident;
-
-        return $this;
-    }
-
-    /**
-     * Get priceResident
-     *
-     * @return string
-     */
-    public function getPriceResident()
-    {
-        return $this->priceResident;
-    }
-
-    /**
-     * Set priceResidentLightsOn
-     *
-     * @param string $priceResidentLightsOn
-     *
-     * @return Sport
-     */
-    public function setPriceResidentLightsOn($priceResidentLightsOn)
-    {
-        $this->priceResidentLightsOn = $priceResidentLightsOn;
-
-        return $this;
-    }
-
-    /**
-     * Get priceResidentLightsOn
-     *
-     * @return string
-     */
-    public function getPriceResidentLightsOn()
-    {
-        return $this->priceResidentLightsOn;
-    }
-
-    /**
-     * Set priceNotResident
-     *
-     * @param string $priceNotResident
-     *
-     * @return Sport
-     */
-    public function setPriceNotResident($priceNotResident)
-    {
-        $this->priceNotResident = $priceNotResident;
-
-        return $this;
-    }
-
-    /**
-     * Get priceNotResident
-     *
-     * @return string
-     */
-    public function getPriceNotResident()
-    {
-        return $this->priceNotResident;
-    }
-
-    /**
-     * Set priceNotResidentLightsOn
-     *
-     * @param string $priceNotResidentLightsOn
-     *
-     * @return Sport
-     */
-    public function setPriceNotResidentLightsOn($priceNotResidentLightsOn)
-    {
-        $this->priceNotResidentLightsOn = $priceNotResidentLightsOn;
-
-        return $this;
-    }
-
-    /**
-     * Get priceNotResidentLightsOn
-     *
-     * @return string
-     */
-    public function getPriceNotResidentLightsOn()
-    {
-        return $this->priceNotResidentLightsOn;
-    }
-
+   
     /**
      * Add schedule
      *
@@ -401,5 +286,53 @@ class Sport{
     public function getReservation()
     {
         return $this->reservation;
+    }
+
+    /**
+     * Set price
+     *
+     * @param string $price
+     *
+     * @return Sport
+     */
+    public function setPrice($price)
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    /**
+     * Get price
+     *
+     * @return string
+     */
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    /**
+     * Set priceLightsOn
+     *
+     * @param string $priceLightsOn
+     *
+     * @return Sport
+     */
+    public function setPriceLightsOn($priceLightsOn)
+    {
+        $this->priceLightsOn = $priceLightsOn;
+
+        return $this;
+    }
+
+    /**
+     * Get priceLightsOn
+     *
+     * @return string
+     */
+    public function getPriceLightsOn()
+    {
+        return $this->priceLightsOn;
     }
 }

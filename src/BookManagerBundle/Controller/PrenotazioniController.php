@@ -118,21 +118,25 @@ class PrenotazioniController extends Controller{
         if(sizeof($prenotazioni) > 0){
             $campo_numero = sizeof($prenotazioni) + 1;
         }
-        if($campo_numero > $sport->getFieldsNumber){
-            $response->setStatusCode(400);
-            return $response;
-        }
+
 
         $reservation->setName($data->nome);
+        $reservation->setCell($data->cell);
+        $reservation->setNote($data->note);
         $reservation->setDate($giorno_reverse);
-        $reservation->setSportId($sport);
+        $reservation->setSport($sport);
         $reservation->setHour($data->ora);
         $reservation->setCampoId($campo_numero);
         $reservation->setDataPrenotazione($today);
-        $dbManager->saveReservation($reservation);
+        try{
+            $id = $dbManager->saveReservation($reservation);
+            $response->setContent($id);
+        }catch (Exception $e){
+            $response->setStatusCode(400);
+            $response->setContent("ko");
+        }
 
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Content-Type', 'text/plain');
 
         return $response;
 

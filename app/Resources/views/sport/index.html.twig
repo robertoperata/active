@@ -37,30 +37,21 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="sport_priceResident" class="required col-xs-4 control-label">Prezzo residenti</label>
+                    <label for="sport_price" class="required col-xs-4 control-label">Prezzo residenti</label>
                     <div class="col-xs-8">
-                        <input type="text" class="form-control"  tabindex="4" id="sport_priceResident" name="sport[priceResident]" required="required">
+                        <input type="text" class="form-control"  tabindex="4" id="sport_price" name="sport[price]" required="required">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="sport_priceResidentLightsOn" class="required col-xs-4 control-label">Prezzo residenti (notturno)</label>
+                    <label for="sport_priceLightsOn" class="required col-xs-4 control-label">Prezzo (notturno)</label>
                     <div class="col-xs-8">
-                        <input type="text" id="sport_priceResidentLightsOn"   tabindex="6" class="form-control" name="sport[priceResidentLightsOn]" required="required">
+                        <input type="text" id="sport_priceLightsOn"   tabindex="6" class="form-control" name="sport[priceLightsOn]" required="required">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="sport_minPlayer" class="required col-xs-4 control-label">Numero minimo giocatori</label>
-                    <div class="col-xs-8">
-                        <input type="text" id="sport_minPlayer"  tabindex="8" class="form-control" name="sport[sport_minPlayer]" required="required">
-                    </div>
-                </div>
+
             </div>
             <div class="col-xs-6">
                 <div class="form-group">
-                    <label for="sport_fieldsNumber"  class="required col-xs-4 control-label">Numero campi</label>
-                    <div class="col-xs-3">
-                        <input type="text" id="sport_fieldsNumber"  tabindex="2"  class="form-control" name="sport[sport_fieldsNumber]" required="required">
-                    </div>
                     <label for="sport_sportColor" class="required col-xs-2 control-label">Colore</label>
                     <div class="col-xs-3">
                         <div id="cp2" class="input-group colorpicker-component">
@@ -72,27 +63,6 @@
                                 $('#cp2').colorpicker();
                             });
                         </script>
-                    </div>
-
-                </div>
-                <div class="form-group">
-                    <label for="sport_priceNotResident" class="required col-xs-4 control-label">Prezzo non residenti</label>
-                    <div class="col-xs-8">
-                        <input type="text" id="sport_priceNotResident"  tabindex="5" class="form-control" name="sport[priceNotResident]" required="required">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="sport_priceNotResidentLightsOn" class="required col-xs-4 control-label">Prezzo non residenti (notturno)</label>
-                    <div class="col-xs-8">
-                        <input type="text" id="sport_priceNotResidentLightsOn"  tabindex="7" class="form-control" name="sport[priceNotResidentLightsOn]" required="required">
-                    </div>
-                </div>
-
-                <div class="form-group">
-
-                    <label for="sport_maxPlayer" class="required col-xs-4 control-label">Numero massimo giocatori</label>
-                    <div class="col-xs-8">
-                        <input type="text" id="sport_maxPlayer"   tabindex="9" class="form-control" name="sport[sport_maxPlayer]" required="required">
                     </div>
 
                 </div>
@@ -117,27 +87,18 @@
 
     <table class="table table-striped table-hover">
         <colgroup>
-                <col width="30%"/>
-                <col width="10%"/>
-                <col width="10%"/>
-                <col width="10%"/>
-                <col width="10%"/>
-                <col width="10%"/>
-                <col width="10%"/>
-                <col width="5%"/>
-                <col width="5%"/>
+                <col width="40%"/>
+                <col width="20%"/>
+                <col width="20%"/>
+                <col width="20%"/>
+
 
         </colgroup>
         <thead>
             <tr>
                 <th>Nome</th>
-                <th>Prezzo residenti</th>
-                <th>Prezzo residenti (notturno)</th>
-                <th>Prezzo non residenti</th>
-                <th>Prezzo non residenti (notturno)</th>
-                <th>Campi</th>
-                <th>Giocatori Min</th>
-                <th>Giocatori Max</th>
+                <th>Prezzo</th>
+                <th>Prezzo (notturno)</th>
                 <th>Colore</th>
 
             </tr>
@@ -149,13 +110,8 @@
 
                 <td>{{ sport.name }}</td>
                 <td class="hide">{{ sport.abbreviazione }}</td>
-                <td>{{ sport.priceResident }}</td>
-                <td>{{ sport.priceResidentLightsOn }}</td>
-                <td>{{ sport.priceNotResident }}</td>
-                <td>{{ sport.priceNotResidentLightsOn }}</td>
-                <td>{{ sport.fieldsNumber }}</td>
-                <td>{{ sport.minPlayer }}</td>
-                <td>{{ sport.maxPlayer }}</td>
+                <td>{{ sport.price }}</td>
+                <td>{{ sport.priceLightsOn }}</td>
                 <td style="background: {{ sport.sportColor }}">{{ sport.sportColor }}</td>
             </tr>
         {% endfor %}
@@ -175,13 +131,8 @@
             $("#add_sport").show('slow');
             $("#sport_name").val($(item).find("td:nth-child(1)").text());
             $("#sport_abbr").val($(item).find("td:nth-child(2)").text());
-            $("#sport_priceResident").val($(item).find("td:nth-child(3)").text());
-            $("#sport_priceResidentLightsOn").val($(item).find("td:nth-child(4)").text());
-            $("#sport_priceNotResident").val($(item).find("td:nth-child(5)").text());
-            $("#sport_priceNotResidentLightsOn").val($(item).find("td:nth-child(6)").text());
-            $("#sport_fieldsNumber").val($(item).find("td:nth-child(7)").text());
-            $("#sport_minPlayer").val($(item).find("td:nth-child(8)").text());
-            $("#sport_maxPlayer").val($(item).find("td:nth-child(9)").text());
+            $("#sport_price").val($(item).find("td:nth-child(3)").text());
+            $("#sport_priceLightsOn").val($(item).find("td:nth-child(4)").text());
             $("#sport_sportColor").val($(item).find("td:nth-child(10)").text());
             $("#sport_id").val($(item).attr('data-sport-id'));
             $("#add").addClass('hide');
@@ -225,14 +176,9 @@
         function updateSport(){
             var sport_name              = $("#sport_name").val();
             var sport_abbr              = $("#sport_abbr").val();
-            var priceResident           = $("#sport_priceResident").val();
-            var priceResidentLightsOn   = $("#sport_priceResidentLightsOn").val();
-            var priceNotResident        = $("#sport_priceNotResident").val();
-            var priceNotResidentLightsOn = $("#sport_priceNotResidentLightsOn").val();
-            var fieldsNumber            = $("#sport_fieldsNumber").val();
+            var price                   = $("#sport_price").val();
+            var priceLightsOn            = $("#sport_priceLightsOn").val();
             var sportColor              = $("#sport_sportColor").val();
-            var minPlayer               = $("#sport_minPlayer").val();
-            var maxPlayer               = $("#sport_maxPlayer").val();
             var sport_id                = $("#sport_id").val();
 
             if(sport_id > 0){
@@ -245,14 +191,9 @@
             var obj = { 'sport_id':sport_id,
                         'sport_name': sport_name,
                         'sport_abbr': sport_abbr,
-                        'priceResident':priceResident,
-                        'priceResidentLightsOn':priceResidentLightsOn,
-                        'priceNotResident':priceNotResident,
-                        'priceNotResidentLightsOn':priceNotResidentLightsOn,
-                        'fieldsNumber':fieldsNumber,
-                        'sportColor':sportColor,
-                        'minPlayer':minPlayer,
-                        'maxPlayer':maxPlayer};
+                        'price':price,
+                        'priceLightsOn':priceLightsOn,
+                        'sportColor':sportColor}
             var jsonArray = JSON.stringify(obj);
             $.ajax({
                 type: "POST",
@@ -260,7 +201,7 @@
                 data: jsonArray,
                 success: function(data){
                    clearForm();
-                    var tr = "<tr onclick=\"editSport(this)\" data-sport-id=\""+data.id+"\"><td>"+data.sport_name+"</td><td class='hide'>"+data.sport_abbr+"</td> <td>"+parseFloat(data.priceResident).toFixed(2)+"</td><td>"+parseFloat(data.priceResidentLightsOn).toFixed(2)+"</td> <td>"+parseFloat(data.priceNotResident).toFixed(2)+"</td> <td>"+parseFloat(data.priceNotResidentLightsOn).toFixed(2)+"</td><td>"+data.fieldsNumber+"</td><td>"+data.minPlayer+"</td><td>"+data.maxPlayer+"</td><td style='background: "+data.sportColor+"'>"+data.sportColor+"</td></tr>";
+                    var tr = "<tr onclick=\"editSport(this)\" data-sport-id=\""+data.id+"\"><td>"+data.sport_name+"</td><td class='hide'>"+data.sport_abbr+"</td> <td>"+parseFloat(data.price).toFixed(2)+"</td><td>"+parseFloat(data.priceLightsOn).toFixed(2)+"</td> <td style='background: "+data.sportColor+"'>"+data.sportColor+"</td></tr>";
                     if(sport_id > 0){
                         $('tr[data-sport-id='+sport_id+']').replaceWith(tr);
                     }else{

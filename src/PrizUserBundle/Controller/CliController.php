@@ -150,18 +150,12 @@ class CliController extends Controller{
             $tariffaResidenti = 0;
             $tariffaNonResidenti = 0;
             if($data->hour >= $orari[0]->getNotturno()){
-                if($residentChk){
-                    $totale = $data->$players * $sport->getPriceResidentLightsOn();
-                }else{
-                    $totale = $data->$players *  $sport->getPriceNotResidentLightsOn();
-                }
+                 $totale = $sport->getPriceLightsOn();
+
                 $tariffaNotturna  = true;
             }else{
-                if($residentChk){
-                    $totale = $data->players * $sport->getPriceResident();
-                }else{
-                    $totale = $data->players * $sport->getPriceNotResident();
-                }
+                 $totale = $sport->getPriceLightsOn();
+
             }
 
             $importi = array(   'totale'=>$totale, );

@@ -189,7 +189,8 @@ class DBManager
             ->orderBy('o.date', 'DESC')
             ->setParameter(1, $today)
             ->getQuery()->execute();
-        $timePreferenciesAfter = $qb->select('o')
+        $qb2 = $this->em->createQueryBuilder();
+        $timePreferenciesAfter = $qb2->select('p')
             ->from('BookManagerBundle:OrariPreferenze', 'p')
             ->where('p.date > ?1')
             ->setParameter(1, $today)
@@ -307,8 +308,9 @@ class DBManager
 
 
     public function saveReservation(Reservation $reservation){
-        $this->em->merge($reservation);
+        $this->em->persist($reservation);
         $this->em->flush();
+        return $reservation->getId();
     }
 
 
@@ -328,8 +330,9 @@ class DBManager
             ->setParameter(1,$today)
             ->getQuery()->execute();
         if(sizeof($subset) > 0){
+            $qb2 = $this->em->createQueryBuilder();
             $data = $subset[0];
-            $result =$qb->select('r')
+            $result =$qb2->select('p')
                 ->from('BookManagerBundle:OrariPreferenze', 'p')
                 ->where('p.date >= ?1')
                 ->setParameter(1,$data->getDate())

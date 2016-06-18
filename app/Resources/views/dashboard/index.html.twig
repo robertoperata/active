@@ -131,20 +131,9 @@
                     <label class="col-xs-2">Ora:</label>
                     <div class="col-xs-10">
                         <select>
-                            <option data-hour-number="1">9:00</option>
-                            <option data-hour-number="2">10:00</option>
-                            <option data-hour-number="3">11:00</option>
-                            <option data-hour-number="4">12:00</option>
-                            <option data-hour-number="5">13:00</option>
-                            <option data-hour-number="6">14:00</option>
-                            <option data-hour-number="7">15:00</option>
-                            <option data-hour-number="8">16:00</option>
-                            <option data-hour-number="9">17:00</option>
-                            <option data-hour-number="10">18:00</option>
-                            <option data-hour-number="11">19:00</option>
-                            <option data-hour-number="12">20:00</option>
-                            <option data-hour-number="13">21:00</option>
-                            <option data-hour-number="14">22:00</option>
+                            {%  for i in orariApertura[0].apertura .. orariApertura[0].chiusura %}
+                                <option data-hour-number="{{ i }}">{{ i }}:00</option>
+                            {% endfor %}
                         </select>
                     </div>
                 </div>
@@ -154,27 +143,52 @@
                         <input type="text" name="nome"  class="form-control"/>
                     </div>
                 </div>
+                <div class="form-group clearfix">
+                    <label class="col-xs-2">Cell:</label>
+                    <div class="col-xs-10">
+                        <input type="text" name="cell"  class="form-control"/>
+                    </div>
+                </div>
+                <div class="form-group clearfix">
+                    <label class="col-xs-2">Note:</label>
+                    <div class="col-xs-10">
+                        <input type="text" name="note"  class="form-control"/>
+                    </div>
+                </div>
                 <button class="btn btn-primary pull-right" id="salva_prenotazione" onclick="salvaPrenotazione($('#aggiungi_prenotazione'))">Salva</button>
             </div>
         </div>
         <script>
 
-            function prenota(sport, numero_ora ){
-                var giorno_ita = giorno.split('-').reverse().join('-');
-                var sport = $("#sport_combo option:checked").text();
-                var sport_id = $("#sport_combo option:checked").attr('data-sport-id');
-                $( "#dialog" ).dialog( "open" );
-                $("#aggiungi_prenotazione input[name='giorno']").attr('value', giorno_ita);
-                $("#aggiungi_prenotazione input[name='sport']").attr('value', sport);
-                $("#aggiungi_prenotazione input[name='sport']").attr('data-sport-id', sport_id);
-                $("#aggiungi_prenotazione select option").each(function(){
-                    $(this).removeAttr('selected');
-                    var ora = $(this).attr('data-hour-number');
-                    if(parseInt(numero_ora) == parseInt(ora) +1){
-                        $(this).attr('selected', true);
-                    }
-                })
+            function salvaPrenotazione(elemento){
+                var sport = $(elemento).find( "input[name='sport']").attr('data-sport-id');
+                var giorno = toDate($(elemento).find("input[name='giorno']").attr('value')).yyyymmdd();
+                var ora = $(elemento).find("option:selected").attr('data-hour-number');
 
+                var nome = $(elemento).find("input[name='nome']").val();
+                var cell = $(elemento).find("input[name='cell']").val();
+                var note = $(elemento).find("input[name='note']").val();
+
+
+
+                var url = "{{ path('save_reservation') }}";
+
+
+                var obj = {'id_sport': sport, 'giorno': giorno, 'ora':ora, 'nome':nome, 'cell': cell, 'note':note};
+                var jsonArray = JSON.stringify(obj);
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: jsonArray,
+                    success: function(data){
+                        $( "#dialog" ).dialog( "close" );
+                        location.reload();
+                    },
+                    error: function(data){
+
+                    },
+                    dataType: 'json'
+                });
             }
 
             $(function() {
@@ -205,6 +219,11 @@
             }
 
             function createSportTable(day){
+                var data_richiesta = new Date(day).getTime();
+                var closingDays = [];
+                {% for i in closingDays %}
+                    closingDays.push('{{ i.date }}');
+                {% endfor %}
 
                 var url = "{{ path('dash_loadTabellaSport') }}";
 
@@ -232,6 +251,11 @@
                             tomorrow.setDate(giorno.getDate()-1);
                             $('#prev').text(tomorrow.ddmm());
                             $('#prev').attr('data-prev', tomorrow.yyyymmdd());
+                        }
+
+                        if(closingDays.indexOf(data_richiesta)>0){
+                            $('.prenotazioni.box.box-default').append("<div style='text-align: center' id='giornoChiusura'>Giorno di chiusura</div>");
+                            return;
                         }
 
                         var sport = data.sport;
@@ -356,23 +380,22 @@
                 var column_num = parseInt( $(this).index() ) + 1;
                 var row_num = parseInt( $(this).parent().index() )+1;
                 var giorno_ita = $('h3#tabella_giorno').attr('data-giorno');
+                var sport =  $("#tabella_sport thead tr th:nth-child("+ column_num +")").attr('title');
                 var sportId = $("#tabella_sport thead tr th:nth-child("+ column_num +")").attr('data-sport-id');
                 var campoId = $("#tabella_sport thead tr th:nth-child("+ column_num +")").attr('data-column-id');
                 var orario  = $("#tabella_sport tr").eq(row_num).find('th').attr('data-ora');
                 $( "#dialog" ).dialog( "open" );
                 $("#aggiungi_prenotazione input[name='giorno']").attr('value', giorno_ita);
                 $("#aggiungi_prenotazione input[name='sport']").attr('value', sport);
-                $("#aggiungi_prenotazione input[name='sport']").attr('data-sport-id', sport_id);
+                $("#aggiungi_prenotazione input[name='sport']").attr('data-sport-id', sportId);
                 $("#aggiungi_prenotazione select option").each(function(){
                     $(this).removeAttr('selected');
                     var ora = $(this).attr('data-hour-number');
-                    if(parseInt(numero_ora) == parseInt(ora) +1){
+
+                    if(parseInt(orario) == parseInt(ora)){
                         $(this).attr('selected', true);
                     }
                 })
-
-
-                alert( "sportId =" + sportId + "  ,  campoId ="+ campoId + " orario = "+ orario);
             });
 
 
@@ -422,7 +445,7 @@
                     success: function(data){
 
                     },
-                    error: function(data){
+                    error: function(xhr, ajaxOptions, thrownError){
                         $("#savePref").append("<span style='color:red'>Si è verificato un errore</span>");
 
                     },
@@ -441,9 +464,9 @@
                     url: url,
                     data: jsonArray,
                     success: function(data){
-                        alert(data.day);
+                        $("i[data-preferenze='"+id+"']").closest('tr').remove();
                     },
-                    error: function(data){
+                    error: function(xhr, ajaxOptions, thrownError){
                         $("#savePref").append("<span style='color:red'>Si è verificato un errore</span>");
 
                     },
@@ -511,7 +534,7 @@
                         $("#calendarioChiusure #ins").removeAttr("id");
                         $("#chiusura").attr('value','');
                     },
-                    error: function(data){
+                    error: function(xhr, ajaxOptions, thrownError){
                         $("#calendarioChiusure #ins").append("<span style='color:red'> - Si è verificato un errore</span>");
                         $("#chiusura").attr('value','');
                     },

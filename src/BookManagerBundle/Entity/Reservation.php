@@ -38,6 +38,8 @@ class Reservation{
      **/
     private $hour;
 
+
+
     /**
      * @ORM\ManyToOne(targetEntity="User",inversedBy="reservations")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
@@ -60,13 +62,12 @@ class Reservation{
     private $cell;
 
     /**
-     * @ORM\Column(type="integer",  nullable=true)
+     * @ORM\Column(type="string", length=255,  nullable=true)
      */
-    private $players;
-    /**
-     * @ORM\Column(type="boolean",  nullable=true)
-     */
-    private $residentChk;
+    private $note;
+
+
+    
 
     /**
      * @ORM\Column(type="date")
@@ -179,53 +180,8 @@ class Reservation{
         return $this->cell;
     }
 
-    /**
-     * Set residentsNum
-     *
-     * @param integer $residentsNum
-     *
-     * @return Reservation
-     */
-    public function setResidentsNum($residentsNum)
-    {
-        $this->residentsNum = $residentsNum;
 
-        return $this;
-    }
 
-    /**
-     * Get residentsNum
-     *
-     * @return integer
-     */
-    public function getResidentsNum()
-    {
-        return $this->residentsNum;
-    }
-
-    /**
-     * Set notResidentNum
-     *
-     * @param integer $notResidentNum
-     *
-     * @return Reservation
-     */
-    public function setNotResidentNum($notResidentNum)
-    {
-        $this->notResidentNum = $notResidentNum;
-
-        return $this;
-    }
-
-    /**
-     * Get notResidentNum
-     *
-     * @return integer
-     */
-    public function getNotResidentNum()
-    {
-        return $this->notResidentNum;
-    }
 
     /**
      * Set sportId
@@ -349,29 +305,6 @@ class Reservation{
         return $this->player;
     }
 
-    /**
-     * Set residentChk
-     *
-     * @param boolean $residentChk
-     *
-     * @return Reservation
-     */
-    public function setResidentChk($residentChk)
-    {
-        $this->residentChk = $residentChk;
-
-        return $this;
-    }
-
-    /**
-     * Get residentChk
-     *
-     * @return boolean
-     */
-    public function getResidentChk()
-    {
-        return $this->residentChk;
-    }
 
     /**
      * Set players
@@ -395,5 +328,29 @@ class Reservation{
     public function getPlayers()
     {
         return $this->players;
+    }
+
+    /**
+     * Set note
+     *
+     * @param string $note
+     *
+     * @return Reservation
+     */
+    public function setNote($note)
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+
+    /**
+     * Get note
+     *
+     * @return string
+     */
+    public function getNote()
+    {
+        return $this->note;
     }
 }
