@@ -96,20 +96,20 @@ class PrenotazioniController extends Controller{
     public function saveReservation(Request $request){
         $data = json_decode($request->getContent());
         $dbManager =    $this->get('app.dbmanager');
-        $today = new \DateTime();
-        $today->format('Y-m-d');
+        $dataEsecuzione = new \DateTime();
+        $dataEsecuzione->format('Y-m-d');
 
 
 
         $reservation = new Reservation();
         $giorno = implode("-",array_reverse(explode("-",$data->giorno)));
-        $giorno_reverse = new \DateTime($giorno);
+        $dataPrenotazioneCampo = new \DateTime($giorno);
         $sport = $dbManager->getSport($data->id_sport);
 
         $response = new Response();
         $response->setStatusCode(200);
         try{
-            $prenotazioni = $dbManager->getReservationPerSportAndDay($sport, $giorno_reverse,  $data->ora);
+            $prenotazioni = $dbManager->getReservationPerSportAndDay($sport, $dataPrenotazioneCampo,  $data->ora);
 
         }catch (Exception $e){
             $response->setStatusCode(400);
@@ -123,11 +123,11 @@ class PrenotazioniController extends Controller{
         $reservation->setName($data->nome);
         $reservation->setCell($data->cell);
         $reservation->setNote($data->note);
-        $reservation->setDate($giorno_reverse);
+        $reservation->setDate($dataEsecuzione);
         $reservation->setSport($sport);
         $reservation->setHour($data->ora);
         $reservation->setCampoId($campo_numero);
-        $reservation->setDataPrenotazione($today);
+        $reservation->setDataPrenotazione($dataPrenotazioneCampo);
         try{
             $id = $dbManager->saveReservation($reservation);
             $response->setContent($id);
