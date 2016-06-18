@@ -63,7 +63,7 @@ class DBManager
             ->from('BookManagerBundle:Schedule', 'a')
             ->leftJoin('a.sport', 'u')
             ->where('a.days_number = ?1')
-            ->andWhere('a.valid_from <= ?2')
+            ->andWhere('a.valid_from = ?2')
             ->setParameter(1,$day_number)
             ->setParameter(2,$valid_from);
 

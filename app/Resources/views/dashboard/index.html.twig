@@ -15,18 +15,15 @@
             <div class="box-header with-border">
                 <h3 class="box-title">Prenotazioni</h3>
 
-                <div class="box-tools pull-right hide">
-                    <button type="button" class="btn btn-box-tool"><i class="fa fa-list disabled" onclick="vistaDsashboard('lista')"></i>
-                    </button>
-                    <button type="button" class="btn btn-box-tool"><i class="fa fa-table"  style="opacity: 1" onclick="vistaDsashboard('tabella')"></i>
-                    </button>
+                <div class="box-tools pull-right">
+                    <span><input type="text" id="datepickerPronotazioni" name="datapicker" class="datapicker col-xs-12 pull-right" /></span>
                 </div>
                 <!-- /.box-tools -->
             </div>
 
             <div id="prenotazioni_list" class="hide">
-            <h3 id="tabella_giorno"></h3>
 
+            <h3 id="tabella_giorno"></h3>
             </div>
 
             <div id="tabella_sport">
@@ -160,6 +157,14 @@
         </div>
         <script>
 
+            $('#datepickerPronotazioni').datepicker({
+                minDate: new Date(),
+                onSelect: function(date) {
+                    var giorno = toDate(date).yyyymmdd();
+                    createSportTable(giorno);
+                },
+            });
+
             function salvaPrenotazione(elemento){
                 var sport = $(elemento).find( "input[name='sport']").attr('data-sport-id');
                 var giorno = toDate($(elemento).find("input[name='giorno']").attr('value')).yyyymmdd();
@@ -226,7 +231,7 @@
                 {% endfor %}
 
                 var url = "{{ path('dash_loadTabellaSport') }}";
-
+                console.log(day);
                 var obj = {'day': day};
                 var jsonArray = JSON.stringify(obj);
                 $.ajax({
@@ -238,6 +243,7 @@
                         var giorno = new Date(data.giorno.date);
                         $("h3#tabella_giorno").text(giorno.ddmm());
                         $("h3#tabella_giorno").attr("data-giorno", giorno.ddmmyyyy());
+
 
                         var tomorrow = new Date(data.giorno.date);
                         tomorrow.setDate(giorno.getDate()+1);
