@@ -29,7 +29,7 @@ class Reservation{
     private $sport;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="datetime")
      */
     private $date;
 

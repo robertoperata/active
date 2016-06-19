@@ -16,7 +16,7 @@
                 <h3 class="box-title">Prenotazioni</h3>
 
                 <div class="box-tools pull-right">
-                    <span><input type="text" id="datepickerPronotazioni" name="datapicker" class="datapicker col-xs-12 pull-right" /></span>
+                    <span><i class="fa fa-calendar" ></i><input type="text" id="datepickerPronotazioni" name="datapicker" class="datapicker col-xs-10 pull-right" /></span>
                 </div>
                 <!-- /.box-tools -->
             </div>
@@ -118,6 +118,7 @@
                         <input type="text" disabled="disabled" name="sport" class="form-control" />
                     </div>
                 </div>
+                <input type="hidden" name="id_prenotazione"  value=""/>
                 <div class="form-group  clearfix">
                     <label class="col-xs-2">Data:</label>
                     <div class="col-xs-10">
@@ -152,6 +153,8 @@
                         <input type="text" name="note"  class="form-control"/>
                     </div>
                 </div>
+
+                <button class="btn btn-danger pull-left" id="del_prenotazione" onclick="delPrenotazione($('#aggiungi_prenotazione'))">Elimina</button>
                 <button class="btn btn-primary pull-right" id="salva_prenotazione" onclick="salvaPrenotazione($('#aggiungi_prenotazione'))">Salva</button>
             </div>
         </div>
@@ -165,7 +168,29 @@
                 },
             });
 
+            function delPrenotazione(elemento){
+                var id_prenotazione =   $(elemento).find("input[name='id_prenotazione']").val();
+                var url = "{{ path('del_reservation') }}";
+
+                var obj = {'id_prenotazione':id_prenotazione};
+                var jsonArray = JSON.stringify(obj);
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: jsonArray,
+                    success: function(data){
+                        $( "#dialog" ).dialog( "close" );
+                        location.reload();
+                    },
+                    error: function(data){
+
+                    },
+                    dataType: 'json'
+                });
+            }
+
             function salvaPrenotazione(elemento){
+
                 var sport = $(elemento).find( "input[name='sport']").attr('data-sport-id');
                 var giorno = toDate($(elemento).find("input[name='giorno']").attr('value')).yyyymmdd();
                 var ora = $(elemento).find("option:selected").attr('data-hour-number');
@@ -173,13 +198,14 @@
                 var nome = $(elemento).find("input[name='nome']").val();
                 var cell = $(elemento).find("input[name='cell']").val();
                 var note = $(elemento).find("input[name='note']").val();
+                var id_prenotazione =   $(elemento).find("input[name='id_prenotazione']").val();
 
 
 
                 var url = "{{ path('save_reservation') }}";
 
 
-                var obj = {'id_sport': sport, 'giorno': giorno, 'ora':ora, 'nome':nome, 'cell': cell, 'note':note};
+                var obj = {'id_sport': sport, 'giorno': giorno, 'ora':ora, 'nome':nome, 'cell': cell, 'note':note, 'id_prenotazione':id_prenotazione};
                 var jsonArray = JSON.stringify(obj);
                 $.ajax({
                     type: "POST",
@@ -342,13 +368,10 @@
                     data: jsonArray,
                     success: function(data){
                         for(var i=0; i< data.length; i++){
-
+                        var note = data[i].note ? " <i class='fa fa-sticky-note-o'></i>" : "";
                         var col_numb = $('#tabella_sport').find('th[data-sport-id="'+data[i].id_sport+'"][data-column-id="'+data[i].campo+'"]').index();
-                        $("#tabella_sport tr:nth-child(2) td:eq("+ --col_numb +")").text(data[i].name);
+                        $("#tabella_sport tr:nth-child(2) td:eq("+ --col_numb +")").attr('data-id-prenotazione',data[i].id).attr('data-cell', data[i].cell).attr('data-note',data[i].note).text(data[i].name).append(note);
                         }
-
-
-
                     },
                     error: function(data){
 
@@ -385,10 +408,28 @@
             $(document.body).on('click', "#tabella_sport td", function(e){
                 var column_num = parseInt( $(this).index() ) + 1;
                 var row_num = parseInt( $(this).parent().index() )+1;
+                var col_num_edit = parseInt(column_num) - 2;
+
+                var id_prenotazione = $('#tabella_sport table tr:eq('+row_num+') td:eq('+ col_num_edit  +')').attr('data-id-prenotazione');
+                if(id_prenotazione > 0){
+                    var td = $('#tabella_sport table tr:eq('+row_num+') td:eq('+ col_num_edit  +')');
+                    console.log(td);
+                    var nome = $(td).text();
+                    var cell = $(td).attr('data-cell');
+                    var note = $(td).attr('data-note');
+                    $("#aggiungi_prenotazione input[name='nome']").attr('value', nome);
+                    $("#aggiungi_prenotazione input[name='cell']").attr('value', cell);
+                    $("#aggiungi_prenotazione input[name='note']").attr('value', note);
+                    $("#aggiungi_prenotazione input[name='id_prenotazione']").attr('value', id_prenotazione);
+                }
+
+
+
+
                 var giorno_ita = $('h3#tabella_giorno').attr('data-giorno');
                 var sport =  $("#tabella_sport thead tr th:nth-child("+ column_num +")").attr('title');
                 var sportId = $("#tabella_sport thead tr th:nth-child("+ column_num +")").attr('data-sport-id');
-                var campoId = $("#tabella_sport thead tr th:nth-child("+ column_num +")").attr('data-column-id');
+                // var campoId = $("#tabella_sport thead tr th:nth-child("+ column_num +")").attr('data-column-id');
                 var orario  = $("#tabella_sport tr").eq(row_num).find('th').attr('data-ora');
                 $( "#dialog" ).dialog( "open" );
                 $("#aggiungi_prenotazione input[name='giorno']").attr('value', giorno_ita);

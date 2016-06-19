@@ -136,12 +136,15 @@ class DashboardController extends Controller{
             $prenotazioni = $dbManager->getPrenotazioniPerDay($day);
             $elencoPrenotazioni = array();
             if(sizeof($prenotazioni) > 0) {
-                foreach ($prenotazioni as $sport) {
-                    $temp = array('id_sport' => $sport->getSport()->getId(),
-                        'campo' => $sport->getCampoId(),
-                        'hour' => $sport->getHour(),
-                        'name' => $sport->getName(),
-                        'cell' => $sport->getCell()
+                foreach ($prenotazioni as $item) {
+                    $temp = array('id_sport' => $item->getSport()->getId(),
+                        'campo' => $item->getCampoId(),
+                        'hour' => $item->getHour(),
+                        'name' => $item->getName(),
+                        'cell' => $item->getCell(),
+                        'id' => $item->getId(),
+                        'note'=>$item->getNote()
+
                     );
                     array_push($elencoPrenotazioni, $temp);
                 }
@@ -221,8 +224,8 @@ class DashboardController extends Controller{
         $response = new Response();
         $response->setStatusCode(200);
         try{
-            $obj = array('status'=>'ok');
             $dbManager->deletePreference($data->id);
+            $obj = array('status'=>'ok');
             $response->setContent(json_encode($obj));
 
         }catch  (\Exception $e){

@@ -109,6 +109,12 @@ class DBManager
         $this->em->flush();
     }
 
+    public function deleteReservation($id){
+        $reservation = $this->em->getRepository('BookManagerBundle:Reservation')->find($id);
+        $this->em->remove($reservation);
+        $this->em->flush();
+    }
+
         /*
     public function saveSchedule($sport, $day){
         $elencoGiogni = [1=>"LUN", 2=>"MAR", 3=>"MER", 4=>"GIO", 5=>"VEN", 6=>"SAB", 0=>"DOM"];
@@ -307,6 +313,9 @@ class DBManager
     }
 
 
+    public function getReservationById($idPrenotazione){
+        return $this->em->getRepository('BookManagerBundle:Reservation')->find($idPrenotazione);
+    }
 
     public function saveReservation(Reservation $reservation){
         $this->em->persist($reservation);
