@@ -212,6 +212,41 @@ class DBManager
         return $result;
     }
 
+
+    public function getDataValiditaPerGiorno(\DateTime $day, $daynumber){
+        $day->format('Y-m-d');
+        $qb = $this->em->createQueryBuilder();
+        $result =$qb->select('r')
+            ->from('BookManagerBundle:Schedule', 'r')
+            ->where('r.valid_from <= ?1')
+            ->andWhere('r.days_number = ?2')
+            ->orderBy('r.valid_from', 'DESC')
+            ->setParameter(1,$day)
+            ->setParameter(2, $daynumber)
+            ->setMaxResults(1)
+            ->getQuery()->execute();
+
+
+        if(sizeof($result) > 0){
+            $valid_from = $result[0]->getValidFrom();
+        }
+        return $valid_from;
+
+    }
+
+    public function getSportFromSchedule(\DateTime $valid_from,  $day_num){
+        $qb = $this->em->createQueryBuilder();
+        $result =$qb->select('r')
+            ->from('BookManagerBundle:Schedule', 'r')
+            ->where('r.valid_from >= ?1')
+            ->andWhere('r.days_number = ?2')
+            ->setParameter(1,$valid_from)
+            ->setParameter(2, $day_num)
+            ->getQuery()->execute();
+        return $result;
+}
+
+
     private function getDataTabelloneInCorso(\DateTime $day, $day_number){
         $qb = $this->em->createQueryBuilder();
 
@@ -232,6 +267,7 @@ class DBManager
         }
         return $valid_from;
     }
+
 
 
     public function getPrenotazioniTabellone($day_number){

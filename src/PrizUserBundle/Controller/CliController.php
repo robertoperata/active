@@ -16,6 +16,7 @@ use BookManagerBundle\Entity\Sport;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -58,8 +59,45 @@ class CliController extends Controller{
         try{
             $sportEntity = $dbManager->getSport($data->id_sport);
 
+            $giorniPerSport = [];
+            $oggi = new \DateTime();
+
+            for($i = 0; $i < 7; $i++){
+                $valid_from = $dbManager->getDataValiditaPerGiorno($oggi, $i);
+                $calendarioPerSport = $dbManager->getSportFromSchedule($valid_from, $i);
+                $giorniPerSport[$i] = $calendarioPerSport;
+            }
+            $giorniAbilitati = [];
+            for($i=0; $i < 60; $i++){
+                $currentDate = new \DateTime();
+                $currentDate->modify('+'.$i.' day');
+                $currentDate;
+                $numeroGiorno = $currentDate->format('w');
+                $ultimaDataValida = null;
+                for($m = 0; $m < sizeof($giorniPerSport[$numeroGiorno]); $m++){
+
+                    if($currentDate->format('Y-m-d') >= $giorniPerSport[$numeroGiorno][$m]->getValidFrom()->format('Y-m-d')){
+                        $ultimaDataValida = $giorniPerSport[$numeroGiorno][$m]->getValidFrom();
+
+                    }
+                }
+                for($m = 0; $m < sizeof($giorniPerSport[$numeroGiorno]); $m++){
+
+                    if($giorniPerSport[$numeroGiorno][$m]->getValidFrom()->format('Y-m-d') == $ultimaDataValida->format('Y-m-d')){
+
+                        if( $giorniPerSport[$numeroGiorno][$m]->getSport()->getId() == $sportEntity->getId()){
+
+                            $giorniAbilitati[$currentDate->getTimestamp()] = true;
+                        }
+                    }
+                }
+            }
+
+
+           // $dataTabelloneInCorso = $dbManager->getDataTabelloneInCorso();
             $daysPerSport = $dbManager->getDaysPerSport($sportEntity);
             $sport = array('id'=>$sportEntity->getId(), 'name'=>$sportEntity->getName());
+            $schedule = $sport->getSchedule();
             $schedule  = array();
             foreach($daysPerSport as $item){
                 $temp = array("day"=>$item->getDays(), "day_number"=>$item->getDaysNumber());
