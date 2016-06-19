@@ -59,7 +59,7 @@ class CliController extends Controller{
             $sportEntity = $dbManager->getSport($data->id_sport);
 
             $daysPerSport = $dbManager->getDaysPerSport($sportEntity);
-            $sport = array('id'=>$sportEntity->getId(), 'name'=>$sportEntity->getName(), 'minPlayer'=>$sportEntity->getMinPlayer(), 'maxPlayer'=>$sportEntity->getMaxPlayer());
+            $sport = array('id'=>$sportEntity->getId(), 'name'=>$sportEntity->getName());
             $schedule  = array();
             foreach($daysPerSport as $item){
                 $temp = array("day"=>$item->getDays(), "day_number"=>$item->getDaysNumber());
@@ -91,12 +91,10 @@ class CliController extends Controller{
 
         $data_prenotazione = new \DateTime($data->day);
 
-        $sport =  $dbManager->getSport($data->sport);
+
 
         //caricare elenco di prenotazioni per sport giorno ora
 
-        // controllo numero giocatori
-        $players = $data->players;
 
 
         $errori = false;
@@ -112,28 +110,20 @@ class CliController extends Controller{
         if($errori){
             $response->setStatusCode('400');
 
-            $response->setContent($testo);
+           // $response->setContent($testo);
             $response->headers->set('Content-Type', 'application/json');
             return $response;
         }
-
-        $residentChk = false;
-        if( $data->residenti === 'true' ){
-            $residentChk = true;
-        }
-
-
+        $sport = $dbManager->getSport($data->sport);
         $reservation = new Reservation();
-        $reservation->setSport($sport);
-        $reservation->setDataPrenotazione($data_prenotazione);
-        $reservation->setDate(new \DateTime());
-        $reservation->setPlayers($data->players);
-        $reservation->setHour($data->hour);
-        $reservation->setResidentChk($residentChk);
-
         $user = $this->get('security.token_storage')->getToken()->getUser();
-        $reservation->setUser($user);
+  //      $reservation->setUser($user);
         $reservation->setName($user->getUsername());
+        $reservation->setCell($user->getCellNumber());
+        $reservation->setDate(new \DateTime());
+
+        $reservation->setHour($data->hour);
+        $reservation->setDataPrenotazione($data_prenotazione);
 
         $session = $request->getSession();
         if(empty($session)){
@@ -141,20 +131,18 @@ class CliController extends Controller{
         }
         $session->start();
         $session->set('reservation', $reservation);
+        $session->set('sportid', $data->sport);
 
         $response = new Response();
         $response->setStatusCode('200');
         try{
             $orari = $dbManager->getTimePreferencies($data_prenotazione);
-            $tariffaNotturna = false;
-            $tariffaResidenti = 0;
-            $tariffaNonResidenti = 0;
+
             if($data->hour >= $orari[0]->getNotturno()){
                  $totale = $sport->getPriceLightsOn();
-
                 $tariffaNotturna  = true;
             }else{
-                 $totale = $sport->getPriceLightsOn();
+                 $totale = $sport->getPrice();
 
             }
 
@@ -203,9 +191,14 @@ class CliController extends Controller{
         $session = $request->getSession();
 
         $reservation = $session->get('reservation');
+        $sportid =  $session->get('sportid');
 
         $dbManager =    $this->get('app.dbmanager');
 
+        $sport = $dbManager->getSport($sportid);
+        $reservation->setSport($sport);
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $reservation->setUser($user);
         $campo_id = $dbManager->getReservationPerSportAndDay($reservation->getSport(), $reservation->getDataPrenotazione(), $reservation->getHour());
 
         $numeroCampo = 1;
@@ -213,6 +206,7 @@ class CliController extends Controller{
             $numeroCampo = sizeof($campo_id) + 1;
         }
         $reservation->setCampoId($numeroCampo);
+
 
         $response = new Response();
         $response->setStatusCode('200');

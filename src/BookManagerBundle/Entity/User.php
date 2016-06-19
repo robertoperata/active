@@ -37,7 +37,7 @@ class User extends BaseUser{
 
     public function __construct(){
         parent::__construct();
-        $this->schedules = new ArrayCollection();
+        $this->reservations = new ArrayCollection();
     }
 
     /**

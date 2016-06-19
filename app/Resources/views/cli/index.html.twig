@@ -8,9 +8,7 @@
                 <select id="sport_combo" class=" form-control" onchange="javascript:step2(this)">
                     <option>Scegli uno sport</option>
                     {% for item in sports %}
-                        <option data-sport-id="{{ item.id }}"
-                                data-min-player="{{ item.minPlayer }}"
-                                data-max-player="{{ item.maxPlayer }}">{{ item.name }}</option>
+                        <option data-sport-id="{{ item.id }}">{{ item.name }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -44,19 +42,6 @@
                     <option value="21">21:00</option>
                 </select>
             </div>
-            </div>
-            <div class="clearfix">
-                <label class="col-xs-12 col-md-3">Giocatori:</label>
-                <div class="col-xs-12 col-md-9" >
-                    <span class="min pull-left" style="color: #fff"></span>
-                    <span class="max pull-right" style="color: #fff"></span>
-                    <div class="col-md-10 col-md-offset-1" id="slider"></div>
-                </div>
-            </div>
-            <div  class="clearfix">
-                <div class="col-xs-12 col-md-9 col-md-offset-3">
-                    <input type="checkbox" id="residenti_check" name="residenti_check" /><span style="color: #fff"> Almeno l'80% dei giocatori sono residenti</span>
-                </div>
             </div>
            <div> <button class="btn btn-primary pull-right" onclick="salva()">Prenota</button></div>
         </div>
@@ -103,24 +88,20 @@
 
          function salva(){
              $('#errori').empty().hide();
-             var players = $('#slider').slider("option", "value");
+
 
              var hour = $('select[name="hour"] :selected').val();
              var day = toDate($('#datepicker').val());
              var sport = $('select#sport_combo :selected').attr('data-sport-id');
              var sport_nome = $('select#sport_combo :selected').val();
-             var residenti = false;
-             if( $('#residenti_check').is(':checked')){
-                residenti = false;
 
-             }
 
              var obj = {
-                 'players': players,
+
                  'hour':hour,
                  'day':day.yyyymmdd(),
                  'sport':sport,
-                 'residenti':residenti
+
              };
 
              var url = "{{ path('preCheckout') }}";
@@ -160,31 +141,13 @@
          function prenotazioneForm(schedule) {
              $("#step2").show();
 
-             if($('#slider').hasClass('ui-slider')){
-                 $("#slider").destroy();
-             }
-
              var minPlayer = $("#sport_combo :selected").attr('data-min-player');
              var maxPlayer = $("#sport_combo :selected").attr('data-max-player');
              $(".min").text(minPlayer);
              $(".max").text(maxPlayer);
 
-
-             $("#slider").slider({
-                 min: parseInt(minPlayer), // min value
-                 max: parseInt(maxPlayer), // max value
-                 step: 1,
-                 value: parseInt(minPlayer), // default value of slider
-                 slide: function(event, ui) {
-                     $(".ui-slider-handle").text(ui.value).css('color', '#666');
-                 }
-             });
-             $(".ui-slider-handle").text(minPlayer).css('color', '#666');
-
-
              $.datepicker.setDefaults( $.datepicker.regional[ "it" ] );
              $('#datepicker').datepicker({
-
                  minDate: 0,
                  beforeShowDay:  function(date){
                      var day = date.getDay();
