@@ -128,10 +128,8 @@
                 <div class="form-group clearfix">
                     <label class="col-xs-2">Ora:</label>
                     <div class="col-xs-10">
-                        <select>
-                            {%  for i in orariApertura[0].apertura .. orariApertura[0].chiusura %}
-                                <option data-hour-number="{{ i }}">{{ i }}:00</option>
-                            {% endfor %}
+                        <select id="orariPopUp">
+
                         </select>
                     </div>
                 </div>
@@ -266,6 +264,8 @@
                     data: jsonArray,
                     success: function(data){
                         $("#tabella_sport table").remove();
+                        $("#errorMessage").remove();
+                        $("#orariPopUp").empty();
                         var giorno = new Date(data.giorno.date);
                         $("h3#tabella_giorno").text(giorno.ddmm());
                         $("h3#tabella_giorno").attr("data-giorno", giorno.ddmmyyyy());
@@ -330,6 +330,7 @@
                             th.appendChild(document.createTextNode(i + ":00"));
                             th.setAttribute('data-ora', i);
                             tr.appendChild(th);
+                            $("#orariPopUp").append('<option data-hour-number="'+i+'">'+i+':00</option>')
                             sport.forEach(function (item) {
                                 for (n = 1; n <= item.fieldsNumber; n++) {
                                     var td = document.createElement('td');
@@ -350,7 +351,8 @@
 
                     },
                     error: function(data){
-                       // $("#savePref").append("<span style='color:red'>Si è verificato un errore</span>");
+                        $("#tabella_sport table").remove();
+                      $("#tabella_sport .tabella_sport_header").append("<span id='errorMessage' class='col-xs-12' style='text-align:center'>"+data.responseJSON.description+"</span>");
 
                     },
                     dataType: 'json'
@@ -369,8 +371,13 @@
                     success: function(data){
                         for(var i=0; i< data.length; i++){
                         var note = data[i].note ? " <i class='fa fa-sticky-note-o'></i>" : "";
+                        var row_numb =  parseInt($('#tabella_sport').find('th[data-ora="'+data[i].hour+'"]').parent().index()) + 1;
                         var col_numb = $('#tabella_sport').find('th[data-sport-id="'+data[i].id_sport+'"][data-column-id="'+data[i].campo+'"]').index();
-                        $("#tabella_sport tr:nth-child(2) td:eq("+ --col_numb +")").attr('data-id-prenotazione',data[i].id).attr('data-cell', data[i].cell).attr('data-note',data[i].note).text(data[i].name).append(note);
+
+                            console.log("row_numb"+row_numb);
+                        var row_num = parseInt( $("#timePreferences table tr").length )-2;
+                            console
+                        $("#tabella_sport tr:nth-child("+row_numb+") td:eq("+ --col_numb +")").attr('data-id-prenotazione',data[i].id).attr('data-cell', data[i].cell).attr('data-note',data[i].note).text(data[i].name).append(note);
                         }
                     },
                     error: function(data){

@@ -38,8 +38,6 @@ class Reservation{
      **/
     private $hour;
 
-
-
     /**
      * @ORM\ManyToOne(targetEntity="User",inversedBy="reservations")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
@@ -65,9 +63,6 @@ class Reservation{
      * @ORM\Column(type="string", length=255,  nullable=true)
      */
     private $note;
-
-
-    
 
     /**
      * @ORM\Column(type="date")

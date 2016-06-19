@@ -111,6 +111,14 @@ class DashboardController extends Controller{
         $response = new Response();
         $response->setStatusCode('200');
         try{
+            $giorniDiCihusura = $dbManager->checkAvailableDay($day);
+            if(sizeof($giorniDiCihusura) > 0){
+                $response->setStatusCode(400);
+                $obj = array('status'=>'-1', 'description'=>'Giorno di chiusura. Impossibile prenotare');
+                $response->setContent(json_encode($obj));
+                $response->headers->set('Content-Type', 'text/plain');
+                return $response;
+            }
             $tabellaSport = $this->tabellaSport($day);
             $response->setContent(json_encode($tabellaSport));
         }catch (Exception $e){

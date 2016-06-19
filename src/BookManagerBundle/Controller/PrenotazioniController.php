@@ -54,9 +54,20 @@ class PrenotazioniController extends Controller{
         $response->setStatusCode(200);
         $id = $data->id_prenotazione;
         try{
-            $dbManager->deleteReservation($id);
+            $reservation = $dbManager->getReservationById($id);
+            $dbManager->deleteReservation($reservation);
             $obj = array('status'=>'ok');
             $response->setContent(json_encode($obj));
+
+            //ricalcolare campi
+            $elencoPrenotazioniRimanenti = $dbManager->getReservationPerSportAndDay($reservation->getSport(), $reservation->getDataPrenotazione(), $reservation->getHour());
+
+            for($i=0; $i < sizeof($elencoPrenotazioniRimanenti); $i++){
+                $elencoPrenotazioniRimanenti[$i]->setCampoId($i + 1);
+                $dbManager->saveReservation($elencoPrenotazioniRimanenti[$i]);
+            }
+            // selezionre tutte le prenotazioni di quel giorno, di quello sport ordinate per id
+            //fare update del campoid basato su l'indice
         }catch (Exception $e){
             $response->setStatusCode(400);
         }
@@ -74,14 +85,22 @@ class PrenotazioniController extends Controller{
         $data = json_decode($request->getContent());
         $dbManager =    $this->get('app.dbmanager');
         $dataEsecuzione = new \DateTime();
-
+        $response = new Response();
+        $response->setStatusCode(200);
         $reservation = new Reservation();
         $giorno = implode("-",array_reverse(explode("-",$data->giorno)));
         $dataPrenotazioneCampo = new \DateTime($giorno);
+        $giorniDiCihusura = $dbManager->checkAvailableDay($dataPrenotazioneCampo);
+
+        if(sizeof($giorniDiCihusura) > 0){
+            $response->setStatusCode(400);
+            $obj = array('status'=>'-1', 'description'=>'Giorno di chiusura. Impossibile prenotare');
+            $response->setContent(json_encode($obj));
+            $response->headers->set('Content-Type', 'text/plain');
+            return $response;
+        }
         $sport = $dbManager->getSport($data->id_sport);
 
-        $response = new Response();
-        $response->setStatusCode(200);
         $idPrenotazione = 0;
         try{
             if(!$data->id_prenotazione){

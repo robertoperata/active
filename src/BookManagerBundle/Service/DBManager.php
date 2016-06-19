@@ -109,39 +109,12 @@ class DBManager
         $this->em->flush();
     }
 
-    public function deleteReservation($id){
-        $reservation = $this->em->getRepository('BookManagerBundle:Reservation')->find($id);
+
+
+    public function deleteReservation(Reservation $reservation){
         $this->em->remove($reservation);
         $this->em->flush();
     }
-
-        /*
-    public function saveSchedule($sport, $day){
-        $elencoGiogni = [1=>"LUN", 2=>"MAR", 3=>"MER", 4=>"GIO", 5=>"VEN", 6=>"SAB", 0=>"DOM"];
-
-        $sport = $this->getSport($sport);
-
-        $date = new \DateTime();
-        $date->format('Y-m-d');
-
-        $day_number = array_search($day, $elencoGiogni);
-        $schedule = new Schedule();
-        $schedule->setSport($sport);
-        $schedule->setValidFrom($date);
-        $schedule->setDays($day);
-        $schedule->setDaysNumber($day_number);
-        $this->em->persist($schedule);
-        $this->em->flush();
-    }
-
-    public function deleteSchedule($schedule){
-        $this->em->createQuery(
-            'DELETE BookManagerBundle:Schedule s
-               WHERE s.id = :scheduledId')
-            ->setParameter("scheduledId", $schedule[0]->getId())->execute();
-    }
-        */
-
 
     /**
      * Calendario
@@ -171,6 +144,17 @@ class DBManager
 
 
     }
+    public function checkAvailableDay(\DateTime $giornoPrenotazoine){
+        $qb = $this->em->createQueryBuilder();
+
+        $result =$qb->select('c')
+            ->from('BookManagerBundle:ClosingDays', 'c')
+            ->where('c.date = ?1')
+            ->setParameter(1,$giornoPrenotazoine->getTimestamp())
+            ->getQuery()->execute();
+        return $result;
+    }
+
 
     public function getClosingDays($today){
         $fields = array('c.date');
