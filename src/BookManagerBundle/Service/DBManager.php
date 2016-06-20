@@ -240,6 +240,7 @@ class DBManager
             ->from('BookManagerBundle:Schedule', 'r')
             ->where('r.valid_from >= ?1')
             ->andWhere('r.days_number = ?2')
+            ->orderBy('r.valid_from', 'ASC')
             ->setParameter(1,$valid_from)
             ->setParameter(2, $day_num)
             ->getQuery()->execute();

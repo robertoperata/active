@@ -92,18 +92,25 @@ class CliController extends Controller{
                     }
                 }
             }
+            $dataNormalizzata = [];
+            $giorniAbilitati = array_keys($giorniAbilitati);
+            for($i = 0; $i < sizeof($giorniAbilitati); $i++){
+                $dtStr = date("c", $giorniAbilitati[$i]);
+                $date = new \DateTime($dtStr);
+                $dataNormalizzata[] = $date->format('Y-n-j');
+            }
 
 
            // $dataTabelloneInCorso = $dbManager->getDataTabelloneInCorso();
             $daysPerSport = $dbManager->getDaysPerSport($sportEntity);
-            $sport = array('id'=>$sportEntity->getId(), 'name'=>$sportEntity->getName());
-            $schedule = $sport->getSchedule();
-            $schedule  = array();
-            foreach($daysPerSport as $item){
-                $temp = array("day"=>$item->getDays(), "day_number"=>$item->getDaysNumber());
-                array_push($schedule, $temp);
-            }
-            $result = array("sport"=>$sport, "schedule"=>$schedule);
+              $sport = array('id'=>$sportEntity->getId(), 'name'=>$sportEntity->getName());
+//            $schedule = $sport->getSchedule();
+//            $schedule  = array();
+//            foreach($daysPerSport as $item){
+//                $temp = array("day"=>$item->getDays(), "day_number"=>$item->getDaysNumber());
+//                array_push($schedule, $temp);
+//            }
+            $result = array("sport"=>$sport, "giorniAbilitati"=>$dataNormalizzata);
             $response->setContent(json_encode($result));
         }catch (Exception $e){
             $response->setStatusCode(400);
@@ -209,8 +216,8 @@ class CliController extends Controller{
         $response->setStatusCode('200');
         try{
             $orariApertura = $dbManager->getOrariAperturaPerGriono($day);
-
-            $response->setContent(json_encode($orariApertura));
+            $result = array("apertura"=>$orariApertura[0]->getApertura(), "chiusura"=>$orariApertura[0]->getChiusura());
+            $response->setContent(json_encode($result));
         }catch (Exception $e){
             $response->setStatusCode('400');
         }
