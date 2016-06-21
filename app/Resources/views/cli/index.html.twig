@@ -39,18 +39,20 @@
     <div class="clearfix" >
         <div class="box-header with-border">
             <h1>Prenotazione</h1>
-
-
         </div>
         <div id="dettaglioCheckout">
         </div>
         <div id="success" style="display: none">
             <span class="col-xs-12 sportName">Prenotazione eseguita</span>
         </div>
-        <div>
 
-        </div>
     </div>
+    </div>
+    <div class="col-xs-12" style="text-align: center">
+
+    <img src="{{ asset('assets/img/logo_letizia.png') }}"  style="text-align: center;width: 300px; height: auto"  />
+    </div>
+
     <script>
          function step2(select){
 
@@ -151,6 +153,7 @@
                              return [ available(dt, prenotazioneForm), "" ];
                          },
                  onSelect: function () {
+                     $("#orari").empty();
                      var date = $(this).val();
                      showStep3(date);
                  }
