@@ -16,6 +16,7 @@ use BookManagerBundle\Entity\OrariPreferenze;
 use BookManagerBundle\Entity\Sport;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Validator\Constraints\DateTime;
+use BookManagerBundle\Service\User;
 
 class DBManager
 {
@@ -206,7 +207,7 @@ class DBManager
 
         $result =  $this->em->createQuery(
             'SELECT s FROM BookManagerBundle:Reservation s
-           WHERE s.sport = :sportID AND s.date >= CURRENT_DATE()')
+           WHERE s.sport = :sportID AND s.date >= CURRENT_DATE() AND s.cancella = 0')
             ->setParameter("sportID", $sport->getId())->execute();
 
         return $result;
@@ -245,7 +246,20 @@ class DBManager
             ->setParameter(2, $day_num)
             ->getQuery()->execute();
         return $result;
-}
+    }
+
+    public  function getUserReservations($user_id){
+            $qb = $this->em->createQueryBuilder();
+            $result =$qb->select('r')
+            ->from('BookManagerBundle:Reservation', 'r')
+            ->where('r.user >= ?1')
+            ->andWhere('r.dataPrenotazione > CURRENT_DATE()' )
+            ->andWhere('r.cancella = 0')
+            ->orderBy('r.dataPrenotazione', 'ASC')
+            ->setParameter(1,$user_id)
+            ->getQuery()->execute();
+            return $result;
+        }
 
 
     private function getDataTabelloneInCorso(\DateTime $day, $day_number){
@@ -298,6 +312,7 @@ class DBManager
             ->where('r.dataPrenotazione = ?1')
             ->andWhere('r.sport = ?2')
             ->andWhere('r.hour = ?3')
+            ->andWhere('r.cancella = 0')
             ->setParameter(1,$dateTime)
             ->setParameter(2, $sport->getId())
             ->setParameter(3, $ora)
@@ -314,6 +329,7 @@ class DBManager
         $result =$qb->select('r')
             ->from('BookManagerBundle:Reservation', 'r')
             ->where('r.dataPrenotazione = ?1')
+            ->andWhere('r.cancella = 0')
             ->setParameter(1,$dateTime)
             ->getQuery()->execute();
         return $result;
@@ -328,6 +344,7 @@ class DBManager
         $result =$qb->select('r')
             ->from('BookManagerBundle:Reservation', 'r')
             ->where('r.date > ?1')
+            ->andWhere('r.cancella = 0')
             ->setParameter(1,$today)
             ->getQuery()->execute();
         return $result;
@@ -345,6 +362,11 @@ class DBManager
     }
 
 
+    public function cancellaPrenotazione(Reservation $prenotazione){
+        $prenotazione->setCancella(true);
+//		$this->em->remove($prenotazione);
+        $this->em->flush();
+    }
 
 
     //TODO: metodo pessimo che fa 2 query da migliorare

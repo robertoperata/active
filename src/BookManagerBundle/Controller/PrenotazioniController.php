@@ -123,7 +123,7 @@ class PrenotazioniController extends Controller{
             }
             $reservation->setCampoId($campo_numero);
         }
-
+        $user = $this->get('security.token_storage')->getToken()->getUser();
         $reservation->setName($data->nome);
         $reservation->setCell($data->cell);
         $reservation->setNote($data->note);
@@ -131,6 +131,7 @@ class PrenotazioniController extends Controller{
         $reservation->setSport($sport);
         $reservation->setHour($data->ora);
         $reservation->setDataPrenotazione($dataPrenotazioneCampo);
+        $reservation->setUser($user);
         try{
             $id = $dbManager->saveReservation($reservation);
             $response->setContent($id);

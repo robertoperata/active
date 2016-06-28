@@ -240,4 +240,17 @@ tbody tr th {
   line-height: 1.33;
   border-radius: 35px; }
 
+table#prenotazione th,
+table#prenotazione td {
+  text-align: center; }
+
+table#prenotazione th {
+  border-bottom: 1px solid #fff; }
+
+table#prenotazione td {
+  color: #fff; }
+
+table#prenotazione tbody > tr > td {
+  border: none; }
+
 /*# sourceMappingURL=main.css.map */

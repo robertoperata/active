@@ -30,7 +30,7 @@ class CliController extends Controller{
     /**
      * Lista Sport
      *
-     * @Route("/", name="frontend")
+     * @Route("/index", name="frontend")
      * @Method("GET")
      */
     public function indexAction(){
@@ -43,6 +43,59 @@ class CliController extends Controller{
             'sports' => $sports
         ));
     }
+
+    /**
+     * Lista prenotazioni
+     *
+     * @Route("/list", name="controlloPrenotazioni")
+     * @Method("GET")
+     */
+    public function controlloPrenotazioni(){
+        $dbManager =    $this->get('app.dbmanager');
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        //controlla prenotazioni utente
+        $prenotazioni = $dbManager->getUserReservations($user->getId());
+            if(sizeof($prenotazioni) > 0){
+                return $this->render('cli/controlloPrenotazioni.html.twig', array(
+                    'prenotazioni' => $prenotazioni
+                ));
+            }else{
+                return $this->redirectToRoute('frontend');
+            }
+    	}
+
+    /**
+     * Cancella prenotazioni
+     *
+     * @Route("/cancellaPrenotazione", name="cancellaPrenotazioni")
+     * @Method("POST")
+     */
+    public function cancellaPrenotazioni(Request $request){
+        $data = json_decode($request->getContent());
+        $dbManager =    $this->get('app.dbmanager');
+        $response = new Response();
+        $response->setStatusCode(200);
+        try{
+            $prenotazione = $dbManager->getReservationById($data->id);
+            $user = $this->get('security.token_storage')->getToken()->getUser();
+            if($prenotazione->getUser()->getId() == $user->getId()){
+                $dbManager->cancellaPrenotazione($prenotazione);
+                $obj = array('status'=>'ok');
+                $response->setContent(json_encode($obj));
+            }else{
+                throw new \Exception('utente non valido');
+            }
+
+        }catch (Exception $e){
+            $obj = array('status'=>'ko');
+            $response->setContent(json_encode($obj));
+            $response->setStatusCode(400);
+        }
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
 
     /**
      * Lista giorni per sport

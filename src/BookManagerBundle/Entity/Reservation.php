@@ -70,6 +70,11 @@ class Reservation{
     private $dataPrenotazione;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $cancella = false;
+
+    /**
      * Get id
      *
      * @return integer
@@ -347,5 +352,29 @@ class Reservation{
     public function getNote()
     {
         return $this->note;
+    }
+
+    /**
+     * Set cancella
+     *
+     * @param  $cancella
+     *
+     * @return Reservation
+     */
+    public function setCancella($cancella)
+    {
+        $this->cancella = $cancella;
+
+        return $this;
+    }
+
+    /**
+     * Get cancella
+     *
+     * @return boolean
+     */
+    public function getCancella()
+    {
+        return $this->cancella;
     }
 }

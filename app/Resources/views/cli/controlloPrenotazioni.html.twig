@@ -1,0 +1,58 @@
+{% extends 'cli.base.html.twig' %}
+{% block body %}
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+        <div class="clearfix">
+            <table id="prenotazione" class="table table-stripped">
+                <tr>
+                    <th></th>
+                    <th>Data</th>
+                    <th>Ora</th>
+                    <th>Sport</th>
+                </tr>
+                {% for item in prenotazioni %}
+                    <tr id="{{item.id}}">
+                        <td onclick="cancellaPrenotazione({{ item.id }})"><i class="fa fa-fw fa-close" style="color: #FF4929"></i></td>
+                        <td>{{ item.dataPrenotazione|date('d/m/Y') }}</td>
+                        <td>{{ item.hour }}</td>
+                        <td>{{ item.sport.name }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <div class="row">
+                <div class="col-xs-12 col-md-6 col-md-offset-2">
+                    <h2>Vuoi aggiungere una nuova prenotazione?</h2>
+                </div>
+                <div class="col-xs-12 col-md-1">
+                    <a href="{{ path('frontend')}}" class="btn btn-success pull-right btn-circle btn-lg" style="margin-top: 20px">
+                        <i class="fa fa-arrow-right" style="color: #ffffff;"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12" style="text-align: center">
+
+            <img src="{{ asset('assets/img/logo_letizia.png') }}"  style="text-align: center;width: 300px; height: auto"  />
+        </div>
+    </div>
+    <script>
+        function cancellaPrenotazione(index){
+
+            var url = "{{ path('cancellaPrenotazioni') }}";
+            var obj = {'id': index};
+            var jsonArray = JSON.stringify(obj);
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: jsonArray,
+                success: function(data){
+                    $("tr#"+index).remove();
+                },
+                error: function(data){
+                    $("tr#"+index).tooltip({title:'Errore: cancellazione non riuscita', placement:'top'});
+                },
+                dataType: 'json'
+            });
+        }
+
+    </script>
+{% endblock %}

@@ -191,7 +191,8 @@
 
                 var sport = $(elemento).find( "input[name='sport']").attr('data-sport-id');
                 var giorno = toDate($(elemento).find("input[name='giorno']").attr('value')).yyyymmdd();
-                var ora = $(elemento).find("option:selected").attr('data-hour-number');
+              //  var ora = $(elemento).find("option:selected").attr('data-hour-number');
+                var ora = $(elemento).find("option:selected").val();
 
                 var nome = $(elemento).find("input[name='nome']").val();
                 var cell = $(elemento).find("input[name='cell']").val();
@@ -229,6 +230,17 @@
                         $(".ui-dialog").removeClass('ui-corner-all');
                         $(".ui-dialog-titlebar").removeClass('ui-corner-all');
                     },
+                    close: function( event, ui ) {
+                        $("#dialog").find('input[name="nome"]').val('');
+                        $("#dialog").find('input[name="note"]').val('');
+                        $("#dialog").find('input[name="id_prenotazione"]').val('');
+                        $("#dialog").find('input[name="cell"]').val('');
+                        $("#aggiungi_prenotazione select > option").each(function(){
+
+                            $(this).removeAttr('selected');
+
+                        })
+                    }
                 });
             });
 
@@ -330,7 +342,8 @@
                             th.appendChild(document.createTextNode(i + ":00"));
                             th.setAttribute('data-ora', i);
                             tr.appendChild(th);
-                            $("#orariPopUp").append('<option data-hour-number="'+i+'">'+i+':00</option>')
+                         //   $("#orariPopUp").append('<option data-hour-number="'+i+'">'+i+':00</option>')
+                            $("#orariPopUp").append('<option value="'+i+'">'+i+':00</option>')
                             sport.forEach(function (item) {
                                 for (n = 1; n <= item.fieldsNumber; n++) {
                                     var td = document.createElement('td');
@@ -374,9 +387,7 @@
                         var row_numb =  parseInt($('#tabella_sport').find('th[data-ora="'+data[i].hour+'"]').parent().index()) + 1;
                         var col_numb = $('#tabella_sport').find('th[data-sport-id="'+data[i].id_sport+'"][data-column-id="'+data[i].campo+'"]').index();
 
-                            console.log("row_numb"+row_numb);
                         var row_num = parseInt( $("#timePreferences table tr").length )-2;
-                            console
                         $("#tabella_sport tr:nth-child("+row_numb+") td:eq("+ --col_numb +")").attr('data-id-prenotazione',data[i].id).attr('data-cell', data[i].cell).attr('data-note',data[i].note).text(data[i].name).append(note);
                         }
                     },
@@ -388,17 +399,6 @@
 
             }
 
-            $(function() {
-                $("#dialog").dialog({
-                    autoOpen: false,
-                    width: 600,
-                    create: function (event, ui) {
-
-                        $(".ui-dialog").removeClass('ui-corner-all');
-                        $(".ui-dialog-titlebar").removeClass('ui-corner-all');
-                    },
-                });
-            });
 
             $(document).ready(function(){
                 today = new Date();
@@ -420,7 +420,6 @@
                 var id_prenotazione = $('#tabella_sport table tr:eq('+row_num+') td:eq('+ col_num_edit  +')').attr('data-id-prenotazione');
                 if(id_prenotazione > 0){
                     var td = $('#tabella_sport table tr:eq('+row_num+') td:eq('+ col_num_edit  +')');
-                    console.log(td);
                     var nome = $(td).text();
                     var cell = $(td).attr('data-cell');
                     var note = $(td).attr('data-note');
@@ -442,14 +441,17 @@
                 $("#aggiungi_prenotazione input[name='giorno']").attr('value', giorno_ita);
                 $("#aggiungi_prenotazione input[name='sport']").attr('value', sport);
                 $("#aggiungi_prenotazione input[name='sport']").attr('data-sport-id', sportId);
+                $("select#orariPopUp").val(orario);
+                /*
                 $("#aggiungi_prenotazione select option").each(function(){
-                    $(this).removeAttr('selected');
+                 //   $(this).removeAttr('selected');
                     var ora = $(this).attr('data-hour-number');
 
                     if(parseInt(orario) == parseInt(ora)){
-                        $(this).attr('selected', true);
+                        $(this).attr('selected', 'selected');
                     }
                 })
+                */
             });
 
 
