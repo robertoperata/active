@@ -76,6 +76,8 @@ fos_user:
     firewall_name: main
     user_class: BookManagerBundle\Entity\User
     registration:
+            form:
+                type: BookManagerBundle\Form\RegistrationType
             confirmation:
                 enabled: true
     from_email:
@@ -90,3 +92,15 @@ fos_user:
                 from_email:
                     address:        resetting@example.com
                     sender_name:    Demo Resetting
+
+payum:
+    security:
+        token_storage:
+           BookManagerBundle\Entity\PaymentToken: { doctrine: orm }
+
+    storages:
+       BookManagerBundle\Entity\Payment: { doctrine: orm }
+
+    gateways:
+        offline:
+            factory: offline
