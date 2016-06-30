@@ -3,19 +3,19 @@
  * Created by PhpStorm.
  * User: roberto
  * Date: 29/06/16
- * Time: 20.28
+ * Time: 19.49
  */
 
 namespace BookManagerBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Payum\Core\Model\Payment as BasePayment;
+use Payum\Core\Model\ArrayObject;
 
 /**
  * @ORM\Table
  * @ORM\Entity
  */
-class Payment extends BasePayment
+class PaymentDetails extends ArrayObject
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -25,5 +25,4 @@ class Payment extends BasePayment
      * @var integer $id
      */
     protected $id;
-
 }

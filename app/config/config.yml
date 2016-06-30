@@ -100,7 +100,12 @@ payum:
 
     storages:
        BookManagerBundle\Entity\Payment: { doctrine: orm }
+       BookManagerBundle\Entity\PaymentDetails: { doctrine: orm }
 
     gateways:
-        offline:
-            factory: offline
+            paypal_express_checkout:
+                factory: paypal_express_checkout
+                username:  '%paypal_username%'
+                password:  '%paypal_password%'
+                signature: '%paypal_signature%'
+                sandbox: true
