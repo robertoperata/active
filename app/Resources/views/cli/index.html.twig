@@ -48,7 +48,7 @@
 
     </div>
     </div>
-    <div class="col-xs-12" style="text-align: center">
+    <div class="col-xs-12" style="margin-top: 50px; text-align: center">
 
     <img src="{{ asset('assets/img/logo_letizia.png') }}"  style="text-align: center;width: 300px; height: auto"  />
     </div>
@@ -108,7 +108,7 @@
              //        $("#dettaglioCheckout").append("<span class='col-sm-10 col-sm-offset-1 residenti'>"+residentsNum+" players resdienti x <span class='pull-right'>"+data.tariffaResidenti+" &euro;</span></span>");
               //       $("#dettaglioCheckout").append("<span class='col-sm-10 col-sm-offset-1 rigaSomma'>"+notResidentNum+" players non resdienti  x <span class='pull-right'>"+data.tariffaNonResidenti+" &euro;</span></span>");
                      $("#dettaglioCheckout").append("<span class='col-sm-10 col-sm-offset-1 totale'>Totale <span class='pull-right'>"+parseFloat(data.totale).toFixed(2)+" &euro;</span></span>");
-                     $("#dettaglioCheckout").append("<span class='col-xs-12'><button type=\"button\" class=\"btn btn-success pull-right btn-circle btn-lg\"  onclick='save()'><i class=\"glyphicon glyphicon glyphicon-ok\"></i></button>&nbsp;<button id='annulla' onclick='annulla()' class='btn btn-danger btn-circle btn-lg pull-right' ><i class=\"glyphicon glyphicon-remove\"></i></button></span>");
+                     $("#dettaglioCheckout").append("<span class='col-xs-12'><a href='{{path('pagamento_prepare') }}' type=\"button\" class=\"btn btn-success pull-right btn-circle btn-lg\" ><i class=\"glyphicon glyphicon glyphicon-ok\"></i></a>&nbsp;<button id='annulla' onclick='annulla()' class='btn btn-danger btn-circle btn-lg pull-right' ><i class=\"glyphicon glyphicon-remove\"></i></a></span>");
                  },
                  error(msg){
 
@@ -169,17 +169,25 @@
           */
          function showStep3(date){
              var data_orari = toDate(date);
+             var sport = $('select#sport_combo :selected').attr('data-sport-id');
              var url = "{{ path('loadOrari') }}";
-             var obj = {'data_orari': data_orari.yyyymmdd()};
+             var obj = {'data_orari': data_orari.yyyymmdd(), 'sport': sport};
              var jsonArray = JSON.stringify(obj);
              $.ajax({
                  type: "POST",
                  url: url,
                  data: jsonArray,
                  success: function(data){
-                     for(var i= data.apertura; i < data.chiusura; i++){
+                     for (var i in data.orariPrenotazione) {
+                        if(data.orariPrenotazione[i]){
+
                          $('#orari').append("<option value=\""+i+"\">"+i+":00</option>");
+                        }else{
+                         $('#orari').append("<option value=\""+i+"\" disabled >"+i+":00</option>");
+
+                        }
                      }
+
                     $("#step3").show();
 
 
@@ -220,7 +228,7 @@
 
         function save(){
 
-            var url = "{{ path('checkout') }}";
+            var url = "{{ path('pagamento_prepare') }}";
 
             $.ajax({
                 type: "POST",

@@ -75,6 +75,36 @@ class Reservation{
     private $cancella = false;
 
     /**
+     * @ORM\Column(name="ppTransactionId", type="string")
+     */
+    private $pptransactionId;
+
+    /**
+     * @ORM\Column(name="ppEmail", type="string")
+     */
+    private $ppEmail;
+
+    /**
+     * @ORM\Column(name="ppPayerId", type="string")
+     */
+    private $ppPayerId;
+
+    /**
+     * @ORM\Column(name="totale", type="float")
+     */
+    private $totale;
+
+    /**
+     * @ORM\Column(name="ppTimestamp", type="string")
+     */
+    private $ppTimestamp;
+
+    /**
+     * @ORM\Column(name="ipClinet", type="string")
+     */
+    private $ip;
+
+    /**
      * Get id
      *
      * @return integer
@@ -376,5 +406,149 @@ class Reservation{
     public function getCancella()
     {
         return $this->cancella;
+    }
+
+    /**
+     * Set pptransactionId
+     *
+     * @param string $pptransactionId
+     *
+     * @return Reservation
+     */
+    public function setPptransactionId($pptransactionId)
+    {
+        $this->pptransactionId = $pptransactionId;
+
+        return $this;
+    }
+
+    /**
+     * Get pptransactionId
+     *
+     * @return string
+     */
+    public function getPptransactionId()
+    {
+        return $this->pptransactionId;
+    }
+
+    /**
+     * Set ppEmail
+     *
+     * @param string $ppEmail
+     *
+     * @return Reservation
+     */
+    public function setPpEmail($ppEmail)
+    {
+        $this->ppEmail = $ppEmail;
+
+        return $this;
+    }
+
+    /**
+     * Get ppEmail
+     *
+     * @return string
+     */
+    public function getPpEmail()
+    {
+        return $this->ppEmail;
+    }
+
+    /**
+     * Set ppPayerId
+     *
+     * @param string $ppPayerId
+     *
+     * @return Reservation
+     */
+    public function setPpPayerId($ppPayerId)
+    {
+        $this->ppPayerId = $ppPayerId;
+
+        return $this;
+    }
+
+    /**
+     * Get ppPayerId
+     *
+     * @return string
+     */
+    public function getPpPayerId()
+    {
+        return $this->ppPayerId;
+    }
+
+    /**
+     * Set totale
+     *
+     * @param float $totale
+     *
+     * @return Reservation
+     */
+    public function setTotale($totale)
+    {
+        $this->totale = $totale;
+
+        return $this;
+    }
+
+    /**
+     * Get totale
+     *
+     * @return float
+     */
+    public function getTotale()
+    {
+        return $this->totale;
+    }
+
+    /**
+     * Set ppTimestamp
+     *
+     * @param string $ppTimestamp
+     *
+     * @return Reservation
+     */
+    public function setPpTimestamp($ppTimestamp)
+    {
+        $this->ppTimestamp = $ppTimestamp;
+
+        return $this;
+    }
+
+    /**
+     * Get ppTimestamp
+     *
+     * @return string
+     */
+    public function getPpTimestamp()
+    {
+        return $this->ppTimestamp;
+    }
+
+    /**
+     * Set ip
+     *
+     * @param string $ip
+     *
+     * @return Reservation
+     */
+    public function setIp($ip)
+    {
+        $this->ip = $ip;
+
+        return $this;
+    }
+
+    /**
+     * Get ip
+     *
+     * @return string
+     */
+    public function getIp()
+    {
+        return $this->ip;
     }
 }

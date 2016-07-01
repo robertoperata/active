@@ -11,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  *
@@ -26,7 +27,11 @@ class PaymentController extends Controller
      */
     public function prepareAction()
     {
+       // $request = Request::createFromGlobals();
         $gatewayName = 'paypal_express_checkout';
+        $session = $this->container->get('session');
+
+        $reservation = $session->get('reservation');
 
 //        $storage = $this->get('payum')->getStorage(PaymentDetails::class);
         $storage = $this->get('payum')->getStorage(Payment::class);
@@ -37,18 +42,21 @@ class PaymentController extends Controller
         $router = $this->get('router');
         $return = $router->generate('pagamento_done');
 
-
+        $totale = $session->get('prezzo')*100;
         /** @var \BookManagerBundle\Entity\PaymentDetails $details */
         $details = [
-            'PAYMENTREQUEST_0_CURRENCYCODE' => 'ZMB',
+            'PAYMENTREQUEST_0_CURRENCYCODE' => 'EUR',
 //            'RETURNURL' => $return,
 //            'CANCELURL' => 'http://cancel.url',
-            'PAYMENTREQUEST_0_AMT' => 1.23
+            'PAYMENTREQUEST_0_AMT' => $totale,
+            'NOSHIPPING' => 1
         ];
+        //$paymentDetails->setNoshipping(Api::NOSHIPPING_NOT_DISPLAY_ADDRESS);
 
-
-        $payment->setCurrencyCode('USD');
-        $payment->setTotalAmount(1987);
+        $payment->setCurrencyCode('EUR');
+        $payment->setTotalAmount($totale);
+        $payment->setDescription("Prenotazione ".$reservation->getSport()->getName().": ".$reservation->getDataPrenotazione()->format('d-m'). " alle ore " . $reservation->getHour().":00");
+      //  $payment->setDescription("Prenotazione " . $reservation->getSport()->getName());
         $payment->setDetails($details);
 
         $storage->update($payment);
@@ -87,14 +95,76 @@ class PaymentController extends Controller
 
         // you have order and payment status
         // so you can do whatever you want for example you can just print status and payment details.
+        /*
+        $response = new Response(json_encode(array(
+            'status' => $status->getValue(),
+            'payment' => array(
+                'total_amount' => $payment->getTotalAmount(),
+                'currency_code' => $payment->getCurrencyCode(),
+                'details' => $payment->getDetails(),
+            ),)));
 
-        return new JsonResponse(array(
+        return $this->redirectToRoute('checkout', array(
+            'status' => $status->getValue(),
+            'payment' => array(
+                'total_amount' => $payment->getTotalAmount(),
+                'currency_code' => $payment->getCurrencyCode(),
+                'details' => $payment->getDetails(),
+            ),));
+        */
+       $pagamento = array(
             'status' => $status->getValue(),
             'payment' => array(
                 'total_amount' => $payment->getTotalAmount(),
                 'currency_code' => $payment->getCurrencyCode(),
                 'details' => $payment->getDetails(),
             ),
+        );
+
+        $session = $this->container->get('session');
+
+        $reservation = $session->get('reservation');
+        $sportid =  $session->get('sportid');
+
+        $dbManager =    $this->get('app.dbmanager');
+
+        $sport = $dbManager->getSport($sportid);
+        $reservation->setSport($sport);
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $reservation->setUser($user);
+        $reservation->setTotale($pagamento['payment']['details']['AMT']);
+        $reservation->setPpEmail($pagamento['payment']['details']['EMAIL']);
+        $reservation->setPptransactionId($pagamento['payment']['details']['TRANSACTIONID']);
+        $reservation->setPpPayerId($pagamento['payment']['details']['PAYERID']);
+        $reservation->setIp($request->getClientIp());
+        $reservation->setPpTimestamp($pagamento['payment']['details']['TIMESTAMP']);
+        $campo_id = $dbManager->getReservationPerSportAndDay($reservation->getSport(), $reservation->getDataPrenotazione(), $reservation->getHour());
+
+        $numeroCampo = 1;
+        if(sizeof($campo_id) > 0){
+            $numeroCampo = sizeof($campo_id) + 1;
+        }
+        $reservation->setCampoId($numeroCampo);
+
+
+        $response = new Response();
+        $response->setStatusCode('200');
+        try{
+            $prenotazione = $dbManager->saveReservation($reservation);
+            $response->setContent(json_encode($prenotazione));
+        }catch (Exception $e){
+            $response->setStatusCode('400');
+        }
+
+        return $this->render('cli/checkout.html.twig', array(
+            'sport'=> $sport->getName(),
+            'giorno'=> $reservation->getDataPrenotazione()->format('d-m'),
+            'ora' => $reservation->getHour()
         ));
     }
+
+
+
+
+
 }

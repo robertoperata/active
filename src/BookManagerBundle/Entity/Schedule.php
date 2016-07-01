@@ -185,4 +185,100 @@ class Schedule{
     {
         return $this->fields_number;
     }
+
+    /**
+     * Set pptransactionId
+     *
+     * @param string $pptransactionId
+     *
+     * @return Schedule
+     */
+    public function setPptransactionId($pptransactionId)
+    {
+        $this->pptransactionId = $pptransactionId;
+
+        return $this;
+    }
+
+    /**
+     * Get pptransactionId
+     *
+     * @return string
+     */
+    public function getPptransactionId()
+    {
+        return $this->pptransactionId;
+    }
+
+    /**
+     * Set ppEmail
+     *
+     * @param string $ppEmail
+     *
+     * @return Schedule
+     */
+    public function setPpEmail($ppEmail)
+    {
+        $this->ppEmail = $ppEmail;
+
+        return $this;
+    }
+
+    /**
+     * Get ppEmail
+     *
+     * @return string
+     */
+    public function getPpEmail()
+    {
+        return $this->ppEmail;
+    }
+
+    /**
+     * Set ppPayerId
+     *
+     * @param string $ppPayerId
+     *
+     * @return Schedule
+     */
+    public function setPpPayerId($ppPayerId)
+    {
+        $this->ppPayerId = $ppPayerId;
+
+        return $this;
+    }
+
+    /**
+     * Get ppPayerId
+     *
+     * @return string
+     */
+    public function getPpPayerId()
+    {
+        return $this->ppPayerId;
+    }
+
+    /**
+     * Set totale
+     *
+     * @param float $totale
+     *
+     * @return Schedule
+     */
+    public function setTotale($totale)
+    {
+        $this->totale = $totale;
+
+        return $this;
+    }
+
+    /**
+     * Get totale
+     *
+     * @return float
+     */
+    public function getTotale()
+    {
+        return $this->totale;
+    }
 }

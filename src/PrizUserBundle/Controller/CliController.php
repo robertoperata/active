@@ -115,6 +115,7 @@ class CliController extends Controller{
             $giorniPerSport = [];
             $oggi = new \DateTime();
 
+
             for($i = 0; $i < 7; $i++){
                 $valid_from = $dbManager->getDataValiditaPerGiorno($oggi, $i);
                 $calendarioPerSport = $dbManager->getSportFromSchedule($valid_from, $i);
@@ -123,6 +124,8 @@ class CliController extends Controller{
             $giorniAbilitati = [];
             for($i=0; $i < 60; $i++){
                 $currentDate = new \DateTime();
+                $currentDate->setTimezone(new \DateTimeZone('Europe/Rome'));
+                $currentDate->format('Y-m-d');
                 $currentDate->modify('+'.$i.' day');
                 $currentDate;
                 $numeroGiorno = $currentDate->format('w');
@@ -140,11 +143,23 @@ class CliController extends Controller{
 
                         if( $giorniPerSport[$numeroGiorno][$m]->getSport()->getId() == $sportEntity->getId()){
 
-                            $giorniAbilitati[$currentDate->getTimestamp()] = true;
+                            $tmp = new \DateTime($currentDate->format('Y-m-d'), new \DateTimeZone('Europe/Rome'));
+                            $giorniAbilitati[$tmp->getTimestamp()] = true;
                         }
                     }
                 }
             }
+            // cerchiamo i giorni di chiusura da oggi in aventi
+            $today = new \DateTime();
+            $today->format('Y-m-d');
+            $closingDays = $dbManager->getClosingDays($today);
+
+            //eliminiamo dai giorni disponibili i giorni di chiusura
+            for($i = 0; $i < sizeof($closingDays); $i++){
+
+               unset($giorniAbilitati[$closingDays[$i]['date']]);
+            }
+
             $dataNormalizzata = [];
             $giorniAbilitati = array_keys($giorniAbilitati);
             for($i = 0; $i < sizeof($giorniAbilitati); $i++){
@@ -219,7 +234,7 @@ class CliController extends Controller{
         $reservation->setName($user->getUsername());
         $reservation->setCell($user->getCellNumber());
         $reservation->setDate(new \DateTime());
-
+        $reservation->setSport($sport);
         $reservation->setHour($data->hour);
         $reservation->setDataPrenotazione($data_prenotazione);
 
@@ -227,9 +242,7 @@ class CliController extends Controller{
         if(empty($session)){
             $session = new Session();
         }
-        $session->start();
-        $session->set('reservation', $reservation);
-        $session->set('sportid', $data->sport);
+
 
         $response = new Response();
         $response->setStatusCode('200');
@@ -245,6 +258,11 @@ class CliController extends Controller{
             }
 
             $importi = array(   'totale'=>$totale, );
+            $session->start();
+            $session->set('reservation', $reservation);
+            $session->set('sportid', $data->sport);
+            $session->set('prezzo', $totale);
+            $session->set('descrizone', $totale);
 
            $response->setContent(json_encode($importi));
         }catch (Exception $e){
@@ -269,7 +287,30 @@ class CliController extends Controller{
         $response->setStatusCode('200');
         try{
             $orariApertura = $dbManager->getOrariAperturaPerGriono($day);
-            $result = array("apertura"=>$orariApertura[0]->getApertura(), "chiusura"=>$orariApertura[0]->getChiusura());
+            $sport = $dbManager->getSport($data->sport);
+
+            //numero campi configurati per sport / giorno
+            $sportScheudle = $dbManager->getSportScheduledForDay($sport, $day);
+
+            //numero prenotazioni per sport / giorno raggruppate per ora
+            // per determinare la disponiblità  di ulteriori campi
+            $campiOccupati = $dbManager->getCampiDisponibiliPerSportEGiorno($sport, $day);
+            $hourKey = array_column($campiOccupati, 'hour');
+            $numeroCampi =  array_column($campiOccupati, 'num');
+            $campiOccupati = array_combine($hourKey, $numeroCampi);
+
+            $orariPrenotazione = [];
+            for($i = $orariApertura[0]->getApertura(); $i < $orariApertura[0]->getChiusura(); $i++){
+                $orariPrenotazione[$i] = true;
+            }
+            foreach($campiOccupati as $key=>$item){
+                if($item == $sportScheudle[0]->getFieldsNumber()){
+                    $orariPrenotazione[$key]=false;
+                }
+            }
+
+            //chamare preontzioni per quel giorno con count su orari
+            $result = array("orariPrenotazione"=>$orariPrenotazione);
             $response->setContent(json_encode($result));
         }catch (Exception $e){
             $response->setStatusCode('400');

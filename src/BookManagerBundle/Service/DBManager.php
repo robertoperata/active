@@ -34,16 +34,19 @@ class DBManager
         return $this->em->getRepository('BookManagerBundle:Sport')->findAll();
     }
 
-    public function getSportScheduledForDay( $sport, $day){
+    public function getSportScheduledForDay(Sport $sport,\DateTime $day){
 
         $qb = $this->em->createQueryBuilder();
 
         $result =$qb->select('s')
             ->from('BookManagerBundle:Schedule', 's')
             ->where('s.sport = ?1')
-            ->andWhere('s.days = ?2')
+            ->andWhere('s.valid_from <= ?2')
+            ->andWhere('s.days_number = ?3')
             ->setParameter(1,$sport)
-            ->setParameter(2,$day)
+            ->setParameter(2,$day->format('Y-m-d'))
+            ->setParameter(3,$day->format('w'))
+            ->orderBy('s.valid_from', 'DESC')
             ->setMaxResults(1)
             ->getQuery()->execute();
 
@@ -157,14 +160,15 @@ class DBManager
     }
 
 
-    public function getClosingDays($today){
+    public function getClosingDays(\DateTime $today){
         $fields = array('c.date');
+
         $qb = $this->em->createQueryBuilder();
 
         $result =$qb->select($fields)
             ->from('BookManagerBundle:ClosingDays', 'c')
             ->where('c.date > ?1')
-            ->setParameter(1,$today)
+            ->setParameter(1,$today->getTimestamp())
             ->getQuery()->execute();
 
         return $result;
@@ -318,6 +322,26 @@ class DBManager
             ->setParameter(3, $ora)
             ->getQuery()->execute();
         return $result;
+    }
+
+    public function getCampiDisponibiliPerSportEGiorno(Sport $sport, \DateTime $dateTime){
+        $qb = $this->em->createQueryBuilder();
+/*
+        $sql = 'SELECT *, count(hour) FROM activedb.reservation where data_prenotazione = :data_prenotazione and sport_id = :sportID group by hour';
+        $result =  $this->em->createQuery($sql )->setParameter("data_prenotazione", $dateTime->format('Y-m-d'))->setParameter("sportID", $sport->getId())->execute();
+*/
+
+        $result = $qb->select('COUNT(r.hour) as num, r.hour')
+            ->from('BookManagerBundle:Reservation', 'r')
+            ->where('r.dataPrenotazione = ?1')
+            ->andWhere('r.sport = ?2')
+            ->groupBy('r.hour')
+            ->setParameter(1,$dateTime)
+            ->setParameter(2, $sport->getId())
+            ->getQuery()->execute();
+        return $result;
+
+
     }
 
     public function getPrenotazioniPerDay(\DateTime $dateTime){

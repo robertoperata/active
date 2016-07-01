@@ -25,4 +25,14 @@ class PaymentDetails extends ArrayObject
      * @var integer $id
      */
     protected $id;
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 }
