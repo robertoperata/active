@@ -156,11 +156,38 @@ class PaymentController extends Controller
             $response->setStatusCode('400');
         }
 
+        //invio messaggio Email
+        $email = $user->getEmail();
+        $message = \Swift_Message::newInstance()
+            ->setSubject('Prenotazione')
+            ->setFrom('info@letiziasportrelax.it')
+            ->setTo($email)
+            ->setBody(
+                $this->renderView(
+                // app/Resources/views/Emails/registration.html.twig
+                    'email/conferma.html.twig',
+                    array('reservation' => $reservation)
+                ),
+                'text/plain'
+            )
+            /*
+             * If you also want to include a plaintext version of the message
+            ->addPart(
+                $this->renderView(
+                    'Emails/registration.txt.twig',
+                    array('name' => $name)
+                ),
+                'text/plain'
+            )
+            */
+        ;
+        $this->get('mailer')->send($message);
         return $this->render('cli/checkout.html.twig', array(
             'sport'=> $sport->getName(),
             'giorno'=> $reservation->getDataPrenotazione()->format('d-m'),
             'ora' => $reservation->getHour()
         ));
+
     }
 
 

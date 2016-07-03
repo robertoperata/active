@@ -75,27 +75,27 @@ class Reservation{
     private $cancella = false;
 
     /**
-     * @ORM\Column(name="ppTransactionId", type="string")
+     * @ORM\Column(name="ppTransactionId", type="string",nullable=true)
      */
     private $pptransactionId;
 
     /**
-     * @ORM\Column(name="ppEmail", type="string")
+     * @ORM\Column(name="ppEmail", type="string",nullable=true)
      */
     private $ppEmail;
 
     /**
-     * @ORM\Column(name="ppPayerId", type="string")
+     * @ORM\Column(name="ppPayerId", type="string", nullable=true)
      */
     private $ppPayerId;
 
     /**
-     * @ORM\Column(name="totale", type="float")
+     * @ORM\Column(name="totale", type="float", nullable=true)
      */
     private $totale;
 
     /**
-     * @ORM\Column(name="ppTimestamp", type="string")
+     * @ORM\Column(name="ppTimestamp", type="string", nullable=true)
      */
     private $ppTimestamp;
 
