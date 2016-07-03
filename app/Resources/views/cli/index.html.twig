@@ -31,7 +31,13 @@
                 </select>
             </div>
             </div>
-           <div> <button class="btn btn-primary pull-right" onclick="salva()">Prenota</button></div>
+           <div class=" col-xs-12 col-md-9 col-md-offset-3">
+              <a href="{{ asset('assets/pdf/D2-PARAMETRI.pdf') }}" style="margin-left: 22px; color: #ffffff;"><i class="fa fa-fw fa-file-pdf-o" style="color: #ffffff;"></i>Parametri servizio</a><br/>
+               <input type="checkbox" id="regolamento" onclick="accettoRegolamento()" style="margin-right: 10px;"><i class="fa fa-fw fa-file-pdf-o" style="color: #ffffff;"></i><a href="{{ asset('assets/pdf/Regolamento utilizzo impianti sportivi.pdf') }}" style="color: #ffffff;">Regolamento utilizzo impianto</a>
+           </div>
+            <div>
+               <button class="btn btn-primary pull-right" id="salvaPrenotazione" onclick="salva()" disabled>Prenota</button>
+            </div>
         </div>
     </div>
     <div class="col-xs-12 col-md-6 col-md-offset-3" id="checkout" style="display: none">
@@ -54,6 +60,15 @@
     </div>
 
     <script>
+
+        function accettoRegolamento(){
+            if($('#regolamento').is(':checked')){
+                $('#salvaPrenotazione').removeAttr('disabled')
+            }else{
+                $("salvaPrenotazione").attr('disabled');
+            }
+        }
+
          function step2(select){
 
 

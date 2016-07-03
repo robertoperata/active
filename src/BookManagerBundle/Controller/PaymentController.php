@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  *
- * @Route("/pagamenti")
+ * @Route("/cli")
 */
 class PaymentController extends Controller
 {

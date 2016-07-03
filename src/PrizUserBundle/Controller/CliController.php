@@ -47,7 +47,7 @@ class CliController extends Controller{
     /**
      * Lista prenotazioni
      *
-     * @Route("/list", name="controlloPrenotazioni")
+     * @Route("/", name="controlloPrenotazioni")
      * @Method("GET")
      */
     public function controlloPrenotazioni(){
@@ -75,8 +75,8 @@ class CliController extends Controller{
         $dbManager =    $this->get('app.dbmanager');
         $response = new Response();
         $response->setStatusCode(200);
+        $prenotazione = $dbManager->getReservationById($data->id);
         try{
-            $prenotazione = $dbManager->getReservationById($data->id);
             $user = $this->get('security.token_storage')->getToken()->getUser();
             if($prenotazione->getUser()->getId() == $user->getId()){
                 $dbManager->cancellaPrenotazione($prenotazione);
@@ -91,10 +91,49 @@ class CliController extends Controller{
             $response->setContent(json_encode($obj));
             $response->setStatusCode(400);
         }
+        //invio messaggio Email
+        $email = $user->getEmail();
+        $dataPrenotazione = new \DateTime($prenotazione->getDataPrenotazione()->format('Y-m-d')." ".$prenotazione->getHour().":00:00");
+
+        $differenza = $dataPrenotazione->diff(new \DateTime());
+        $dirittoBuono = false;
+        if($differenza->d > 0){
+            $dirittoBuono = true;
+
+        }
+        //mailCancellazione($prenotazione, $email, $dirittoBuono);
+
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
     }
+
+    private function mailCancellazione(Reservation $prenotazione, $mail, $dirittoBuono){
+        if($dirittoBuono){
+            $mailTemplate = 'email/cancellazioneConBuono.html.twig';
+        }else{
+            $mailTemplate = 'email/cancellazioneSenzaBuono.html.twig';
+
+        }
+
+        $message = \Swift_Message::newInstance()
+            ->setSubject('Cancellazione')
+            ->setFrom('info@letiziasportrelax.it')
+            ->setTo($mail)
+            ->setCc('info@letiziasportrelax.it')
+            ->setBody(
+                $this->renderView(
+                // app/Resources/views/Emails/registration.html.twig
+                    $mailTemplate,
+                    array('prenotazione' => $prenotazione)
+                ),
+                'text/plain'
+            );
+        $this->get('mailer')->send($message);
+    }
+
+
+
 
 
     /**
