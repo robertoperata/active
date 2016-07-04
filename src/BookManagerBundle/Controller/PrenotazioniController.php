@@ -146,6 +146,49 @@ class PrenotazioniController extends Controller{
 
     }
 
+    /**
+     * @Route("/elencoPrenotazioni", name="tab_elenco")
+     * @Route("/elencoPrenotazioni/{dataRicerca}", name="tab_elencoRicerca")
+     * @Method("GET")
+     */
+    function elencoPrenotazioni($dataRicerca = null){
+        $data = new \DateTime();
+        if($dataRicerca !== null){
+            $data = new \DateTime($dataRicerca);
+        }
+        $dbManager =    $this->get('app.dbmanager');
+        $response = new Response();
+        $response->setStatusCode(200);
+        try{
+            $prenotazioni = $dbManager->getPrenotazioniProssimi5Giorni($data);
+        }catch (Exception $e){
+            $response->setStatusCode(400);
+        }
+        $elencoPrenotazioni = array();
+        if(sizeof($prenotazioni) > 0) {
+            foreach ($prenotazioni as $item) {
+                $temp = array('id_sport' => $item->getSport()->getId(),
+                    'sportAbbreviazione' =>  $item->getSport()->getAbbreviazione(),
+                    'sportNome' =>  $item->getSport()->getName(),
+                    'campo' => $item->getCampoId(),
+                    'hour' => $item->getHour(),
+                    'dataPrenotazione' => $item->getDataPrenotazione(),
+                    'name' => $item->getName(),
+                    'cell' => $item->getCell(),
+                    'id' => $item->getId(),
+                    'note'=>$item->getNote(),
+                    'pptransactionId'=>$item->getPptransactionId(),
+                    'ppEmail'=>$item->getPpEmail(),
+                    'ppPayerId'=>$item->getPpPayerId(),
+
+                );
+                array_push($elencoPrenotazioni, $temp);
+            }
+        }
+        return $this->render('reservations/elencoPrenotazioni.tml.twig', array('elencoPrenotazioni'=>$elencoPrenotazioni));
+    }
+
+
 }
 
 

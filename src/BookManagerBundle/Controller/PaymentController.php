@@ -47,7 +47,7 @@ class PaymentController extends Controller
         $details = [
             'PAYMENTREQUEST_0_CURRENCYCODE' => 'EUR',
 //            'RETURNURL' => $return,
-//            'CANCELURL' => 'http://cancel.url',
+ //           'CANCELURL' => 'http://www.letiziasportrelax.it',
             'PAYMENTREQUEST_0_AMT' => $totale,
             'NOSHIPPING' => 1
         ];

@@ -1,0 +1,50 @@
+{% extends 'cli.base.html.twig' %}
+{% block body %}
+<div class="col-xs-12 col-md-6 col-md-offset-3" id="compilazione">
+    <h1>TABELLONE CAMPI</h1>
+
+    <div class="corrente" style="color: #fff">
+        <h2 class="col-xs-12 col-md-12" style="margin-left: 0; color: #ffef00">{{ oraCcorrente }}:00</h2>
+        {% if prenotaziniOraCorrente is empty %}
+            <div class="col-xs-12">
+             Nessuna prenotazione
+            </div>
+        {% else %}
+        <table class="table">
+        {% for key, value in prenotaziniOraCorrente %}
+            <tr><td>{{ value.sportAbbreviazione }}</td><td>{{ value.name|upper }}</td><td>Campo {{ value.campo }}</td><td>{%  if oraCcorrente is odd %}Spogliatoio A {% else %}Spogliatoio B{% endif %}</td></tr>
+        {% endfor %}
+        </table>
+        {% endif %}
+    </div>
+    <div class="successivo" style="color:#fff">
+        <h2 class="col-xs-12" style="margin-left: 0; color: #ffef00;">{{ oraSuccessiva }}:00</h2>
+        {% if prenotaziniOraSuccessiva is empty %}
+            <div class="col-xs-12">
+             Nessuna prenotazione
+            </div>
+        {% else %}
+        <table class="table">
+        {% for key, value in prenotaziniOraSuccessiva %}
+            <tr><td>{{ value.sportAbbreviazione }}</td><td>{{ value.name|upper }}</td><td>Campo{{ value.campo }}</td><td>{%  if oraSuccessiva is odd %}Spogliatoio A {% else %}Spogliatoio B{% endif %}</td></tr>
+        {% endfor %}
+        </table>
+        {% endif %}
+    </div>
+    <div class="col-xs-12" style="margin-top: 50px; text-align: center">
+
+        <img src="{{ asset('assets/img/logo_letizia.png') }}"  style="text-align: center;width: 300px; height: auto"  />
+    </div>
+
+</div>
+    <script>
+        $(document).ready(function(){
+
+            setTimeout(function(){
+
+                    window.location.reload();
+                    /* or window.location = window.location.href; */
+            }, 300000); //reload dopo 5 minuti (5 * 60 * 1000)
+        })
+    </script>
+{% endblock %}

@@ -349,16 +349,54 @@ class DBManager
 
         $qb = $this->em->createQueryBuilder();
 
-        $dateTime->format('Y-m-d');
+        $giornoPrenotazione = $dateTime->format('Y-m-d');
         $result =$qb->select('r')
             ->from('BookManagerBundle:Reservation', 'r')
             ->where('r.dataPrenotazione = ?1')
             ->andWhere('r.cancella = 0')
-            ->setParameter(1,$dateTime)
+            ->setParameter(1,$giornoPrenotazione)
             ->getQuery()->execute();
         return $result;
 
     }
+
+
+    public function getPrenotazioniPerDayEHour(\DateTime $dateTime, $hour){
+
+
+        $qb = $this->em->createQueryBuilder();
+
+        $giornoPrenotazione = $dateTime->format('Y-m-d');
+        $result =$qb->select('r')
+            ->from('BookManagerBundle:Reservation', 'r')
+            ->where('r.dataPrenotazione = ?1')
+            ->andWhere('r.hour = ?2')
+            ->andWhere('r.cancella = 0')
+            ->setParameter(1,$giornoPrenotazione)
+            ->setParameter(2,$hour)
+            ->getQuery()->execute();
+        return $result;
+    }
+
+    public function getPrenotazioniProssimi5Giorni(\DateTime $dateTime){
+        $qb = $this->em->createQueryBuilder();
+
+        $giornoPrenotazione = $dateTime->format('Y-m-d');
+        $finoData = $dateTime->add(new \DateInterval('P5D'));
+        $finoData->format('Y-m-d');
+        $result =$qb->select('r')
+            ->from('BookManagerBundle:Reservation', 'r')
+            ->where('r.dataPrenotazione >= ?1')
+            ->andWhere('r.dataPrenotazione < ?2')
+            ->andWhere('r.cancella = 0')
+            ->orderBy('r.dataPrenotazione', 'ASC')
+           ->addOrderBy('r.hour', 'ASC')
+            ->setParameter(1,$giornoPrenotazione)
+            ->setParameter(2,$finoData)
+            ->getQuery()->execute();
+        return $result;
+    }
+
 
     public function getPrenotazioniFromToday(){
         $qb = $this->em->createQueryBuilder();

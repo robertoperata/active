@@ -100,7 +100,7 @@ class Reservation{
     private $ppTimestamp;
 
     /**
-     * @ORM\Column(name="ipClinet", type="string")
+     * @ORM\Column(name="ipClinet", type="string",nullable=true)
      */
     private $ip;
 

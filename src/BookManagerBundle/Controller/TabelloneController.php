@@ -172,4 +172,6 @@ class TabelloneController extends Controller{
         return $response;
     }
 
+
+
 }

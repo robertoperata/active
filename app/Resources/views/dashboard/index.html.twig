@@ -150,6 +150,21 @@
                     <div class="col-xs-10">
                         <input type="text" name="note"  class="form-control"/>
                     </div>
+                </div><div class="form-group clearfix">
+                    <label class="col-xs-2">Id Transazione:</label>
+                    <div class="col-xs-10">
+                        <input type="text" name="pptransactionId"  class="form-control" readonly/>
+                    </div>
+                </div><div class="form-group clearfix">
+                    <label class="col-xs-2">Email paypal:</label>
+                    <div class="col-xs-10">
+                        <input type="text" name="ppEmail"  class="form-control" readonly/>
+                    </div>
+                </div><div class="form-group clearfix">
+                    <label class="col-xs-2">Id Pagante:</label>
+                    <div class="col-xs-10">
+                        <input type="text" name="ppPayerId"  class="form-control" readonly/>
+                    </div>
                 </div>
 
                 <button class="btn btn-danger pull-left" id="del_prenotazione" onclick="delPrenotazione($('#aggiungi_prenotazione'))">Elimina</button>
@@ -235,6 +250,9 @@
                         $("#dialog").find('input[name="note"]').val('');
                         $("#dialog").find('input[name="id_prenotazione"]').val('');
                         $("#dialog").find('input[name="cell"]').val('');
+                        $("#dialog").find('input[name="pptransactionId"]').val('');
+                        $("#dialog").find('input[name="ppEmail"]').val('');
+                        $("#dialog").find('input[name="ppPayerId"]').val('');
                         $("#aggiungi_prenotazione select > option").each(function(){
 
                             $(this).removeAttr('selected');
@@ -388,7 +406,7 @@
                         var col_numb = $('#tabella_sport').find('th[data-sport-id="'+data[i].id_sport+'"][data-column-id="'+data[i].campo+'"]').index();
 
                         var row_num = parseInt( $("#timePreferences table tr").length )-2;
-                        $("#tabella_sport tr:nth-child("+row_numb+") td:eq("+ --col_numb +")").attr('data-id-prenotazione',data[i].id).attr('data-cell', data[i].cell).attr('data-note',data[i].note).text(data[i].name).append(note);
+                        $("#tabella_sport tr:nth-child("+row_numb+") td:eq("+ --col_numb +")").attr('data-id-prenotazione',data[i].id).attr('data-pptransactionId', data[i].pptransactionId).attr('data-ppPayerId', data[i].ppPayerId).attr('data-ppEmail',data[i].ppEmail).attr('data-cell', data[i].cell).attr('data-note',data[i].note).text(data[i].name).append(note);
                         }
                     },
                     error: function(data){
@@ -423,9 +441,15 @@
                     var nome = $(td).text();
                     var cell = $(td).attr('data-cell');
                     var note = $(td).attr('data-note');
+                    var pptransactionId = $(td).attr('data-pptransactionId');
+                    var ppEmail = $(td).attr('data-ppEmail');
+                    var ppPayerId = $(td).attr('data-ppPayerId');
                     $("#aggiungi_prenotazione input[name='nome']").attr('value', nome);
                     $("#aggiungi_prenotazione input[name='cell']").attr('value', cell);
                     $("#aggiungi_prenotazione input[name='note']").attr('value', note);
+                    $("#aggiungi_prenotazione input[name='pptransactionId']").attr('value', pptransactionId);
+                    $("#aggiungi_prenotazione input[name='ppEmail']").attr('value', ppEmail);
+                    $("#aggiungi_prenotazione input[name='ppPayerId']").attr('value', ppPayerId);
                     $("#aggiungi_prenotazione input[name='id_prenotazione']").attr('value', id_prenotazione);
                 }
 

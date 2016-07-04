@@ -196,9 +196,6 @@ body.cli {
   opacity: 0.5;
   cursor: default; }
 
-tbody tr th {
-  text-align: right; }
-
 .tabella_sport_header {
   padding: 10px 5px; }
   .tabella_sport_header h3#tabella_giorno {

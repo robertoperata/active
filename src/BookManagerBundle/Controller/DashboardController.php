@@ -151,7 +151,11 @@ class DashboardController extends Controller{
                         'name' => $item->getName(),
                         'cell' => $item->getCell(),
                         'id' => $item->getId(),
-                        'note'=>$item->getNote()
+                        'note'=>$item->getNote(),
+                        'pptransactionId'=>$item->getPptransactionId(),
+                        'ppEmail'=>$item->getPpEmail(),
+                        'ppPayerId'=>$item->getPpPayerId(),
+
 
                     );
                     array_push($elencoPrenotazioni, $temp);
