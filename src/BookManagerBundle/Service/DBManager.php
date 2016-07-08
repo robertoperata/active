@@ -257,7 +257,7 @@ class DBManager
             $result =$qb->select('r')
             ->from('BookManagerBundle:Reservation', 'r')
             ->where('r.user >= ?1')
-            ->andWhere('r.dataPrenotazione > CURRENT_DATE()' )
+            ->andWhere('r.dataPrenotazione >= CURRENT_DATE()' )
             ->andWhere('r.cancella = 0')
             ->orderBy('r.dataPrenotazione', 'ASC')
             ->setParameter(1,$user_id)
@@ -428,6 +428,22 @@ class DBManager
         $prenotazione->setCancella(true);
 //		$this->em->remove($prenotazione);
         $this->em->flush();
+    }
+
+    public function getPrenotazioniCancellate(){
+        $qb = $this->em->createQueryBuilder();
+
+        $today = new \DateTime();
+        $today->format('Y-m-d');
+        $result =$qb->select('r')
+            ->from('BookManagerBundle:Reservation', 'r')
+            ->where('r.dataPrenotazione >= ?1')
+            ->andWhere('r.cancella = 1')
+            ->orderBy('r.dataPrenotazione', 'ASC')
+            ->addOrderBy('r.hour' , 'ASC')
+            ->setParameter(1,$today)
+            ->getQuery()->execute();
+        return $result;
     }
 
 

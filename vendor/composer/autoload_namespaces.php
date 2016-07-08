@@ -11,6 +11,7 @@ return array(
     'Psr\\Log\\' => array($vendorDir . '/psr/log'),
     'Pdp\\' => array($vendorDir . '/jeremykendall/php-domain-parser/src'),
     'Payum\\Paypal\\Rest' => array($vendorDir . '/payum/paypal-rest'),
+    'Payum\\Paypal\\ExpressCheckout\\Nvp' => array($vendorDir . '/payum/paypal-express-checkout-nvp'),
     'Payum\\Offline' => array($vendorDir . '/payum/offline'),
     'Payum\\Core\\' => array($vendorDir . '/payum/core'),
     'PayPal' => array($vendorDir . '/paypal/rest-api-sdk-php/lib'),

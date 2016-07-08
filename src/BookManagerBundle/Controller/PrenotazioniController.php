@@ -55,7 +55,17 @@ class PrenotazioniController extends Controller{
         $id = $data->id_prenotazione;
         try{
             $reservation = $dbManager->getReservationById($id);
-            $dbManager->deleteReservation($reservation);
+
+            $dataPrenotazione = new \DateTime($reservation->getDataPrenotazione()->format('Y-m-d')." ".$reservation->getHour().":00:00");
+
+            $differenza = $dataPrenotazione->diff(new \DateTime());
+
+            if($differenza->d > 0){
+                $reservation->setBuono(true);
+            }
+
+
+            $dbManager->cancellaPrenotazione($reservation);
             $obj = array('status'=>'ok');
             $response->setContent(json_encode($obj));
 
@@ -147,8 +157,8 @@ class PrenotazioniController extends Controller{
     }
 
     /**
-     * @Route("/elencoPrenotazioni", name="tab_elenco")
-     * @Route("/elencoPrenotazioni/{dataRicerca}", name="tab_elencoRicerca")
+     * @Route("/elencoPrenotazioni", name="prenotazioni_elenco")
+     * @Route("/elencoPrenotazioni/{dataRicerca}", name="prenotazioni_elencoRicerca")
      * @Method("GET")
      */
     function elencoPrenotazioni($dataRicerca = null){

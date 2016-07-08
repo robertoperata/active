@@ -7,13 +7,22 @@
 
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-                <li class="active">Sport</li>
+                <li class="active">Prenotazioni</li>
             </ol>
         </section>
         <div class="col-xs-12 ">
-            <div class="prenotazioni box clearfix" style="min-height: 400px">
+            <div class="prenotazioni box box-default" >
+                <div class="box-header with-border">
+                    <h3 class="box-title">Prenotazioni</h3>
 
-                <h2>Elenco Prenotazioni</h2>
+                    <div class="box-tools pull-right">
+                        <span><i class="fa fa-calendar" ></i><input type="text" id="datepickerPronotazioni" name="datapicker" class="datapicker col-xs-10 pull-right" /></span>
+                    </div>
+                    <!-- /.box-tools -->
+                </div>
+
+
+
                 <table class="table table-striped table-bordered">
                     <tr>
                         <th>Data</th>
@@ -43,4 +52,14 @@
              </div>
         </div>
     </div>
+    <script>
+        $.datepicker.setDefaults( $.datepicker.regional[ "it" ] );
+        $('#datepickerPronotazioni').datepicker({
+            minDate: new Date(),
+            onSelect: function(date) {
+                var giorno = toDate(date).yyyymmdd();
+                window.location = "{{ path('prenotazioni_elencoRicerca') }}/"+giorno;
+            },
+        });
+    </script>
 {% endblock %}

@@ -108,6 +108,40 @@
                 </div>
                 <!-- /.box-body -->
             </div>
+            <div class="box box-default table-condensed" id="orariPreferenzeBox">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Prenotazioni cancellate</h3>
+
+
+                    <!-- /.box-tools -->
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body" id="timePreferences">
+                    <table class="table table-stripped">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Ora</th>
+                                <th>Sport</th>
+                                <th>Nome</th>
+                                <th>Buono</th>
+                            </tr>
+                        </thead>
+                    {% for  value in prenotazioneCancellate %}
+                        <tr>
+                            <td>{{ value.dataPrenotazione|date('d/m') }}</td>
+                            <td class="text-right">{{ value.hour }}:00</td>
+                            <td class="text-right">{{ value.sport.name }}</td>
+                            <td class="text-right">{{ value.name }}</td>
+                            <td class="text-right"><input type="checkbox" disabled="disabled" {% if value.buono %} checked {% endif %} /> </td>
+                        </tr>
+
+                    {% endfor %}
+
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
         </div>
         <div id="dialog" title="Prenotazione" style="display: none">
             <div id="listaPrenotazioni"></div>
@@ -323,7 +357,7 @@
                         var sport = data.sport;
                         var body = document.getElementsByTagName('body')[0];
                         var tbl = document.createElement('table');
-                        tbl.setAttribute('class','table table-striped');
+                        tbl.setAttribute('class','table table-striped table-bordered');
 
                         tbl.style.width = '100%';
 

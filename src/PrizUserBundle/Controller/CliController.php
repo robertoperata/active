@@ -76,10 +76,26 @@ class CliController extends Controller{
         $response = new Response();
         $response->setStatusCode(200);
         $prenotazione = $dbManager->getReservationById($data->id);
+        $dirittoBuono = false;
         try{
             $user = $this->get('security.token_storage')->getToken()->getUser();
             if($prenotazione->getUser()->getId() == $user->getId()){
+
+                $dataPrenotazione = new \DateTime($prenotazione->getDataPrenotazione()->format('Y-m-d')." ".$prenotazione->getHour().":00:00");
+
+                $differenza = $dataPrenotazione->diff(new \DateTime());
+
+                if($differenza->d > 0){
+                    $dirittoBuono = true;
+                    $prenotazione->setBuono(true);
+                }
                 $dbManager->cancellaPrenotazione($prenotazione);
+                $elencoPrenotazioniRimanenti = $dbManager->getReservationPerSportAndDay($prenotazione->getSport(), $prenotazione->getDataPrenotazione(), $prenotazione->getHour());
+
+                for($i=0; $i < sizeof($elencoPrenotazioniRimanenti); $i++){
+                    $elencoPrenotazioniRimanenti[$i]->setCampoId($i + 1);
+                    $dbManager->saveReservation($elencoPrenotazioniRimanenti[$i]);
+                }
                 $obj = array('status'=>'ok');
                 $response->setContent(json_encode($obj));
             }else{
@@ -93,15 +109,8 @@ class CliController extends Controller{
         }
         //invio messaggio Email
         $email = $user->getEmail();
-        $dataPrenotazione = new \DateTime($prenotazione->getDataPrenotazione()->format('Y-m-d')." ".$prenotazione->getHour().":00:00");
 
-        $differenza = $dataPrenotazione->diff(new \DateTime());
-        $dirittoBuono = false;
-        if($differenza->d > 0){
-            $dirittoBuono = true;
-
-        }
-        //mailCancellazione($prenotazione, $email, $dirittoBuono);
+        $this->mailCancellazione($prenotazione, $email, $dirittoBuono);
 
         $response->headers->set('Content-Type', 'application/json');
 
@@ -131,9 +140,6 @@ class CliController extends Controller{
             );
         $this->get('mailer')->send($message);
     }
-
-
-
 
 
     /**

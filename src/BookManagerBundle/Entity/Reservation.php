@@ -105,6 +105,11 @@ class Reservation{
     private $ip;
 
     /**
+    * @ORM\Column(type="boolean")
+    */
+    private $buono = false;
+
+    /**
      * Get id
      *
      * @return integer
@@ -550,5 +555,29 @@ class Reservation{
     public function getIp()
     {
         return $this->ip;
+    }
+
+    /**
+     * Set buono
+     *
+     * @param boolean $buono
+     *
+     * @return Reservation
+     */
+    public function setBuono($buono)
+    {
+        $this->buono = $buono;
+
+        return $this;
+    }
+
+    /**
+     * Get buono
+     *
+     * @return boolean
+     */
+    public function getBuono()
+    {
+        return $this->buono;
     }
 }

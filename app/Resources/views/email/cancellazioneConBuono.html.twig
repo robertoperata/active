@@ -1,10 +1,9 @@
-Ciao {{ reservation.user.username }},<br>
-ti confermiamo la cancellaziopne per la prenotazione di {{ prenotazoine.sport.name }} del giorno {{ prenotazione.dataPrenotazione|date("d/m/Y")}}
-alle ore {{ prenotazione.hour }}:00.<br/>
-La cancellazione <b> è avvenuta entro 24h</b> e da diritto ad un buono per un'altra prenotazione.
+Ciao {{ prenotazione.user.username }},
+ti confermiamo la cancellaziopne per la prenotazione di {{ prenotazione.sport.name }} del giorno {{ prenotazione.dataPrenotazione|date("d/m/Y")}}
+alle ore {{ prenotazione.hour }}:00.
+La cancellazione è avvenuta entro 24h e da diritto ad un buono per un'altra prenotazione.
 Prenotazione: {{ prenotazione.pptransactionId }}
 
-<br/>
-<br/>
-Grazie.<br/>
+
+Grazie.
 Letizia Sport Relax

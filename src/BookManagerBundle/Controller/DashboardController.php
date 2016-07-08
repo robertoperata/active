@@ -33,6 +33,7 @@ class DashboardController extends Controller{
         $calendarManager = $this->get('app.calendar');
         $defaultHolidays = $calendarManager->createDefaultHolidayCalendar();
 
+
         $dbManager =    $this->get('app.dbmanager');
 
         $today = new \DateTime();
@@ -47,6 +48,8 @@ class DashboardController extends Controller{
 
         $orariApertura = $dbManager->getOrariApertura();
 
+        $prenotazioneCancellate = $dbManager->getPrenotazioniCancellate();
+
         //    $tabellaSport = $this->tabellaSport($today);
 
 
@@ -56,6 +59,7 @@ class DashboardController extends Controller{
             'timePreferencies' => $timePreferencies,
             'orariApertura' => $orariApertura,
             'closingDays' => $closingDays,
+            'prenotazioneCancellate'=>$prenotazioneCancellate
             // 'tabellaSport'=>json_encode($tabellaSport)
         ));
 
@@ -68,6 +72,8 @@ class DashboardController extends Controller{
     }
 
     public function tabellaSport(\DateTime $date){
+        $logger = $this->get('logger');
+
         //prendere orari apertura per quel giorno
         $dbManager =    $this->get('app.dbmanager');
         $orariApertura = $dbManager->getOrariAperturaPerGriono($date);
