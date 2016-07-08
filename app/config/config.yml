@@ -84,23 +84,22 @@ fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: main
     user_class: BookManagerBundle\Entity\User
-    registration:
-            form:
-                type: BookManagerBundle\Form\RegistrationType
-            confirmation:
-                enabled: true
     from_email:
-            address:        info@letizasportrelax.it
-            sender_name:    Perata App
-    service:
-            mailer: fos_user.mailer.twig_swift
-
+        address: info@letiziasportrelax.it
+        sender_name: Letizia Sport Relax
+    registration:
+        confirmation:
+            enabled: true
+            template: FOSUserBundle:Registration:email.txt.twig
+        form:
+            type: BookManagerBundle\Form\RegistrationType
+            name: app_user_registration
     resetting:
-            email:
-                template: email/password_resetting.email.twig
-                from_email:
-                    address:        info@letizasportrelax.it
-                    sender_name:    Demo Resetting
+        email:
+            template: email/password_resetting.email.twig
+    service:
+        mailer: fos_user.mailer.default
+
 
 payum:
     security:
