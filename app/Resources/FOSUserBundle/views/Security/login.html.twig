@@ -11,7 +11,9 @@
     {% endif %}
 
         <form action="{{ path("fos_user_security_check") }}" method="post" class="fos_user_registration_register fos_user_form clearfix">
-
+            <div class="pull-right">
+                Nuovo utente?&nbsp;<a class="pull-right" href="{{ path('fos_user_registration_register') }}">Registrati</a>
+            </div>
 
 
             <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
